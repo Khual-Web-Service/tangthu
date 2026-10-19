@@ -168,6 +168,10 @@ table.evidence td:first-child{font-weight:600;white-space:nowrap}
 .badge.type{color:var(--ink);font-weight:600}
 .badge.warn{color:var(--red);border-color:color-mix(in srgb,var(--red) 50%,var(--line))}
 .refs .note,.src .note{font-size:.84rem;color:var(--stone);font-style:italic;margin-top:.25rem}
+.pagedates{margin:-.3rem 0 1rem;color:var(--stone)}
+.cite-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline;margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line)}
+.cite-row .cite-text{flex:1 1 16rem;overflow-wrap:anywhere}
+.copycite{font:inherit;font-size:.85rem;padding:.2rem .7rem;border:1px solid var(--line);border-radius:4px;background:var(--mist);color:var(--ink);cursor:pointer}
 .citebox{margin-top:2rem;padding:1rem 1.2rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:.92rem}
 
 /* Sources page */

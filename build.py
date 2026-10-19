@@ -47,7 +47,9 @@ CH_LABEL = {"origins.html":"Origins & Migration","evidence.html":"How We Know","
 def chapter_head(f):
     if f not in CHAPTERS: return ""
     n=CHAPTERS.index(f)+1
-    return f'<p class="chapter-eyebrow">Chapter {n} of {len(CHAPTERS)}</p>'
+    pub, upd = pdates(f)
+    return (f'<p class="chapter-eyebrow">Chapter {n} of {len(CHAPTERS)}</p>'
+            f'<p class="pagedates small">Published <time datetime="{pub}">{long_date(pub)}</time> · Last updated <time datetime="{upd}">{long_date(upd)}</time></p>')
 def chapter_nav(f):
     if f not in CHAPTERS: return ""
     i=CHAPTERS.index(f); out='<nav class="chapter-nav" aria-label="Chapters">'
@@ -75,6 +77,16 @@ GLOSS_RAW = ""
 def clean(f): return "/" if f=="index.html" else "/"+f[:-5]
 
 ACCESSED = "19 October 2026"
+DATES = json.loads((ROOT/"page-dates.json").read_text()) if (ROOT/"page-dates.json").exists() else {}
+MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+def pdates(f):
+    x = DATES.get(f, {}); return x.get("published", TODAY), x.get("updated", TODAY)
+def long_date(iso):
+    y,m,dd = map(int, iso.split("-")); return f"{dd} {MONTHS[m-1]} {y}"
+def us_date(iso):
+    y,m,dd = map(int, iso.split("-")); return f"{MONTHS[m-1]} {dd}, {y}"
+def mla_date(iso):
+    y,m,dd = map(int, iso.split("-")); mo = MONTHS[m-1]; return f"{dd} {mo if len(mo)<=4 else mo[:3]+'.'} {y}"
 TIER = {"Primary":"Primary source","Archive":"Archive","Scholarly":"Scholarly work","Technical / scholarly":"Technical standard","Reference":"Reference work","Journalism":"News report","Research brief":"Research report","Community":"Community source","Community organisation":"Community organisation","Community essay":"Community essay","Missions database":"Missions database"}
 def tier(s):
     return TIER.get(s["type"].split(" (")[0], s["type"])
@@ -88,6 +100,7 @@ def cite(m):
     n=_used.index(k)+1
     return f'<sup class="fn"><a href="#ref-{k}" title="{html.escape(S[k]["cite"])}" aria-label="Source {n}: {html.escape(S[k]["short"])}">[{n}]</a></sup>'
 
+_cur='index.html'
 def refs_block(title):
     if not _used: return ""
     items=[]
@@ -97,7 +110,15 @@ def refs_block(title):
         status = '<span class="badge warn">Print / not yet verified online</span>' if is_print(s) else f'<span class="badge">Accessed {ACCESSED}</span>'
         note = f'<div class="note">{html.escape(s["note"])}</div>' if s.get("note") else ""
         items.append(f'<li id="ref-{k}"><span class="badge type">{html.escape(tier(s))}</span> {html.escape(s["cite"])} {link} {status}{note}</li>')
-    cite_box=f'<div class="citebox"><strong>Cite this page:</strong> Zogam History. “{html.escape(title)}.” Accessed {ACCESSED}. <span class="small">(Use the page address from your browser.)</span></div>'
+    pub, upd = pdates(_cur); url = SITE_URL + clean(_cur); y,m,dd = upd.split("-"); t = html.escape(title); bare = url.split("://",1)[1]
+    apa = f'Zogam History. ({y}, {MONTHS[int(m)-1]} {int(dd)}). <i>{t}</i>. Khual Web Service. Retrieved <span class="acc" data-f="us"></span>, from {url}'
+    mla = f'“{t}.” <i>Zogam History</i>, Khual Web Service, {mla_date(upd)}, {bare}. Accessed <span class="acc" data-f="mla"></span>.'
+    chi = f'Zogam History. “{t}.” Khual Web Service. Last modified {us_date(upd)}. Accessed <span class="acc" data-f="us"></span>. {url}.'
+    rows = "".join(f'<div class="cite-row"><span class="badge type">{k}</span> <span class="cite-text">{v}</span> <button type="button" class="copycite">Copy</button></div>' for k,v in (("APA 7",apa),("MLA 9",mla),("Chicago",chi)))
+    cite_box=(f'<div class="citebox" id="cite"><strong>Cite this page</strong> <span class="small">Published {long_date(pub)} · last updated {long_date(upd)}. The access date is today\'s date.</span>{rows}</div>'
+      '<script>(function(){var M=["January","February","March","April","May","June","July","August","September","October","November","December"],d=new Date(),m=M[d.getMonth()];'
+      'document.querySelectorAll(".acc").forEach(function(e){e.textContent=e.dataset.f==="mla"?d.getDate()+" "+(m.length>4?m.slice(0,3)+".":m)+" "+d.getFullYear():m+" "+d.getDate()+", "+d.getFullYear();});'
+      'document.querySelectorAll(".copycite").forEach(function(b){b.addEventListener("click",function(){var t=b.previousElementSibling.textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1500)},function(){});});});})();</script>')
     return f'<details class="refs" id="sources"><summary><h2 id="refs-h">Sources for this page <span class="count">({len(_used)})</span></h2><span class="small">Tap to see where every fact comes from</span></summary><p class="small">The small numbers in the text link here. Each source is labelled by type. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</details>'
 
 def ph(kind, text):
@@ -128,7 +149,7 @@ def page(fname, title, body, wide=False, home=False):
     graph = [
       {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
       {"@type":"WebSite","@id":SITE_URL+"/#site","url":SITE_URL+"/","name":SITE_NAME,"alternateName":["Tangthu","Zomi History","Zo History"],"inLanguage":"en","description":DESC["index.html"][1],"publisher":{"@id":"https://khual.net/#org"},"copyrightHolder":{"@id":"https://khual.net/#org"},"copyrightYear":2026,"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"sameAs":["https://github.com/Khual-Web-Service/tangthu"]},
-      {"@type":"WebPage" if home else "Article","@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","dateModified":TODAY,"image":img,
+      {"@type":"WebPage" if home else "Article","@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
        "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]},
       {"@type":"BreadcrumbList","itemListElement":crumbs}]
     if fname=="glossary.html":
@@ -148,7 +169,7 @@ def page(fname, title, body, wide=False, home=False):
 <meta property="og:title" content="{html.escape(t)}"><meta property="og:description" content="{html.escape(d)}">
 <meta property="og:url" content="{url}"><meta property="og:locale" content="en_US">
 <meta property="og:image" content="{img}"><meta property="og:image:secure_url" content="{img}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{html.escape(img_alt)}">
-{'' if home else f'<meta property="article:modified_time" content="{TODAY}"><meta property="article:publisher" content="https://khual.net">'}
+{'' if home else f'<meta property="article:published_time" content="{pdates(fname)[0]}"><meta property="article:modified_time" content="{pdates(fname)[1]}"><meta property="article:publisher" content="https://khual.net">'}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
 <meta name="theme-color" content="#9a4a2a">
 <script type="application/ld+json">{ld}</script>
@@ -242,14 +263,14 @@ def main():
             global GLOSS_RAW; GLOSS_RAW = raw
         body = render(raw)
         body = chapter_head(f.name) + onpage(body, f.name)
-        if f.name != "contribute.html": body += chapter_nav(f.name) + refs_block(title)
+        if f.name != "contribute.html": body += chapter_nav(f.name) + (globals().__setitem__('_cur', f.name) or refs_block(title))
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
     order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","sources.html","contribute.html","sitemap.html"]
     pages = order
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
-    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
+    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     bots = ["Googlebot","Google-Extended","Bingbot","GPTBot","OAI-SearchBot","ChatGPT-User","ClaudeBot","Claude-SearchBot","Claude-User","anthropic-ai","PerplexityBot","Perplexity-User","Applebot","Applebot-Extended","CCBot","Meta-ExternalAgent","DuckAssistBot","Amazonbot","cohere-ai","YouBot"]
     robots = "# Zogam History welcomes search engines and AI assistants.\n# Content: CC BY-SA 4.0. Please credit \"Zogam History, " + SITE_URL + "\".\n\n"

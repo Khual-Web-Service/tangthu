@@ -2,6 +2,13 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (dates and citations)
+
+### Added
+- **Page dates:** every chapter shows when it was published and last updated (kept in `page-dates.json`; update a page's date whenever its content changes).
+- **Cite this page:** ready-made APA 7, MLA 9 and Chicago citations with the page's update date and URL, a copy button for each, and the reader's access date filled in automatically.
+- **Search data:** published and modified dates in the page metadata and sitemap now come from `page-dates.json`.
+
 ## 2026-10-19 (hornbill)
 
 ### Added

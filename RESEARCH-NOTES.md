@@ -180,3 +180,4 @@
 - **New sources:** mapacademy, sialki2011, progressivevoice2021.
 - **Repo:** GitHub Khual-Web-Service/tangthu. Every change is logged in `CHANGELOG.md`.
 - **Standing rule from Khual:** always include the source, both on the site and in replies.
+- **Page dates:** `page-dates.json` holds each page's published and last-updated dates; they appear on the page, in the APA/MLA/Chicago "Cite this page" box, in the page metadata and in the sitemap. Bump a page's `updated` date whenever its content changes.
