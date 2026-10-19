@@ -4,7 +4,7 @@ labels: [correction]
 body:
   - type: input
     id: page
-    attributes: {label: Page, placeholder: "e.g. https://tangthu.kws.site/origins"}
+    attributes: {label: Page, placeholder: "e.g. https://tangthu.khual.net/origins"}
     validations: {required: true}
   - type: textarea
     id: sentence

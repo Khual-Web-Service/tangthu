@@ -16,7 +16,7 @@ TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class
         "sch":'<span class="tag sch">Scholarly interpretation</span>',"contested":'<span class="tag contested">Contested</span>'}
 missing = set()
 import os, datetime
-SITE_URL = os.environ.get("SITE_URL", "https://tangthu.kws.site").rstrip("/")
+SITE_URL = os.environ.get("SITE_URL", "https://tangthu.khual.net").rstrip("/")
 TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
@@ -170,13 +170,19 @@ def main():
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
-    pages = [f.name for f in sorted((ROOT/"content").glob("*.html"))] + ["sources.html","sitemap.html"]
+    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","sources.html","contribute.html","sitemap.html"]
+    pages = order
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
     urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     (DIST/"robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
-    (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",f'<h1>Site map</h1><ul class="sitemap">{items}</ul>'))
+    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("About this site",["sources.html","contribute.html"])]
+    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
+    for g,ps in groups:
+        sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
+    (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",sm))
     (DIST/"_headers").write_text("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/assets/*\n  Cache-Control: public, max-age=86400\n")
     # check every source is cited somewhere
     used = set(re.findall(r"\[\[([\w-]+)\]\]", "".join(p.read_text() for p in (ROOT/"content").glob("*.html"))))
