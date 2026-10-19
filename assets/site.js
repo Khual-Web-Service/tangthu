@@ -1,0 +1,42 @@
+window.addEventListener('DOMContentLoaded',function(){
+  // mobile nav
+  var b=document.querySelector('.navtoggle'), n=document.querySelector('nav.main');
+  if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o);});}
+
+  // timeline
+  var tl=document.getElementById('timeline');
+  if(tl&&window.ZO_TIMELINE){
+    var themes={all:"All",origins:"Origins",colonial:"Colonial",faith:"Faith & literacy",identity:"Identity",modern:"Modern",diaspora:"Diaspora"};
+    var evs={all:"All evidence",oral:"Oral tradition",sch:"Scholarly",doc:"Documented"};
+    var st={th:"all",ev:"all"};
+    var bar=document.createElement('div');bar.className='filters';
+    function mk(group,obj){var g=document.createElement('div');g.className='fgroup';g.setAttribute('role','group');
+      Object.keys(obj).forEach(function(k){var x=document.createElement('button');x.textContent=obj[k];x.dataset.k=k;
+        if(k==='all')x.classList.add('on');
+        x.onclick=function(){st[group]=k;g.querySelectorAll('button').forEach(function(z){z.classList.toggle('on',z===x)});draw();};
+        g.appendChild(x);});bar.appendChild(g);}
+    mk('th',themes);mk('ev',evs);tl.appendChild(bar);
+    var list=document.createElement('ol');list.className='tl-list';tl.appendChild(list);
+    var lab={oral:"Oral tradition",doc:"Documented",sch:"Scholarly"};
+    function draw(){list.innerHTML='';
+      window.ZO_TIMELINE.filter(function(e){return(st.th==='all'||e.th===st.th)&&(st.ev==='all'||e.ev===st.ev)})
+      .sort(function(a,b){return a.s-b.s}).forEach(function(e){
+        var li=document.createElement('li');li.className='tl-item ev-'+e.ev;
+        var srcs=e.src.map(function(k){return '<a class="cite" href="/sources#'+k+'">'+((window.ZO_SRC||{})[k]||k)+'</a>'}).join(' ');
+        li.innerHTML='<button class="tl-head" aria-expanded="false"><span class="tl-year">'+e.y+'</span><span class="tl-title">'+e.t+'</span><span class="tag '+e.ev+'">'+lab[e.ev]+'</span></button><div class="tl-body"><p>'+e.d+'</p><p class="small">Sources: '+srcs+'</p></div>';
+        var h=li.querySelector('.tl-head');h.onclick=function(){var o=li.classList.toggle('open');h.setAttribute('aria-expanded',o)};
+        list.appendChild(li);});
+      if(!list.children.length)list.innerHTML='<li class="small">No events match.</li>';}
+    draw();
+  }
+
+  // map
+  var m=document.getElementById('map');
+  if(m&&!window.L){m.innerHTML='<p class="small" style="padding:1rem">The interactive map could not load. Places covered: '+(window.ZO_PLACES||[]).map(function(p){return p.n}).join(', ')+'.</p>';m.style.height='auto';}
+  if(m&&window.L){
+    var map=L.map(m,{scrollWheelZoom:false}).setView([23.0,93.1],7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,attribution:'© OpenStreetMap contributors'}).addTo(map);
+    (window.ZO_REGIONS||[]).forEach(function(r){L.polygon(r.p,{color:r.c,weight:1.5,fillOpacity:.18,dashArray:'4 4'}).addTo(map).bindTooltip(r.n+' (approximate)',{sticky:true});});
+    (window.ZO_PLACES||[]).forEach(function(p){L.circleMarker(p.ll,{radius:6,color:'#2b2118',weight:1,fillColor:'#c58b3a',fillOpacity:.95}).addTo(map).bindPopup('<strong>'+p.n+'</strong><br>'+p.d);});
+  }
+});
