@@ -1,0 +1,20 @@
+name: Correction
+description: Report an error and give a source
+labels: [correction]
+body:
+  - type: input
+    id: page
+    attributes: {label: Page, placeholder: "e.g. https://tangthu.kws.site/origins"}
+    validations: {required: true}
+  - type: textarea
+    id: sentence
+    attributes: {label: The sentence that is wrong}
+    validations: {required: true}
+  - type: textarea
+    id: correction
+    attributes: {label: What it should say}
+    validations: {required: true}
+  - type: textarea
+    id: source
+    attributes: {label: Your source, description: "Book, article, document or link. We can't change a fact without one."}
+    validations: {required: true}

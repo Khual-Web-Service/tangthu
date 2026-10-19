@@ -1,8 +1,4 @@
-Zogam History (tangthu.kws.site) — Licensing
-
-This project uses two licences:
-
-1. CODE — MIT License
+MIT License
    Applies to: build.py, assets/site.js, assets/data.js (code structure),
    assets/style.css, and other software files.
 

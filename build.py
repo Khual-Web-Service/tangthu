@@ -31,7 +31,7 @@ DESC = {
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia, Europe", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
- "contribute.html": ("Contribute Photos & Oral Histories — Zogam History", "Share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
+ "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
  "404.html": ("Page not found — Zogam History", "Page not found."),
 }
 FAQ = [
@@ -122,7 +122,7 @@ def page(fname, title, body, wide=False, home=False):
 <button class="navtoggle" aria-expanded="false" aria-label="Menu">Menu</button><nav class="main" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><p>An educational, non-partisan community resource. Oral tradition and documented history are labelled separately.<br>
-Text © 2026 Khual Web Service LLC, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>. Found an error? <a href="/contribute">Send a correction with a source.</a> · <a href="/sources">Sources &amp; standards</a> · <a href="/sitemap">Site map</a></p></footer>
+Text © 2026 Khual Web Service LLC, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>. Corrections &amp; stories: <a href="mailto:tangthu@khual.net">tangthu@khual.net</a> · <a href="/contribute">Contribute &amp; licence</a> · <a href="/sources">Sources &amp; standards</a> · <a href="/sitemap">Site map</a> · <a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
 </body></html>'''
 
