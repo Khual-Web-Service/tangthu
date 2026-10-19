@@ -9,9 +9,7 @@ SRC = json.loads((ROOT / "sources.json").read_text())
 S = {s["key"]: s for s in SRC}
 
 NAV_FILES = None
-NAV = [("index.html","Home"),("origins.html","Origins"),("evidence.html","How We Know"),("stories.html","Stories"),("names.html","Names & Identity"),
-       ("colonial.html","Colonial Era"),("faith.html","Faith & Literacy"),("modern.html","Modern History"),
-       ("culture.html","Culture"),("diaspora.html","Diaspora"),("sources.html","Sources")]
+NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("sources.html","Sources")]
 TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class="tag doc">Documented</span>',
         "sch":'<span class="tag sch">Scholarly interpretation</span>',"contested":'<span class="tag contested">Contested</span>'}
 missing = set()
@@ -41,6 +39,19 @@ FAQ = [
  ("What is the difference between Zo, Zomi, Chin, Kuki and Mizo?", "They overlap. Zomi and Mizo both mean “Zo people.” Chin and Kuki came from outside languages but are now held with pride by many. In 1896 British officers recorded that the Northern Chins called themselves Yo, the Haka and southern tribes Lai, and Lower Burma Chins Shu."),
  ("What is Zogam?", "Zogam means “the land of the Zo”: the hill country of Chin State (Myanmar), Manipur and Mizoram (India) and the Chittagong Hill Tracts (Bangladesh)."),
 ]
+CHAPTERS = ["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html"]
+CH_LABEL = {"origins.html":"Origins & Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names & Identity","colonial.html":"Colonial Era","faith.html":"Faith & Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora"}
+def chapter_head(f):
+    if f not in CHAPTERS: return ""
+    n=CHAPTERS.index(f)+1
+    return f'<div class="chapter-eyebrow"><a href="/">Zogam History</a> <span aria-hidden="true">/</span> Chapter {n:02d} of {len(CHAPTERS):02d}</div>'
+def chapter_nav(f):
+    if f not in CHAPTERS: return ""
+    i=CHAPTERS.index(f); out='<nav class="chapter-nav" aria-label="Chapters">'
+    if i>0: p=CHAPTERS[i-1]; out+=f'<a class="prev" href="{clean(p)}"><span>← Chapter {i:02d}</span>{html.escape(CH_LABEL[p])}</a>'
+    else: out+='<span></span>'
+    if i<len(CHAPTERS)-1: nx=CHAPTERS[i+1]; out+=f'<a class="next" href="{clean(nx)}"><span>Chapter {i+2:02d} →</span>{html.escape(CH_LABEL[nx])}</a>'
+    return out+'</nav>'
 def clean(f): return "/" if f=="index.html" else "/"+f[:-5]
 
 ACCESSED = "19 October 2026"
@@ -82,6 +93,7 @@ def render(body):
     return body
 
 def page(fname, title, body, wide=False, home=False):
+    FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     nav = "".join(f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>' for h,l in NAV)
     leaflet = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">'
                '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>') if home else ""
@@ -112,17 +124,22 @@ def page(fname, title, body, wide=False, home=False):
 <meta name="theme-color" content="#9a4a2a">
 <script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">{leaflet}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site"><div class="bar"><a class="brand" href="/">Zo<span>gam</span> History</a>
+<header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
 <button class="navtoggle" aria-expanded="false" aria-label="Menu">Menu</button><nav class="main" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
-<footer class="site"><p>An educational, non-partisan community resource. Oral tradition and documented history are labelled separately.<br>
-Text © 2026 Khual Web Service LLC, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>. Corrections &amp; stories: <a href="mailto:tangthu@khual.net">tangthu@khual.net</a> · <a href="/contribute">Contribute &amp; licence</a> · <a href="/sources">Sources &amp; standards</a> · <a href="/sitemap">Site map</a> · <a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></p></footer>
+<div class="puan" aria-hidden="true"></div>
+<footer class="site"><div class="foot-grid">
+<div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
+<div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
+<div><div class="foot-h">About</div><ul><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
+</div><p class="foot-legal">
+Text © 2026 <a href="https://khual.net">Khual Web Service LLC</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> · Code MIT · Non-partisan and educational</p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
 </body></html>'''
 
@@ -166,7 +183,8 @@ def main():
         title = m.group(1) if m else f.stem
         _used.clear()
         body = render(raw)
-        if f.name != "contribute.html": body += refs_block(title)
+        body = chapter_head(f.name) + body
+        if f.name != "contribute.html": body += chapter_nav(f.name) + refs_block(title)
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
