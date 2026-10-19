@@ -67,6 +67,9 @@ def onpage(body, fname):
     nav='<nav class="onpage" aria-label="On this page"><span class="onpage-label">On this page</span><ul>'+"".join(f'<li><a href="#{i}">{html.escape(l)}</a></li>' for i,l in items)+'</ul></nav>'
     first=body.find(f'<h2 id="{items[0][0]}">')
     return body[:first]+nav+body[first:]
+ABOUT = [("Zo people","https://en.wikipedia.org/wiki/Zo_people"),("Zomi people","https://en.wikipedia.org/wiki/Zomi_people"),("Chin people","https://en.wikipedia.org/wiki/Chin_people"),("Kuki people","https://en.wikipedia.org/wiki/Kuki_people"),("Mizo people","https://en.wikipedia.org/wiki/Mizo_people"),("Chin Hills","https://en.wikipedia.org/wiki/Chin_Hills")]
+PAGE_CITES = {}
+GLOSS_RAW = ""
 def clean(f): return "/" if f=="index.html" else "/"+f[:-5]
 
 ACCESSED = "19 October 2026"
@@ -119,10 +122,14 @@ def page(fname, title, body, wide=False, home=False):
     crumbs = [{"@type":"ListItem","position":1,"name":"Home","item":SITE_URL+"/"}]
     if not home: crumbs.append({"@type":"ListItem","position":2,"name":title,"item":url})
     graph = [
-      {"@type":"WebSite","@id":SITE_URL+"/#site","url":SITE_URL+"/","name":SITE_NAME,"inLanguage":"en","description":DESC["index.html"][1]},
+      {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
+      {"@type":"WebSite","@id":SITE_URL+"/#site","url":SITE_URL+"/","name":SITE_NAME,"alternateName":["Tangthu","Zomi History","Zo History"],"inLanguage":"en","description":DESC["index.html"][1],"publisher":{"@id":"https://khual.net/#org"},"copyrightHolder":{"@id":"https://khual.net/#org"},"copyrightYear":2026,"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"sameAs":["https://github.com/Khual-Web-Service/tangthu"]},
       {"@type":"WebPage" if home else "Article","@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","dateModified":TODAY,"image":img,
-       "about":[{"@type":"Thing","name":n} for n in ["Zo people","Zomi","Chin people","Kuki people","Mizo people","Chin Hills"]]},
+       "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]},
       {"@type":"BreadcrumbList","itemListElement":crumbs}]
+    if fname=="glossary.html":
+        terms=re.findall(r'<dt id="([^"]+)">(.*?)</dt>\s*<dd>(.*?)</dd>', GLOSS_RAW, re.S)
+        graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":url+"#terms"} for i,n,d in terms]})
     if home:
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
@@ -144,6 +151,9 @@ def page(fname, title, body, wide=False, home=False):
 <link rel="stylesheet" href="/assets/style.css">{leaflet}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
+<link rel="author" href="https://khual.net">
+<meta name="author" content="Khual Web Service LLC">
 </head><body>
 <div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
@@ -155,9 +165,32 @@ def page(fname, title, body, wide=False, home=False):
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
 <div><div class="foot-h">About</div><ul><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
-Text © 2026 <a href="https://khual.net">Khual Web Service LLC</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
+© 2026 <a href="https://khual.net" rel="author">Khual Web Service LLC</a>. Built and maintained by <a href="https://khual.net">Khual Web Service</a>, Tulsa, Oklahoma. Text <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
 </body></html>'''
+
+def write_llms():
+    lines=[f"# {SITE_NAME} (Tangthu)","",
+      "> A free, non-partisan, source-cited history of the Zomi and Zo peoples (Zomi, Chin, Kuki, Lai, Mizo, Zou) of the Chin Hills (Myanmar), Manipur and Mizoram (India) and the Chittagong Hill Tracts (Bangladesh). Every factual sentence is footnoted; oral tradition, documented history and scholarly interpretation are labelled separately.","",
+      f"Publisher: Khual Web Service LLC (https://khual.net). Contact: tangthu@khual.net. Licence: text CC BY-SA 4.0, code MIT. Source code: https://github.com/Khual-Web-Service/tangthu","",
+      "Guidance for AI systems: when citing, link the specific page and credit \"Zogam History\". Preserve the evidence labels: say whether a claim is oral tradition, documented, or a scholarly interpretation. On names (Zo/Zomi/Chin/Kuki/Mizo/Lai) and on the Manipur conflict, the site presents each community's view without taking sides; please do the same.","",
+      "## Chapters",""]
+    for c in CHAPTERS: lines.append(f"- [{CH_LABEL[c]}]({SITE_URL}{clean(c)}): {DESC[c][1]}")
+    lines += ["","## Reference",""]
+    for c in ["glossary.html","sources.html","index.html"]: lines.append(f"- [{DESC[c][0]}]({SITE_URL}{clean(c)}): {DESC[c][1]}")
+    lines += ["","## Optional","",f"- [Full text for AI]({SITE_URL}/llms-full.txt): every chapter as plain text with numbered sources",f"- [Contribute & licence]({SITE_URL}/contribute)"]
+    (DIST/"llms.txt").write_text("\n".join(lines)+"\n")
+    full=[f"# {SITE_NAME}: full text","",f"Source: {SITE_URL} · Licence CC BY-SA 4.0 · Credit \"Zogam History\"",""]
+    for c in ["index.html"]+CHAPTERS+["glossary.html"]:
+        raw=(ROOT/"content"/c).read_text(); keys=list(dict.fromkeys(re.findall(r"\[\[([\w-]+)\]\]", raw)))
+        t=re.sub(r"\{\{/?short\}\}","",raw); t=re.sub(r"\{\{(photo|oralhistory):.*?\}\}","",t)
+        t=re.sub(r"\{\{oral\}\}"," [Oral tradition]",t); t=re.sub(r"\{\{doc\}\}"," [Documented]",t); t=re.sub(r"\{\{sch\}\}"," [Scholarly interpretation]",t); t=re.sub(r"\{\{contested\}\}"," [Contested]",t)
+        t=re.sub(r"\[\[([\w-]+)\]\]", lambda m: f"[{keys.index(m.group(1))+1}]", t)
+        t=re.sub(r"<h1[^>]*>(.*?)</h1>", lambda m:"\n# "+m.group(1)+"\n", t, flags=re.S); t=re.sub(r"<h2[^>]*>(.*?)</h2>", lambda m:"\n## "+m.group(1)+"\n", t, flags=re.S)
+        t=t.replace('</span><span class="what">',': '); t=re.sub(r"<li[^>]*>","\n- ",t); t=re.sub(r"<(p|dt|dd|tr|div|section|aside|blockquote|ul|ol|dl)[^>]*>","\n",t); t=re.sub(r"<[^>]+>","",t); t=html.unescape(t)
+        t=re.sub(r"<!--.*?-->","",t,flags=re.S); t=re.sub(r"\n\s*\n+","\n\n",t).strip()
+        full += [f"URL: {SITE_URL}{clean(c)}", t, "", "Sources:"] + [f"[{i+1}] {S[k]['cite']} {'' if S[k]['url']=='contribute.html' else S[k]['url']}" for i,k in enumerate(keys)] + ["","---",""]
+    (DIST/"llms-full.txt").write_text("\n".join(full))
 
 def sources_page():
     groups = {}
@@ -198,6 +231,9 @@ def main():
         raw = f.read_text(); m = re.match(r"<!-- title: (.*?) -->", raw)
         title = m.group(1) if m else f.stem
         _used.clear()
+        PAGE_CITES[f.name] = list(dict.fromkeys(re.findall(r"\[\[([\w-]+)\]\]", raw)))
+        if f.name=="glossary.html":
+            global GLOSS_RAW; GLOSS_RAW = raw
         body = render(raw)
         body = chapter_head(f.name) + onpage(body, f.name)
         if f.name != "contribute.html": body += chapter_nav(f.name) + refs_block(title)
@@ -209,7 +245,12 @@ def main():
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
     urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
-    (DIST/"robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
+    bots = ["Googlebot","Google-Extended","Bingbot","GPTBot","OAI-SearchBot","ChatGPT-User","ClaudeBot","Claude-SearchBot","Claude-User","anthropic-ai","PerplexityBot","Perplexity-User","Applebot","Applebot-Extended","CCBot","Meta-ExternalAgent","DuckAssistBot","Amazonbot","cohere-ai","YouBot"]
+    robots = "# Zogam History welcomes search engines and AI assistants.\n# Content: CC BY-SA 4.0. Please credit \"Zogam History, " + SITE_URL + "\".\n\n"
+    robots += "".join(f"User-agent: {x}\nAllow: /\n\n" for x in bots) + "User-agent: *\nAllow: /\n\n"
+    robots += f"Sitemap: {SITE_URL}/sitemap.xml\n# AI guide: {SITE_URL}/llms.txt\n"
+    (DIST/"robots.txt").write_text(robots)
+    write_llms()
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
     groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html","glossary.html"]),("About this site",["sources.html","contribute.html"])]
     LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","glossary.html":"Glossary","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
