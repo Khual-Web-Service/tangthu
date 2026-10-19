@@ -1,5 +1,5 @@
 # Zogam History: Research Notes & Project Record
-*Last updated 19 Oct 2026 (second pass: Stories page)*
+*Last updated 19 Oct 2026 (third pass: textiles, Zopuan colours, hornbill)*
 
 ## Project
 - **What it is:** an educational, evidence-based, neutral history website covering the Zo, Zomi and Zou peoples (Chin Hills, Manipur, Mizoram, Chittagong Hill Tracts). Audience: community members, diaspora youth and general readers.
@@ -160,3 +160,23 @@
 - https://zeccheras.cfsites.org/custom.php?pageid=47432
 - https://zeccheras.cfsites.org/custom.php?pageid=47433
 - https://www.khalvontawi.in/2024/06/the-origin-of-zomi-pu-t-gougin.html
+
+## Textiles, Zopuan colours and hornbill (19 Oct 2026, third pass)
+- **Puan facts on the Culture page:**
+  - Red and black are the most commonly worn colours on Chin cloths. The Tedim cloth is woven of cotton and silk on a mechanised backstrap loom and worn by women for the harvest festival and dances (Maroondah).
+  - A puan is about 36 × 44–54 in, woven in two halves and then stitched together. Black, white and red dominate. Early puans were undyed white, then naturally dyed, and synthetic dyes have now largely replaced natural ones (MAP Academy).
+  - The Hmar *puon laisen* has a red middle section with two black stripes (IGNCA).
+- **Zopuan colours:** no written source found. Colours were taken from five photos Khual supplied (a jacket trim, women's skirts and shawls, men's shirts):
+  - Deep maroon ground with fine dark pinstripes.
+  - White lines and zigzags.
+  - A green, red and gold centre band.
+  - A navy-black hem.
+  - Small blue, yellow and green motifs.
+- **Site palette is now Zopuan:** ink #1B1626, green #2E7A3E, maroon #7A1830, gold #E3A92B, red accent #C8283C, white #EDE6E3. The stripe (`--weave`) is plain stripes only; motifs are not drawn.
+- **Hornbill (Culture page, labelled oral tradition):**
+  - A noble, sacred bird that eats only fruit; a model of faithful lifelong marriage.
+  - Feathers were worn on important occasions; the hornbill is used as a Zomi emblem tying together Zomi in India, Myanmar and Bangladesh.
+  - Source: "The Hornbill Emblem" (Chin People in the World, 2011), citing Sing Khaw Khai 1995 p. 194, which is still unverified. The CNF/CNA use a pair of hornbills as their symbol (Progressive Voice 2021).
+- **New sources:** mapacademy, sialki2011, progressivevoice2021.
+- **Repo:** GitHub Khual-Web-Service/tangthu. Every change is logged in `CHANGELOG.md`.
+- **Standing rule from Khual:** always include the source, both on the site and in replies.
