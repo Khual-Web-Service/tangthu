@@ -44,13 +44,13 @@ CH_LABEL = {"origins.html":"Origins & Migration","evidence.html":"How We Know","
 def chapter_head(f):
     if f not in CHAPTERS: return ""
     n=CHAPTERS.index(f)+1
-    return f'<div class="chapter-eyebrow"><a href="/">Zogam History</a> <span aria-hidden="true">/</span> Chapter {n:02d} of {len(CHAPTERS):02d}</div>'
+    return f'<p class="chapter-eyebrow">Chapter {n} of {len(CHAPTERS)}</p>'
 def chapter_nav(f):
     if f not in CHAPTERS: return ""
     i=CHAPTERS.index(f); out='<nav class="chapter-nav" aria-label="Chapters">'
-    if i>0: p=CHAPTERS[i-1]; out+=f'<a class="prev" href="{clean(p)}"><span>← Chapter {i:02d}</span>{html.escape(CH_LABEL[p])}</a>'
+    if i>0: p=CHAPTERS[i-1]; out+=f'<a class="prev" href="{clean(p)}"><span>Previous chapter</span>{html.escape(CH_LABEL[p])}</a>'
     else: out+='<span></span>'
-    if i<len(CHAPTERS)-1: nx=CHAPTERS[i+1]; out+=f'<a class="next" href="{clean(nx)}"><span>Chapter {i+2:02d} →</span>{html.escape(CH_LABEL[nx])}</a>'
+    if i<len(CHAPTERS)-1: nx=CHAPTERS[i+1]; out+=f'<a class="next" href="{clean(nx)}"><span>Next chapter</span>{html.escape(CH_LABEL[nx])}</a>'
     return out+'</nav>'
 def clean(f): return "/" if f=="index.html" else "/"+f[:-5]
 
@@ -83,7 +83,7 @@ def refs_block(title):
 def ph(kind, text):
     if kind == "photo":
         return f'<figure class="placeholder"><div class="ico">IMG</div><p><strong>Community photo wanted</strong>{text}</p></figure>'
-    return f'<aside class="placeholder"><div class="ico">♪</div><p><strong>Oral history wanted</strong>{text} <a href="contribute.html">Contribute →</a></p></aside>'
+    return f'<aside class="placeholder"><div class="ico">♪</div><p><strong>Oral history wanted</strong>{text} <a href="contribute.html">How to share it</a></p></aside>'
 
 def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
@@ -124,22 +124,22 @@ def page(fname, title, body, wide=False, home=False):
 <meta name="theme-color" content="#9a4a2a">
 <script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">{leaflet}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 </head><body>
+<div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
 <button class="navtoggle" aria-expanded="false" aria-label="Menu">Menu</button><nav class="main" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
-<div class="puan" aria-hidden="true"></div>
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
 <div><div class="foot-h">About</div><ul><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
-Text © 2026 <a href="https://khual.net">Khual Web Service LLC</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> · Code MIT · Non-partisan and educational</p></footer>
+Text © 2026 <a href="https://khual.net">Khual Web Service LLC</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
 </body></html>'''
 
@@ -166,7 +166,7 @@ def sources_page():
         for s in groups[g]:
             note = f'<div class="note">{html.escape(s["note"])}</div>' if s.get("note") else ""
             lk = '' if s["url"]=="contribute.html" else f' <a href="{s["url"]}" rel="noopener" target="_blank">{"Catalogue search" if is_print(s) else "Link"}</a>'
-            out.append(f'<div class="src" id="{s["key"]}"><div class="k">{html.escape(s["short"])} · {html.escape(tier(s))}{" · print / not yet verified online" if is_print(s) else ""}</div>{html.escape(s["cite"])}{lk}{note}</div>')
+            out.append(f'<div class="src" id="{s["key"]}"><div class="k">{html.escape(s["short"])}, {html.escape(tier(s)).lower()}{" (print, not yet verified online)" if is_print(s) else ""}</div>{html.escape(s["cite"])}{lk}{note}</div>')
         out.append("</section>")
     out.append('<h2>Recommended starting points</h2><ul><li>Sakhong, <em>In Search of Chin Identity</em> (2003)</li><li>Pau, <em>Indo-Burma Frontier and the Making of the Chin Hills</em> (2019)</li><li>Go, <em>Zo Chronicles</em> (2008)</li><li>Guite &amp; Haokip, eds., <em>The Anglo-Kuki War, 1917–1919</em> (2019)</li></ul>')
     return "\n".join(out)
