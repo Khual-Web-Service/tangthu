@@ -122,7 +122,7 @@ def page(fname, title, body, wide=False, home=False):
 <button class="navtoggle" aria-expanded="false" aria-label="Menu">Menu</button><nav class="main" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><p>An educational, non-partisan community resource. Oral tradition and documented history are labelled separately.<br>
-Found an error? <a href="/contribute">Send a correction with a source.</a> · <a href="/sources">Sources &amp; standards</a> · <a href="/sitemap">Site map</a></p></footer>
+Text © 2026 Khual Web Service LLC, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>. Found an error? <a href="/contribute">Send a correction with a source.</a> · <a href="/sources">Sources &amp; standards</a> · <a href="/sitemap">Site map</a></p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
 </body></html>'''
 

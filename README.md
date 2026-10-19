@@ -30,3 +30,6 @@ Add a source to `sources.json`, cite it with `[[key]]`, and rebuild. Mark anythi
   2. Submit `https://tangthu.kws.site/sitemap.xml`.
   3. Use URL Inspection on the home page and request indexing.
   4. Do the same in Bing Webmaster Tools; you can import the site from Google Search Console.
+
+## License
+Code: MIT. Written content: CC BY-SA 4.0. Quotations and community contributions stay with their owners. See [LICENSE](LICENSE).
