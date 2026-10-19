@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (refined)
+
+### Changed
+- **Zopuan stripe refined from four more photos** (women's skirts and shawls, men's shirts): the ground is now a deep maroon with fine dark pinstripes rather than bright red, white lines frame a green, red and gold centre band, and the edge is navy-black like a skirt hem. Gold is reduced to a thin accent.
+
 ## 2026-10-19 (later)
 
 ### Changed
