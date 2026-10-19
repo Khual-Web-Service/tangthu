@@ -2,6 +2,12 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (hornbill)
+
+### Added
+- **Culture page, "The hornbill":** its place in Zomi tradition as a noble bird and a symbol of faithful marriage, hornbill feathers as a mark of honour, and the hornbill as a Zomi emblem. Labelled as oral tradition, with a note that the underlying book is not yet verified.
+- **Sources:** “The Hornbill Emblem” (Chin People in the World, 2011); Progressive Voice (2021).
+
 ## 2026-10-19 (colours)
 
 ### Changed
