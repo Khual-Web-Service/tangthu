@@ -5,12 +5,12 @@
 **A free, source-cited history of the Zomi and Zo peoples:**
 **Chin · Kuki · Lai · Mizo · Zou**
 
-[![Live site](https://img.shields.io/badge/live-tangthu.khual.net-9a4a2a?style=for-the-badge)](https://tangthu.khual.net)
-[![Sources](https://img.shields.io/badge/sources-119-3e5537?style=for-the-badge)](https://tangthu.khual.net/sources)
+[![Live site](https://img.shields.io/badge/live-tangthu.kws.site-9a4a2a?style=for-the-badge)](https://tangthu.kws.site)
+[![Sources](https://img.shields.io/badge/sources-119-3e5537?style=for-the-badge)](https://tangthu.kws.site/sources)
 [![Content: CC BY-SA 4.0](https://img.shields.io/badge/content-CC%20BY--SA%204.0-c58b3a?style=for-the-badge)](LICENSE-CONTENT.md)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-1f1a14?style=for-the-badge)](LICENSE)
 
-[**Visit the site**](https://tangthu.khual.net) · [**Contribute**](#-contribute) · [**Sources & standards**](https://tangthu.khual.net/sources)
+[**Visit the site**](https://tangthu.kws.site) · [**Contribute**](#-contribute) · [**Sources & standards**](https://tangthu.kws.site/sources)
 
 </div>
 
@@ -61,7 +61,7 @@ python3 -m http.server -d dist
 
 No dependencies: just Python 3.8+. Citations are written `[[key]]` in `content/*.html` and resolved from `sources.json`. The build fails if a citation key is missing.
 
-**Deploy:** Cloudflare Workers (static assets). Build command `python3 build.py`; `wrangler.jsonc` serves `dist/`. Set `SITE_URL` to override the default address (`https://tangthu.khual.net`).
+**Deploy:** Cloudflare Workers (static assets). Build command `python3 build.py`; `wrangler.jsonc` serves `dist/`. Set `SITE_URL` to override the default address (`https://tangthu.kws.site`).
 
 ## Licence
 

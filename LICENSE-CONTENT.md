@@ -1,12 +1,12 @@
 # Content licence: CC BY-SA 4.0
 
-The written history on **Zogam History** ([tangthu.khual.net](https://tangthu.khual.net)) is licensed under the
+The written history on **Zogam History** ([tangthu.kws.site](https://tangthu.kws.site)) is licensed under the
 [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
 
 **Covers:** the original text in `content/*.html`, the timeline and map descriptions in `assets/data.js`, and `RESEARCH-NOTES.md`.
 
 **You may** share and adapt this material for any purpose, as long as you:
-- **credit it** as “Zogam History, tangthu.khual.net” with a link;
+- **credit it** as “Zogam History, tangthu.kws.site” with a link;
 - **share alike**: release your adaptation under the same licence;
 - **indicate any changes** you made.
 

@@ -16,7 +16,7 @@ TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class
         "sch":'<span class="tag sch">Scholarly interpretation</span>',"contested":'<span class="tag contested">Contested</span>'}
 missing = set()
 import os, datetime
-SITE_URL = os.environ.get("SITE_URL", "https://tangthu.khual.net").rstrip("/")
+SITE_URL = os.environ.get("SITE_URL", "https://tangthu.kws.site").rstrip("/")
 TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
