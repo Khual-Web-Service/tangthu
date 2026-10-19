@@ -198,3 +198,25 @@ footer.site a:hover{text-decoration:underline}
 .foot-legal{max-width:var(--wide);margin:0 auto;padding:1.2rem 24px 2.2rem;border-top:1px solid #2E332B;font-size:.85rem}
 
 @media print{header.site,footer.site,.selvedge,.chapter-nav,.navtoggle,.placeholder,.weave{display:none}body{background:#fff;color:#000}}
+
+/* Plain-language layer */
+.short{margin:1.8rem 0 2.6rem;padding:1.3rem 1.5rem 1.1rem;background:var(--paper);border:1px solid var(--line);border-top:6px solid transparent;border-image:var(--weave) 6 0 0 0;border-radius:0 0 var(--r) var(--r);font-size:1.12rem}
+.short h2.short-h{margin:0 0 .6rem;font-size:1.25rem;font-weight:600}
+.short ul{margin:0;padding-left:1.2rem}
+.short li{margin:.55rem 0;line-height:1.55}
+.short-more{margin:.9rem 0 0;font-size:.92rem;font-style:italic;color:var(--stone)}
+.moments{margin:2.5rem 0 1rem}
+.moments h2{margin-top:0}
+.moment-list{list-style:none;padding:0;margin:1.2rem 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:1rem;counter-reset:m}
+.moment-list li{margin:0;padding:1.2rem 1.3rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:.82rem;color:var(--stone)}
+.moment-list > li > a{display:flex;flex-direction:column;gap:.35rem;text-decoration:none;color:var(--ink);margin-bottom:.5rem}
+.moment-list .when{font-size:1.5rem;font-weight:600;color:var(--green);line-height:1.1}
+.moment-list .what{font-size:1.06rem;line-height:1.5}
+.moment-list > li > a:hover .what{text-decoration:underline;text-decoration-color:var(--green)}
+details.refs{margin-top:3.5rem;padding:0;border-top:1px solid var(--line)}
+details.refs summary{cursor:pointer;list-style:none;padding:1.1rem 0 .8rem;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem}
+details.refs summary::-webkit-details-marker{display:none}
+details.refs summary h2{margin:0;font-size:1.3rem}
+details.refs summary h2::before{content:"+ ";color:var(--green)}
+details.refs[open] summary h2::before{content:"− "}
+details.refs .count{color:var(--stone);font-weight:400}

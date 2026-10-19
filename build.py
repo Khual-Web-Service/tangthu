@@ -78,7 +78,7 @@ def refs_block(title):
         note = f'<div class="note">{html.escape(s["note"])}</div>' if s.get("note") else ""
         items.append(f'<li id="ref-{k}"><span class="badge type">{html.escape(tier(s))}</span> {html.escape(s["cite"])} {link} {status}{note}</li>')
     cite_box=f'<div class="citebox"><strong>Cite this page:</strong> Zogam History. “{html.escape(title)}.” Accessed {ACCESSED}. <span class="small">(Use the page address from your browser.)</span></div>'
-    return f'<section class="refs" aria-labelledby="refs-h"><h2 id="refs-h">Sources for this page</h2><p class="small">Numbers in brackets in the text link here. Each source is labelled by type so you can judge its weight. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</section>'
+    return f'<details class="refs" id="sources"><summary><h2 id="refs-h">Sources for this page <span class="count">({len(_used)})</span></h2><span class="small">Tap to see where every fact comes from</span></summary><p class="small">The small numbers in the text link here. Each source is labelled by type. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</details>'
 
 def ph(kind, text):
     if kind == "photo":
@@ -89,6 +89,7 @@ def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
     body = re.sub(r"\[\[([\w-]+)\]\]", cite, body)
     body = re.sub(r"\{\{(photo|oralhistory):(.*?)\}\}", lambda m: ph(m.group(1), m.group(2)), body)
+    body = re.sub(r"\{\{short\}\}(.*?)\{\{/short\}\}", lambda m: '<aside class="short"><h2 class="short-h">The short version</h2>'+m.group(1)+'<p class="short-more">Want the details? Keep reading. Every fact below is sourced.</p></aside>', body, flags=re.S)
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
 

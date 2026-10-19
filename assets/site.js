@@ -1,4 +1,8 @@
 window.addEventListener('DOMContentLoaded',function(){
+  // open the collapsed source list when a footnote is followed
+  function openRefs(){var h=location.hash;if(h&&h.indexOf('#ref-')===0){var d=document.getElementById('sources');if(d&&!d.open){d.open=true;}var t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({block:'center'});}}
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('sup.fn a');if(a){var d=document.getElementById('sources');if(d)d.open=true;}});
+  window.addEventListener('hashchange',openRefs);openRefs();
   // mobile nav
   var b=document.querySelector('.navtoggle'), n=document.querySelector('nav.main');
   if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o);});}
