@@ -1,11 +1,11 @@
-/* Zogam History — design tokens. Weave: Tedim Zomi puan, a red-and-black ground with thin white and green lines (see Culture page sources) */
+/* Zogam History — design tokens. Weave: Zopuan — red ground edged in green, with thin gold, black and white lines */
 :root{
   --mist:#ECEEE7; --paper:#F6F7F2; --ink:#171815; --ink-2:#3A3C35; --stone:#66655C;
   --line:#CDD1C4; --green:#2E5B45; --green-2:#1F4232; --red:#A8262D; --gold:#C99A3B;
   --oral:#6A3D78; --doc:#2E5B45; --sch:#8A6418;
   --font:"Literata",Georgia,"Times New Roman",serif;
   --measure:42rem; --wide:74rem; --r:6px;
-  --weave:repeating-linear-gradient(90deg,#141210 0 14px,#B3182A 14px 46px,#F2EDE4 46px 48px,#1F7A3A 48px 51px,#F2EDE4 51px 53px,#B3182A 53px 85px);
+  --weave:repeating-linear-gradient(90deg,#2F7A3B 0 8px,#141210 8px 10px,#C42A26 10px 30px,#E3A92B 30px 33px,#C42A26 33px 41px,#F2EDE4 41px 43px,#141210 43px 46px,#F2EDE4 46px 48px,#C42A26 48px 56px,#E3A92B 56px 59px,#C42A26 59px 79px,#141210 79px 81px,#2F7A3B 81px 89px);
 }
 @media (prefers-color-scheme:dark){:root{
   --mist:#121411; --paper:#1A1D18; --ink:#E6E8E0; --ink-2:#C6C9BD; --stone:#9C9D92;
@@ -22,7 +22,7 @@ a:hover{color:var(--green-2);text-decoration-thickness:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* The selvedge: woven edge down the left of every page */
-.selvedge{position:fixed;left:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,#141210 0 14px,#B3182A 14px 46px,#F2EDE4 46px 48px,#1F7A3A 48px 51px,#F2EDE4 51px 53px,#B3182A 53px 85px);z-index:1100}
+.selvedge{position:fixed;left:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,#2F7A3B 0 8px,#141210 8px 10px,#C42A26 10px 30px,#E3A92B 30px 33px,#C42A26 33px 41px,#F2EDE4 41px 43px,#141210 43px 46px,#F2EDE4 46px 48px,#C42A26 48px 56px,#E3A92B 56px 59px,#C42A26 59px 79px,#141210 79px 81px,#2F7A3B 81px 89px);z-index:1100}
 @media (max-width:640px){.selvedge{width:6px}}
 .skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--mist);padding:.6rem 1rem;z-index:3000}
 .skip:focus{left:16px;top:12px}
@@ -88,7 +88,7 @@ a.cite{font-size:.8rem;text-decoration:none;color:var(--ink);background:color-mi
 /* Home */
 .hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:2.5rem 4rem;align-items:stretch;padding:1rem 0 2.5rem}
 .hero h1{font-size:clamp(2.8rem,6.6vw,5rem);line-height:1.02;letter-spacing:-.03em;margin-top:0}
-.weave{min-height:22rem;border-radius:var(--r);background:var(--weave);background-size:85px 100%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);position:relative;overflow:hidden}
+.weave{min-height:22rem;border-radius:var(--r);background:var(--weave);background-size:89px 100%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);position:relative;overflow:hidden}
 .weave::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.09) 3px 4px)}
 .legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.8rem 2.4rem;font-size:.98rem;color:var(--ink-2)}
 .legend p{display:flex;gap:.7rem;align-items:center;margin:0}

@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (later)
+
+### Changed
+- **Site stripe now follows the Zopuan:** a red ground edged in green, with thin gold, black and white lines, replacing the earlier Tedim-based red/black band. Colours were sampled from a photograph of Zopuan trim and are approximate.
+
 ## 2026-10-19
 
 ### Fixed
