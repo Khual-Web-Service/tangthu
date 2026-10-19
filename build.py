@@ -9,7 +9,7 @@ SRC = json.loads((ROOT / "sources.json").read_text())
 S = {s["key"]: s for s in SRC}
 
 NAV_FILES = None
-NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("sources.html","Sources")]
+NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("glossary.html","Glossary"),("sources.html","Sources")]
 TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class="tag doc">Documented</span>',
         "sch":'<span class="tag sch">Scholarly interpretation</span>',"contested":'<span class="tag contested">Contested</span>'}
 missing = set()
@@ -28,6 +28,7 @@ DESC = {
  "modern.html": ("Modern Zomi, Zo & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia, Europe", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
+ "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam, Pau Cin Hau and More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
  "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
  "404.html": ("Page not found — Zogam History", "Page not found."),
@@ -52,6 +53,20 @@ def chapter_nav(f):
     else: out+='<span></span>'
     if i<len(CHAPTERS)-1: nx=CHAPTERS[i+1]; out+=f'<a class="next" href="{clean(nx)}"><span>Next chapter</span>{html.escape(CH_LABEL[nx])}</a>'
     return out+'</nav>'
+def onpage(body, fname):
+    if fname not in CHAPTERS: return body
+    out=[]; last=0; items=[]
+    for m in re.finditer(r'<h2(?: id="([^"]*)")?>(.*?)</h2>', body, re.S):
+        pre=body[:m.start()]
+        if pre.rfind('<article')>pre.rfind('</article>'): continue
+        label=re.sub(r'<span class="tag[^>]*>.*?</span>','',m.group(2)); label=re.sub('<[^>]+>','',label).strip()
+        sid=m.group(1) or re.sub(r'[^a-z0-9]+','-',label.lower()).strip('-')[:40]
+        out.append(body[last:m.start()]+f'<h2 id="{sid}">{m.group(2)}</h2>'); last=m.end(); items.append((sid,label))
+    out.append(body[last:]); body="".join(out)
+    if len(items)<2: return body
+    nav='<nav class="onpage" aria-label="On this page"><span class="onpage-label">On this page</span><ul>'+"".join(f'<li><a href="#{i}">{html.escape(l)}</a></li>' for i,l in items)+'</ul></nav>'
+    first=body.find(f'<h2 id="{items[0][0]}">')
+    return body[:first]+nav+body[first:]
 def clean(f): return "/" if f=="index.html" else "/"+f[:-5]
 
 ACCESSED = "19 October 2026"
@@ -138,7 +153,7 @@ def page(fname, title, body, wide=False, home=False):
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
-<div><div class="foot-h">About</div><ul><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
+<div><div class="foot-h">About</div><ul><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
 Text © 2026 <a href="https://khual.net">Khual Web Service LLC</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
@@ -184,20 +199,20 @@ def main():
         title = m.group(1) if m else f.stem
         _used.clear()
         body = render(raw)
-        body = chapter_head(f.name) + body
+        body = chapter_head(f.name) + onpage(body, f.name)
         if f.name != "contribute.html": body += chapter_nav(f.name) + refs_block(title)
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
-    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","sources.html","contribute.html","sitemap.html"]
+    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","glossary.html","sources.html","contribute.html","sitemap.html"]
     pages = order
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
     urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     (DIST/"robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
-    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("About this site",["sources.html","contribute.html"])]
-    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html","glossary.html"]),("About this site",["sources.html","contribute.html"])]
+    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","glossary.html":"Glossary","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
     sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'

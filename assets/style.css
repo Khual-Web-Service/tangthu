@@ -220,3 +220,22 @@ details.refs summary h2{margin:0;font-size:1.3rem}
 details.refs summary h2::before{content:"+ ";color:var(--green)}
 details.refs[open] summary h2::before{content:"− "}
 details.refs .count{color:var(--stone);font-weight:400}
+
+/* Sticky section menu */
+.onpage{position:sticky;top:var(--hdr,58px);z-index:900;margin:0 -24px 1rem;padding:.55rem 24px;background:color-mix(in srgb,var(--mist) 95%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.8rem}
+.onpage-label{flex:0 0 auto;font-size:.85rem;font-style:italic;color:var(--stone)}
+.onpage ul{list-style:none;margin:0;padding:0;display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+.onpage ul::-webkit-scrollbar{display:none}
+.onpage li{margin:0;flex:0 0 auto}
+.onpage a{display:inline-flex;align-items:center;min-height:36px;padding:0 .85rem;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink-2);text-decoration:none;font-size:.9rem;white-space:nowrap}
+.onpage a:hover{border-color:var(--green);color:var(--green)}
+.onpage a[aria-current]{background:var(--green);border-color:var(--green);color:#fff}
+@media (prefers-color-scheme:dark){.onpage a[aria-current]{color:#121411}}
+@media (max-width:640px){.onpage-label{display:none}}
+main h2[id]{scroll-margin-top:8.5rem}
+/* Glossary */
+.glossary{margin:2rem 0}
+.glossary dt{font-size:1.35rem;font-weight:600;color:var(--green);margin-top:1.6rem;scroll-margin-top:6rem}
+.glossary dd{margin:.3rem 0 0;padding-bottom:1.2rem;border-bottom:1px solid var(--line)}
+.glossary dd > a:last-child{margin-left:.3rem;font-size:.92rem}
+.glossary dt:target{background:color-mix(in srgb,var(--gold) 22%,transparent)}
