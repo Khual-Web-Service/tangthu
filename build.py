@@ -28,6 +28,7 @@ DESC = {
  "modern.html": ("Modern Zomi, Zo & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia, Europe", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
+ "timeline.html": ("Zomi & Zo History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
  "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam, Pau Cin Hau and More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
  "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
@@ -163,7 +164,7 @@ def page(fname, title, body, wide=False, home=False):
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
-<div><div class="foot-h">About</div><ul><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
+<div><div class="foot-h">About</div><ul><li><a href="/timeline">Timeline</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
 © 2026 <a href="https://khual.net" rel="author">Khual Web Service LLC</a>. Built and maintained by <a href="https://khual.net">Khual Web Service</a>, Tulsa, Oklahoma. Text <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
 <script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
@@ -177,7 +178,7 @@ def write_llms():
       "## Chapters",""]
     for c in CHAPTERS: lines.append(f"- [{CH_LABEL[c]}]({SITE_URL}{clean(c)}): {DESC[c][1]}")
     lines += ["","## Reference",""]
-    for c in ["glossary.html","sources.html","index.html"]: lines.append(f"- [{DESC[c][0]}]({SITE_URL}{clean(c)}): {DESC[c][1]}")
+    for c in ["timeline.html","glossary.html","sources.html","index.html"]: lines.append(f"- [{DESC[c][0]}]({SITE_URL}{clean(c)}): {DESC[c][1]}")
     lines += ["","## Optional","",f"- [Full text for AI]({SITE_URL}/llms-full.txt): every chapter as plain text with numbered sources",f"- [Contribute & licence]({SITE_URL}/contribute)"]
     (DIST/"llms.txt").write_text("\n".join(lines)+"\n")
     full=[f"# {SITE_NAME}: full text","",f"Source: {SITE_URL} · Licence CC BY-SA 4.0 · Credit \"Zogam History\"",""]
@@ -240,7 +241,7 @@ def main():
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
-    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","glossary.html","sources.html","contribute.html","sitemap.html"]
+    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","sources.html","contribute.html","sitemap.html"]
     pages = order
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
     urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
@@ -252,8 +253,8 @@ def main():
     (DIST/"robots.txt").write_text(robots)
     write_llms()
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
-    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html","glossary.html"]),("About this site",["sources.html","contribute.html"])]
-    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","glossary.html":"Glossary","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Explore",["timeline.html","glossary.html"]),("About this site",["sources.html","contribute.html"])]
+    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","timeline.html":"Timeline","glossary.html":"Glossary","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
     sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
