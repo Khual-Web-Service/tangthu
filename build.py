@@ -18,21 +18,22 @@ SITE_URL = os.environ.get("SITE_URL", "https://tangthu.kws.site").rstrip("/")
 TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
- "index.html": ("Zomi History & Zo History | Chin, Kuki, Mizo Peoples — Zogam History", "Zomi history and Zo history in one free, fully sourced archive: origins, Chin Hills, Anglo-Kuki War, Pau Cin Hau, Panglong, diaspora — for Zomi, Chin, Kuki, Lai and Mizo readers."),
- "origins.html": ("Zomi & Zo Origins and Migration: Khul, Chhinlung, Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
+ "index.html": ("Zomi & Zo History | Chin, Kuki, Lai and Mizo Peoples", "Zomi and Zo history in nine short, sourced chapters: origins, the Chin Hills, Pau Cin Hau, Panglong, the diaspora. For Zomi, Chin, Kuki, Lai and Mizo readers."),
+ "origins.html": ("Zomi & Zo Origins: Khul, Chhinlung and the Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
  "evidence.html": ("How We Know Zo History: Sources and Evidence", "The evidence behind Zo and Zomi history: the Man Shu, Burmese inscriptions, Carey & Tuck (1896), clan genealogies, songs and memorial stones."),
- "stories.html": ("Zomi History Stories: Ciimnuai, Khai Kam, Pau Cin Hau, Mautam", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
+ "stories.html": ("Zomi History Stories: Ciimnuai, Khai Kam, Pau Cin Hau", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
  "names.html": ("Zo, Zomi, Chin, Kuki, Mizo, Lai: What the Names Mean", "Why the Zo peoples are called Zomi, Chin, Kuki, Lai, Mizo and Zou — the origin of each name and why naming is debated, presented fairly."),
  "colonial.html": ("Chin Hills Under British Rule & the Anglo-Kuki War (Zou Gal)", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
- "faith.html": ("Zo Faith & Literacy: Missionaries, the Tedim Bible, Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
+ "faith.html": ("Zo Faith & Literacy: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
  "modern.html": ("Modern Zomi, Zo & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
- "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia, Europe", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
+ "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
  "timeline.html": ("Zomi & Zo History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
- "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam, Pau Cin Hau and More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
+ "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
  "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
- "404.html": ("Page not found — Zogam History", "Page not found."),
+ "404.html": ("Page not found — Zogam History", "This page doesn’t exist. Start from the Zogam History home page or the chapter list."),
+ "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
 }
 FAQ = [
  ("What is Zomi history?", "Zomi history is the history of the peoples who call themselves Zomi (“Zo people”) — including Tedim, Paite, Zou, Simte, Vaiphei and related communities — in Myanmar’s Chin State, India’s Manipur and Mizoram, and the diaspora. The name was proposed in 1950 and adopted by the Zomi Baptist Convention in 1953."),
@@ -119,7 +120,9 @@ def page(fname, title, body, wide=False, home=False):
                '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>') if home else ""
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))
     url = SITE_URL + clean(fname)
-    img = SITE_URL + "/assets/og.png"
+    slug = fname[:-5]
+    img = SITE_URL + "/assets/og/" + (slug if (ROOT/"assets"/"og"/(slug+".png")).exists() else "index") + ".png"
+    img_alt = f"{title if not home else SITE_NAME}: share card from Zogam History, a sourced history of the Zomi and Zo peoples"
     crumbs = [{"@type":"ListItem","position":1,"name":"Home","item":SITE_URL+"/"}]
     if not home: crumbs.append({"@type":"ListItem","position":2,"name":title,"item":url})
     graph = [
@@ -143,8 +146,10 @@ def page(fname, title, body, wide=False, home=False):
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="{'website' if home else 'article'}"><meta property="og:site_name" content="{SITE_NAME}">
 <meta property="og:title" content="{html.escape(t)}"><meta property="og:description" content="{html.escape(d)}">
-<meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}">
+<meta property="og:url" content="{url}"><meta property="og:locale" content="en_US">
+<meta property="og:image" content="{img}"><meta property="og:image:secure_url" content="{img}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{html.escape(img_alt)}">
+{'' if home else f'<meta property="article:modified_time" content="{TODAY}"><meta property="article:publisher" content="https://khual.net">'}
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
 <meta name="theme-color" content="#9a4a2a">
 <script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
