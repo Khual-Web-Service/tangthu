@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (colours)
+
+### Changed
+- **Site colours now match the Zopuan:** text ink is navy-black, links and the documented-history label use Zopuan green, the red accent is Zopuan maroon, and the gold accent matches the cloth's gold thread. Dark mode uses lighter versions of the same colours.
+
 ## 2026-10-19 (refined)
 
 ### Changed

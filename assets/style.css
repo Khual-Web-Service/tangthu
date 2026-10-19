@@ -1,16 +1,16 @@
 /* Zogam History — design tokens. Weave: Zopuan — deep maroon ground with fine dark pinstripes, white lines, a green/red/gold centre band and a navy-black edge */
 :root{
-  --mist:#ECEEE7; --paper:#F6F7F2; --ink:#171815; --ink-2:#3A3C35; --stone:#66655C;
-  --line:#CDD1C4; --green:#2E5B45; --green-2:#1F4232; --red:#A8262D; --gold:#C99A3B;
-  --oral:#6A3D78; --doc:#2E5B45; --sch:#8A6418;
+  --mist:#ECEEE7; --paper:#F6F7F2; --ink:#1B1626; --ink-2:#3A3C35; --stone:#66655C;
+  --line:#CDD1C4; --green:#2E7A3E; --green-2:#1F5A2C; --red:#7A1830; --gold:#E3A92B;
+  --oral:#6A3D78; --doc:#2E7A3E; --sch:#8A6418;
   --font:"Literata",Georgia,"Times New Roman",serif;
   --measure:42rem; --wide:74rem; --r:6px;
   --weave:repeating-linear-gradient(90deg,#1B1626 0 10px,#EDE6E3 10px 12px,#7A1830 12px 28px,#2A0A16 28px 29px,#7A1830 29px 36px,#2A0A16 36px 37px,#7A1830 37px 44px,#EDE6E3 44px 47px,#2E7A3E 47px 50px,#C8283C 50px 54px,#E3A92B 54px 56px,#C8283C 56px 60px,#2E7A3E 60px 63px,#EDE6E3 63px 66px,#7A1830 66px 73px,#2A0A16 73px 74px,#7A1830 74px 81px,#2A0A16 81px 82px,#7A1830 82px 98px,#EDE6E3 98px 100px);
 }
 @media (prefers-color-scheme:dark){:root{
   --mist:#121411; --paper:#1A1D18; --ink:#E6E8E0; --ink-2:#C6C9BD; --stone:#9C9D92;
-  --line:#2E332B; --green:#8CC2A3; --green-2:#A9D6BC; --red:#E07A7F; --gold:#E2BC6A;
-  --oral:#C8A2D6; --doc:#8CC2A3; --sch:#E2BC6A;
+  --line:#2E332B; --green:#7FCB8E; --green-2:#A3DDAE; --red:#E07A8E; --gold:#EEC25A;
+  --oral:#C8A2D6; --doc:#7FCB8E; --sch:#E2BC6A;
 }}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:5rem}
