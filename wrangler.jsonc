@@ -1,5 +1,4 @@
 {
-  // Cloudflare Workers static-assets deploy for tangthu.kws.site
   "name": "tangthu",
   "compatibility_date": "2026-10-01",
   "assets": {

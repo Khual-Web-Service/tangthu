@@ -1,5 +1,5 @@
 // Generates 1200x630 social share images into assets/og/.
-// Run locally: node tools/make_og.js   (needs Playwright; not part of the Cloudflare build)
+// Run locally: node tools/make_og.js   (needs Playwright; not part of the site build)
 const { chromium } = require('playwright');
 const path = require('path');
 

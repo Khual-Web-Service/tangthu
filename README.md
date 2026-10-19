@@ -61,7 +61,6 @@ python3 -m http.server -d dist
 
 No dependencies: just Python 3.8+. Citations are written `[[key]]` in `content/*.html` and resolved from `sources.json`. The build fails if a citation key is missing.
 
-**Deploy:** Cloudflare Workers (static assets). Build command `python3 build.py`; `wrangler.jsonc` serves `dist/`. Set `SITE_URL` to override the default address (`https://tangthu.kws.site`).
 
 ## Licence
 

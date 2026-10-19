@@ -3,7 +3,7 @@
 
 ## Project
 - **What it is:** an educational, evidence-based, neutral history website covering the Zo, Zomi and Zou peoples (Chin Hills, Manipur, Mizoram, Chittagong Hill Tracts). Audience: community members, diaspora youth and general readers.
-- **Hosting:** static site for Cloudflare Pages. Build command `python3 build.py`, output directory `dist/`.
+- **Build:** static site. Build command `python3 build.py`, output directory `dist/`.
 - **Source files:** `content/*.html` holds the page bodies; `sources.json` is the single bibliography (82 entries); `assets/data.js` holds the timeline and map data.
 - **Markup conventions:**
   - Citations: `[[key]]`.

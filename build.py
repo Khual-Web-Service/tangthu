@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build static site into dist/. Cloudflare Pages: build command `python3 build.py`, output dir `dist`."""
+"""Build static site into dist/: python3 build.py"""
 import json, re, shutil, html, sys
 from pathlib import Path
 
