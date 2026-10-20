@@ -187,6 +187,14 @@ def img_problems(refs):
     return problems
 
 def run_upload():
+    env_file = ROOT / ".env"
+    have = set()
+    if env_file.exists():
+        have = {l.split("=", 1)[0].strip() for l in env_file.read_text(encoding="utf8").splitlines() if "=" in l and not l.lstrip().startswith("#")}
+    needed = {"R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET"}
+    if not (needed <= have) and not needed <= set(os.environ):
+        print("WARNING: R2 credentials not set. Skipping image upload. Reachability is still checked.")
+        return
     py = ROOT / ".venv" / "bin" / "python"
     try:
         subprocess.run([str(py if py.exists() else sys.executable), str(ROOT / "scripts" / "upload_images.py")], check=True)
