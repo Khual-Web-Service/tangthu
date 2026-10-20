@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (puan palette)
+
+### Changed
+- **Site colours and weave stripe** now follow the green-red-white puan in Khual's photo: white ground, thin gold edge lines, broad green bands and a red centre split by a white line. Replaces the earlier maroon Zopuan palette. Source: photo supplied by Khual (no written source).
+
 ## 2026-10-20 (essay origin claims)
 
 ### Added

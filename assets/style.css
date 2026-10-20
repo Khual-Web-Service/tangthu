@@ -1,11 +1,11 @@
-/* Zogam History — design tokens. Weave: Zopuan — deep maroon ground with fine dark pinstripes, white lines, a green/red/gold centre band and a navy-black edge */
+/* Zogam History — design tokens. Weave: Zopuan — white ground, thin gold edge lines, broad green bands framing a red centre split by a white line */
 :root{
-  --mist:#ECEEE7; --paper:#F6F7F2; --ink:#1B1626; --ink-2:#3A3C35; --stone:#66655C;
-  --line:#CDD1C4; --green:#2E7A3E; --green-2:#1F5A2C; --red:#7A1830; --gold:#E3A92B;
-  --oral:#6A3D78; --doc:#2E7A3E; --sch:#8A6418;
+  --mist:#EFEDE6; --paper:#F8F6F0; --ink:#14231A; --ink-2:#3A3C35; --stone:#66655C;
+  --line:#CDD1C4; --green:#0E5A33; --green-2:#093F24; --red:#C21F18; --gold:#B8862E;
+  --oral:#6A3D78; --doc:#0E5A33; --sch:#8A6418;
   --font:"Literata",Georgia,"Times New Roman",serif;
   --measure:42rem; --wide:74rem; --r:6px;
-  --weave:repeating-linear-gradient(90deg,#1B1626 0 10px,#EDE6E3 10px 12px,#7A1830 12px 28px,#2A0A16 28px 29px,#7A1830 29px 36px,#2A0A16 36px 37px,#7A1830 37px 44px,#EDE6E3 44px 47px,#2E7A3E 47px 50px,#C8283C 50px 54px,#E3A92B 54px 56px,#C8283C 56px 60px,#2E7A3E 60px 63px,#EDE6E3 63px 66px,#7A1830 66px 73px,#2A0A16 73px 74px,#7A1830 74px 81px,#2A0A16 81px 82px,#7A1830 82px 98px,#EDE6E3 98px 100px);
+  --weave:repeating-linear-gradient(90deg,#F3F0E8 0 14px,#B8862E 14px 15px,#F3F0E8 15px 22px,#C9962B 22px 23px,#0E5A33 23px 38px,#D8261E 38px 49px,#F3F0E8 49px 51px,#D8261E 51px 62px,#0E5A33 62px 77px,#C9962B 77px 78px,#F3F0E8 78px 85px,#B8862E 85px 86px,#F3F0E8 86px 100px);
 }
 @media (prefers-color-scheme:dark){:root{
   --mist:#121411; --paper:#1A1D18; --ink:#E6E8E0; --ink-2:#C6C9BD; --stone:#9C9D92;
@@ -22,7 +22,7 @@ a:hover{color:var(--green-2);text-decoration-thickness:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* The selvedge: woven edge down the left of every page */
-.selvedge{position:fixed;left:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,#1B1626 0 10px,#EDE6E3 10px 12px,#7A1830 12px 28px,#2A0A16 28px 29px,#7A1830 29px 36px,#2A0A16 36px 37px,#7A1830 37px 44px,#EDE6E3 44px 47px,#2E7A3E 47px 50px,#C8283C 50px 54px,#E3A92B 54px 56px,#C8283C 56px 60px,#2E7A3E 60px 63px,#EDE6E3 63px 66px,#7A1830 66px 73px,#2A0A16 73px 74px,#7A1830 74px 81px,#2A0A16 81px 82px,#7A1830 82px 98px,#EDE6E3 98px 100px);z-index:1100}
+.selvedge{position:fixed;left:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,#F3F0E8 0 14px,#B8862E 14px 15px,#F3F0E8 15px 22px,#C9962B 22px 23px,#0E5A33 23px 38px,#D8261E 38px 49px,#F3F0E8 49px 51px,#D8261E 51px 62px,#0E5A33 62px 77px,#C9962B 77px 78px,#F3F0E8 78px 85px,#B8862E 85px 86px,#F3F0E8 86px 100px);z-index:1100}
 @media (max-width:640px){.selvedge{width:6px}}
 .skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--mist);padding:.6rem 1rem;z-index:3000}
 .skip:focus{left:16px;top:12px}
