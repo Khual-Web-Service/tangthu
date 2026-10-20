@@ -2,6 +2,18 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phase 4: on-page structure)
+
+### Changed
+- Question headings with direct answers (40–60 words, built from text and citations already on the page) on each chapter: origins, evidence, stories, names, colonial, faith, modern, culture and diaspora.
+- Colonial page title, H1 and browser title: "Chin Hills History: British Rule, the Chin Rising and Falam (1888–1948)".
+- Stories title drops Pau Cin Hau ("Zomi History Stories: Ciimnuai, Khai Kam, Khan Thuam"). His full account is on Faith & Literacy; Stories has a short summary that links there.
+- Ciimnuai, Pau Cin Hau and linguistic evidence each have one main home: Stories, Faith & Literacy and How We Know. Other pages link to them.
+- Contextual in-text links added across chapters and the homepage. The homepage has a 163-word "The story in brief" section under the hero, citing existing sources.
+- The /sources standards line now reads "Factual claims are cited." Several lede sentences are not yet cited, so "Every factual sentence" would overstate it.
+- The stories lede cites its existing Khan Thuam and Pau Cin Hau sources.
+- Evidence: an uncited sentence about 1508 and 1799 references is rewritten without new claims. "Linguistics" moved from origins to How We Know, with the existing citations.
+
 ## 2026-10-20 (placeholder boxes kept)
 
 ### Changed
