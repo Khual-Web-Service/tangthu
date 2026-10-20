@@ -159,7 +159,7 @@ def page(fname, title, body, wide=False, home=False):
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
     robots = '<meta name="robots" content="noindex">' if fname=="404.html" else '<meta name="robots" content="index,follow,max-image-preview:large">'
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
+    return f'''<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(t)}</title>
 <meta name="description" content="{html.escape(d)}">
@@ -185,7 +185,7 @@ def page(fname, title, body, wide=False, home=False):
 <div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
-<button class="navtoggle" aria-expanded="false" aria-label="Menu">Menu</button><nav class="main" aria-label="Main">{nav}</nav></div></header>
+<button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>

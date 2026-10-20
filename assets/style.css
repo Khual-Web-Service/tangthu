@@ -282,3 +282,45 @@ main.wide > section.hero{margin-top:0}
 dl.proverbs { margin: 1.5rem 0; }
 dl.proverbs dt { font-weight: 600; font-style: italic; margin-top: 1.1rem; }
 dl.proverbs dd { margin: .25rem 0 0 1.25rem; }
+
+/* ---- Mobile & accessibility pass (19 Oct 2026) ---- */
+/* Focus ring: gold fails contrast on the light ground, so use ink there; gold stays in dark mode */
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media (prefers-color-scheme:dark){:focus-visible{outline-color:var(--gold)}}
+footer.site :focus-visible,.contribute :focus-visible{outline-color:var(--gold)}
+/* Visible boundaries for controls (WCAG 1.4.11) */
+.filters button,.onpage a,.copycite,.navtoggle{border-color:var(--stone)}
+.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--mist)}
+/* Touch targets */
+.copycite{min-height:44px;padding:.2rem .9rem}
+.onpage a{min-height:44px}
+sup.fn a{display:inline-block;min-width:1.6em;padding:.35em .2em;text-align:center}
+footer.site li a{display:inline-block;padding:.35rem 0}
+/* No-JS: keep the menu reachable */
+.no-js .navtoggle{display:none!important}
+.no-js nav.main{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;padding:0;border:0;background:none}
+/* Long words, URLs and Zolai compounds never force sideways scrolling */
+main p,main li,main dd,main dt,.refs li,.src,.caution,.cite-text{overflow-wrap:anywhere}
+img,svg,video,iframe{max-width:100%;height:auto}
+/* Small screens */
+@media (max-width:640px){
+  body{font-size:1.05rem;line-height:1.65}
+  main{padding:2rem 16px 4rem}
+  .bar,.foot-grid,.foot-legal{padding-left:16px;padding-right:16px}
+  .onpage{margin:0 -16px 1rem;padding:.5rem 16px}
+  nav.main{padding:.4rem 16px 1rem}
+  h2{margin-top:2.4rem}
+  .lede{font-size:1.15rem}
+  .chapter-nav{grid-template-columns:1fr}
+  .chapter-nav .next{text-align:left;align-items:flex-start}
+  .tag{white-space:normal}
+  dl.proverbs dd{margin-left:.75rem}
+  .short{padding:1.1rem 1.1rem .9rem}
+  .caution{padding:.9rem 1rem}
+}
+/* Mobile menu: scroll if taller than the screen */
+@media (max-width:1100px){nav.main.open{max-height:calc(100vh - var(--hdr,58px));overflow-y:auto}}
+/* Respect reduced motion for smooth scrolling */
+@media (prefers-reduced-motion:reduce){html,.onpage ul{scroll-behavior:auto}}
+/* Windows high-contrast / forced colours */
+@media (forced-colors:active){.tag,.btn,.onpage a[aria-current],.filters button[aria-pressed="true"]{border:1px solid CanvasText}.selvedge,.weave{forced-color-adjust:none}}

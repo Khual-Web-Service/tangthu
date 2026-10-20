@@ -2,6 +2,18 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (mobile and accessibility)
+
+### Changed
+- **Focus outline:** keyboard focus is now a dark ink outline in light mode (the gold one was too faint, 1.8:1); gold is kept in dark mode and on dark panels.
+- **Controls:** filter buttons, section-menu pills, copy buttons and the menu button have clearer borders, and tap targets are at least 44px (footnote numbers, footer links, copy buttons, section pills).
+- **Phones (under 640px):** tighter side margins (16px), slightly smaller body text, single-column chapter links, wrapping evidence labels, and long URLs or words wrap instead of causing sideways scrolling.
+- **Mobile menu:** closes with Escape, when a link is chosen, or when tapping outside; moves focus into the menu when opened; scrolls if taller than the screen; and stays visible as a plain list if JavaScript is off.
+- **Timeline:** filter buttons report their pressed state and are grouped with labels; screen readers hear how many events are shown after filtering; each event's button is linked to its details.
+- **Evidence tables:** can be scrolled sideways with the keyboard and are labelled for screen readers.
+- **Map:** keyboard navigation enabled.
+- **Motion and contrast:** smooth scrolling is turned off for readers who ask for reduced motion; labels and buttons keep visible edges in Windows high-contrast mode.
+
 ## 2026-10-19 (LTTuang Scribd archive)
 
 Ten Zolai documents uploaded to Scribd by L. T. Tuang were read and decoded from an old non-Unicode font; every claim added below was checked against the decoded text, and doubtful words were confirmed with Khual.
