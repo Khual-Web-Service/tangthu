@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (essay origin claims)
+
+### Added
+- **Stories page, "The essay's wider origin story":** every remaining claim from Mang Ngaih Cin's essay, stated as written, including the Zhou "Zo dynasty", the flight from the Qin, five explanations of "Chin", the central-Burma word origins, the AD 800 valley date and the Ciimnuai/Lailun split. Labelled contested, each marked "not enough evidence" where that applies.
+
 ## 2026-10-20 (mobile search icon)
 
 ### Added
