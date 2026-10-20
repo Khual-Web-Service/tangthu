@@ -14,6 +14,8 @@ window.addEventListener('DOMContentLoaded',function(){
       if(i>=0){var a=links[i];ul.scrollTo({left:a.offsetLeft-ul.offsetLeft-12,behavior:'smooth'});}}
     window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(spy);}},{passive:true});spy();
   }
+  // "/" jumps to search (unless typing in a field)
+  document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;e.preventDefault();var f=document.getElementById('q')||document.getElementById('hq');if(f&&f.offsetParent!==null)f.focus();else location.href='/search';});
   // mobile nav
   var b=document.querySelector('.navtoggle'), n=document.querySelector('nav.main');
   if(b&&n){

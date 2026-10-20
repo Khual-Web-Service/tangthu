@@ -9,7 +9,7 @@ SRC = json.loads((ROOT / "sources.json").read_text())
 S = {s["key"]: s for s in SRC}
 
 NAV_FILES = None
-NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("glossary.html","Glossary"),("sources.html","Sources")]
+NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("glossary.html","Glossary"),("sources.html","Sources"),("search.html","Search")]
 TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class="tag doc">Documented</span>',
         "sch":'<span class="tag sch">Scholarly interpretation</span>',"contested":'<span class="tag contested">Contested</span>'}
 missing = set()
@@ -33,6 +33,7 @@ DESC = {
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
  "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
  "404.html": ("Page not found — Zogam History", "This page doesn’t exist. Start from the Zogam History home page or the chapter list."),
+ "search.html": ("Search — Zogam History", "Search every page of Zogam History: chapters, stories, proverbs, glossary terms, timeline events and sources."),
  "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
 }
 FAQ = [
@@ -134,7 +135,7 @@ def render(body):
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
 
-def page(fname, title, body, wide=False, home=False):
+def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     nav = "".join(f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>' for h,l in NAV)
     leaflet = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">'
@@ -185,7 +186,7 @@ def page(fname, title, body, wide=False, home=False):
 <div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
-<button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav></div></header>
+<button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav><form class="hsearch" role="search" action="/search" method="get"><label for="hq" class="vh">Search the site</label><input id="hq" name="q" type="search" placeholder="Search" autocomplete="off"><button type="submit" class="vh-btn" aria-label="Search">⌕</button></form></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
@@ -193,7 +194,7 @@ def page(fname, title, body, wide=False, home=False):
 <div><div class="foot-h">About</div><ul><li><a href="/timeline">Timeline</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
 © 2026 <a href="https://khual.net" rel="author">Khual Web Service LLC</a>. Built and maintained by <a href="https://khual.net">Khual Web Service</a>, Tulsa, Oklahoma. Text <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
-<script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>
+<script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>{'<script defer src="/assets/search.js"></script>' if search else ''}
 </body></html>'''
 
 def write_llms():
@@ -247,6 +248,54 @@ def sources_page():
     out.append('<h2>Recommended starting points</h2><ul><li>Sakhong, <em>In Search of Chin Identity</em> (2003)</li><li>Pau, <em>Indo-Burma Frontier and the Making of the Chin Hills</em> (2019)</li><li>Go, <em>Zo Chronicles</em> (2008)</li><li>Guite &amp; Haokip, eds., <em>The Anglo-Kuki War, 1917–1919</em> (2019)</li></ul>')
     return "\n".join(out)
 
+SEARCH_BODY = """<h1>Search</h1>
+<form class="search-form" role="search" action="/search" method="get" onsubmit="return false">
+<label for="q" class="search-label">Search the whole site</label>
+<div class="search-row"><input id="q" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="e.g. Khan Thuam, puan, Panglong, Ciimnuai" aria-describedby="search-help" aria-controls="search-results"><button type="button" id="q-clear" class="btn-ghost" hidden>Clear</button></div>
+<p id="search-help" class="small">Searches chapters, stories, proverbs, the glossary, the timeline and every source. Zolai spellings work with or without doubled letters and apostrophes. Press <kbd>/</kbd> on any page to jump here.</p>
+</form>
+<div class="search-filters" role="group" aria-label="Filter results"></div>
+<p id="search-status" class="small" role="status" aria-live="polite"></p>
+<ol id="search-results" class="search-results"></ol>
+<noscript><p class="caution">Search needs JavaScript. You can browse every page from the <a href="/sitemap">site map</a>.</p></noscript>"""
+
+def strip_html(t):
+    t=re.sub(r'<(script|style)[^>]*>.*?</\1>','',t,flags=re.S)
+    t=re.sub(r'<sup class="fn">.*?</sup>','',t,flags=re.S)
+    t=re.sub(r'<span class="tag[^>]*>(.*?)</span>',r' \1 ',t,flags=re.S)
+    t=re.sub(r'<[^>]+>',' ',t); t=html.unescape(t)
+    return re.sub(r'\s+',' ',t).strip()
+
+def build_search_index():
+    idx=[]
+    LABELS={"index.html":"Home","timeline.html":"Timeline","glossary.html":"Glossary","contribute.html":"Contribute","sitemap.html":None,"404.html":None,"sources.html":None,"search.html":None}
+    for f in sorted(DIST.glob("*.html")):
+        page_label = CH_LABEL.get(f.name, LABELS.get(f.name, f.stem.title()))
+        if page_label is None: continue
+        doc=f.read_text()
+        m=re.search(r'<main[^>]*>(.*)</main>',doc,re.S); body=m.group(1) if m else ""
+        body=re.sub(r'<details class="refs".*?</details>','',body,flags=re.S)
+        body=re.sub(r'<nav class="(onpage|chapter-nav)".*?</nav>','',body,flags=re.S)
+        body=re.sub(r'<p class="(chapter-eyebrow|pagedates)[^"]*">.*?</p>','',body,flags=re.S)
+        url=clean(f.name)
+        if f.name=="glossary.html":
+            for gid,term,dd in re.findall(r'<dt id="([^"]+)"[^>]*>(.*?)</dt>\s*<dd>(.*?)</dd>',body,re.S):
+                idx.append({"t":strip_html(term),"p":"Glossary","u":url+"#"+gid,"x":strip_html(dd),"k":"glossary"})
+            continue
+        h1=re.search(r'<h1[^>]*>(.*?)</h1>',body,re.S); h1t=strip_html(h1.group(1)) if h1 else page_label
+        parts=re.split(r'(<h2[^>]*>.*?</h2>)',body,flags=re.S)
+        intro=strip_html(parts[0].replace(h1.group(0),'') if h1 else parts[0])
+        if intro: idx.append({"t":h1t,"p":page_label,"u":url,"x":intro,"k":"page"})
+        for i in range(1,len(parts),2):
+            hid=re.search(r'id="([^"]+)"',parts[i]); head=strip_html(re.sub(r'<span class="tag[^>]*>.*?</span>','',parts[i]))
+            if head in ("The short version",): continue
+            ev=[k for k,v in (("oral","tag oral"),("doc","tag doc"),("sch","tag sch"),("contested","tag contested")) if v in parts[i]]
+            idx.append({"t":head,"p":page_label,"u":url+("#"+hid.group(1) if hid else ""),"x":strip_html(parts[i+1]),"k":"section","e":ev})
+    for s in SRC:
+        idx.append({"t":s["short"],"p":"Sources","u":"/sources#"+s["key"],"x":s["cite"]+(" "+s["note"] if s.get("note") else ""),"k":"source"})
+    (DIST/"assets"/"search-index.json").write_text(json.dumps(idx,ensure_ascii=False,separators=(",",":")))
+    return len(idx)
+
 def main():
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
@@ -266,8 +315,9 @@ def main():
         if f.name != "contribute.html": body += chapter_nav(f.name) + (globals().__setitem__('_cur', f.name) or refs_block(title))
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
     (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
-    (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p><a href="index.html">Return home</a></p>'))
-    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","sources.html","contribute.html","sitemap.html"]
+    (DIST/"search.html").write_text(page("search.html","Search",SEARCH_BODY,search=True))
+    (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p>Try <a href="/search">searching the site</a>, or <a href="index.html">return home</a>.</p>'))
+    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]
     pages = order
     pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
     urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
@@ -279,18 +329,19 @@ def main():
     (DIST/"robots.txt").write_text(robots)
     write_llms()
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
-    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Explore",["timeline.html","glossary.html"]),("About this site",["sources.html","contribute.html"])]
-    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","timeline.html":"Timeline","glossary.html":"Glossary","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Explore",["timeline.html","glossary.html","search.html"]),("About this site",["sources.html","contribute.html"])]
+    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","timeline.html":"Timeline","glossary.html":"Glossary","search.html":"Search","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
     sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
     (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",sm))
     (DIST/"_headers").write_text("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/assets/*\n  Cache-Control: public, max-age=86400\n/sitemap.xml\n  Content-Type: application/xml; charset=utf-8\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n")
+    n_idx = build_search_index()
     # check every source is cited somewhere
     used = set(re.findall(r"\[\[([\w-]+)\]\]", "".join(p.read_text() for p in (ROOT/"content").glob("*.html"))))
     used |= set(re.findall(r'"([\w-]+)"', re.search(r"src:\[.*", (ROOT/"assets/data.js").read_text(), re.S).group(0)))
     if missing: print("MISSING SOURCE KEYS:", missing); sys.exit(1)
     unused = set(S) - used
-    print(f"Built {len(list(DIST.glob('*.html')))} pages. Unused sources: {sorted(unused) or 'none'}")
+    print(f"Search index: {n_idx} entries."); print(f"Built {len(list(DIST.glob('*.html')))} pages. Unused sources: {sorted(unused) or 'none'}")
 
 if __name__ == "__main__": main()
