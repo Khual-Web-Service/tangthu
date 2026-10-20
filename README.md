@@ -73,3 +73,14 @@ No dependencies: just Python 3.8+. Citations are written `[[key]]` in `content/*
 Made with care by **[Khual Web Service](https://khual.net)** · Tulsa, Oklahoma
 
 </div>
+
+## Adding images
+
+- Only images with a verified licence, or public-domain images, go into `images.json`. Check the licence on the source page before you add anything.
+- Every image needs its rights record in `images.json` before it is used: author, licence and licence URL, source, date taken, changes, and context.
+- No stock photos and no hotlinks. Originals live in `assets/img/originals/`, which is the rights archive and is never published. The site serves only the web versions from `https://assets.khual.net/tangthu/img/`.
+- If a photo shows identifiable people, set `people` to `true` and record the consent in `consent`. The build fails without it.
+- Use `{{img:key}}` in a page to place an image. The width and height are filled in from the file when you upload.
+- Upload with `python3 scripts/upload_images.py --dry-run` first, then without the flag. Uploads never overwrite and never delete. A changed photo gets a new key, such as `kennedy-peak-v2`.
+- `python3 build.py` checks that every image is reachable on assets.khual.net. Use `python3 build.py --offline` to skip the check (no network). Uploads are not part of the build; see the upload step above.
+- Credentials go in `.env` (git-ignored): `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`. Never commit them.

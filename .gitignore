@@ -1,3 +1,11 @@
 dist/
 __pycache__/
 .DS_Store
+# Original photos and their WebP conversions. Only the README is tracked.
+images/*
+!images/README.md
+
+# Local secrets
+.env
+.env.*
+.venv/

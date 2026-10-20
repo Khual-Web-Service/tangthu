@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
 """Build static site into dist/: python3 build.py"""
-import json, re, shutil, html, sys
+import json, re, shutil, html, sys, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 DIST = ROOT / "dist"
 SRC = json.loads((ROOT / "sources.json").read_text())
 S = {s["key"]: s for s in SRC}
+PHOTOS = json.loads((ROOT / "photos.json").read_text()) if (ROOT / "photos.json").exists() else {}
+PHOTO_RE = re.compile(r"\{\{photo:(.*?)\}\}")
+PHOTO_REQUIRED = ("alt", "caption", "source", "width", "height")  # plus "file" or "url"
+IMAGE_BASE = "https://assets.khual.net/tangthu/img"  # every {{img:key}} is served from here
+IMAGE_REQUIRED = ("file", "caption", "alt", "author", "source", "licence", "licence_url", "date_taken", "changes", "context", "verified")
+OFFLINE = "--offline" in sys.argv  # skip the reachability check (no network). Uploads are manual: scripts/upload_images.py
+IMG_RE = re.compile(r"\{\{img:([\w-]+)\}\}")
+def load_images():
+    return json.loads((ROOT / "images.json").read_text()) if (ROOT / "images.json").exists() else {}
+IMAGES = load_images()
 
 NAV_FILES = None
 NAV = [("origins.html","Origins"),("evidence.html","Evidence"),("stories.html","Stories"),("names.html","Names"),("colonial.html","Colonial"),("faith.html","Faith"),("modern.html","Modern"),("culture.html","Culture"),("diaspora.html","Diaspora"),("glossary.html","Glossary"),("sources.html","Sources"),("search.html","Search")]
@@ -15,6 +25,10 @@ TAGS = {"oral":'<span class="tag oral">Oral tradition</span>',"doc":'<span class
 missing = set()
 import os, datetime
 SITE_URL = os.environ.get("SITE_URL", "https://tangthu.kws.site").rstrip("/")
+CDN_BASE = os.environ.get("TANGTHU_CDN", "https://assets.khual.net/tangthu/img").rstrip("/")
+CDN_ORIGIN = "/".join(CDN_BASE.split("/")[:3])  # for <link rel="preconnect">
+FAVICON_DIR = ROOT / "zogam-favicons"
+FAVICON_HEAD = (FAVICON_DIR / "head-snippet.html").read_text().strip()  # icon links + theme-color
 TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
@@ -127,10 +141,137 @@ def ph(kind, text):
         return f'<figure class="placeholder"><div class="ico">IMG</div><p><strong>Community photo wanted</strong>{text}</p></figure>'
     return f'<aside class="placeholder"><div class="ico">♪</div><p><strong>Oral history wanted</strong>{text} <a href="contribute.html">How to share it</a></p></aside>'
 
+def photo(pid):
+    p = PHOTOS[pid]
+    if p.get("status") == "wanted":
+        return ph("photo", p["caption"])
+    cap = p["caption"] + (f" — {p['credit']}" if p.get("credit") else "")
+    src = html.escape(p["url"] if p.get("url") else CDN_BASE + "/" + p["file"])  # "url" for files served by the site itself
+    return (f'<figure><img src="{src}" alt="{html.escape(p["alt"])}" width="{int(p["width"])}" height="{int(p["height"])}" loading="lazy" decoding="async">'
+            f'<figcaption>{html.escape(cap)} [[{p["source"]}]]</figcaption></figure>')
+
+def photo_problems(pages):
+    """Every photo error in photos.json and the content, as a list. Empty means the build can run."""
+    problems = []
+    for pid, p in PHOTOS.items():
+        if p.get("status") == "wanted": continue
+        if not (p.get("file") or p.get("url")): problems.append(f'photos.json "{pid}": needs "file" (under CDN_BASE) or "url"')
+        for field in PHOTO_REQUIRED:
+            if not str(p.get(field, "")).strip(): problems.append(f'photos.json "{pid}": missing "{field}"')
+        if p.get("source") and p["source"] not in S: problems.append(f'photos.json "{pid}": source "{p["source"]}" is not a key in sources.json')
+    for name, raw in pages:
+        for pid in PHOTO_RE.findall(raw):
+            if pid not in PHOTOS: problems.append(f'{name}: {{{{photo:{pid}}}}} has no entry in photos.json')
+    return problems
+
+def referenced_img_keys():
+    keys = set()
+    for p in (ROOT / "content").glob("*.html"): keys |= set(IMG_RE.findall(p.read_text()))
+    return sorted(keys)
+
+def img_problems(refs):
+    """Image errors in images.json, assets/img and the content. Empty means the image step can run."""
+    problems = []
+    for key, r in IMAGES.items():
+        for field in IMAGE_REQUIRED:
+            if not str(r.get(field, "")).strip(): problems.append(f'images.json "{key}": missing "{field}"')
+        if r.get("people") and not str(r.get("consent") or "").strip():
+            problems.append(f'images.json "{key}": people is true, so consent must be noted')
+        if r.get("file") and not (ROOT / r["file"]).exists(): problems.append(f'images.json "{key}": {r["file"]} not found')
+    listed = {r.get("file") for r in IMAGES.values()}
+    for f in sorted((ROOT / "assets" / "img" / "originals").rglob("*")):  # the rights archive; site graphics such as hornbill.webp are not photos
+        if f.is_file() and not f.name.startswith(".") and str(f.relative_to(ROOT)) not in listed:
+            problems.append(f"{f.relative_to(ROOT)} has no images.json entry")
+    for key in refs:
+        if key not in IMAGES: problems.append(f"{{{{img:{key}}}}} has no entry in images.json")
+    return problems
+
+
+def unreachable_images(refs):
+    bad = []
+    for key in refs:
+        for w in (800, 1600):
+            for ext in ("webp", "jpg"):
+                url = f"{IMAGE_BASE}/{key}-{w}.{ext}"
+                req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "ZogamHistory-build/1.0"})
+                try:
+                    with urllib.request.urlopen(req, timeout=15) as r:
+                        if r.status != 200: bad.append(f"{url}: HTTP {r.status}")
+                except Exception as e:
+                    bad.append(f"{url}: {e}")
+    return bad
+
+def img_figure(key):
+    r = IMAGES[key]
+    srcset_webp = f"{IMAGE_BASE}/{key}-800.webp 800w, {IMAGE_BASE}/{key}-1600.webp 1600w"
+    srcset_jpg = f"{IMAGE_BASE}/{key}-800.jpg 800w, {IMAGE_BASE}/{key}-1600.jpg 1600w"
+    sizes = "(max-width: 760px) calc(100vw - 2rem), 700px"
+    credit = (f'Photo: <a href="{html.escape(r["source"])}" rel="noopener" target="_blank">{html.escape(r["author"])}</a>, '
+              f'<a href="{html.escape(r["licence_url"])}" rel="license noopener" target="_blank">{html.escape(r["licence"])}</a>')
+    return (f'<figure class="photo"><picture><source type="image/webp" srcset="{srcset_webp}" sizes="{sizes}">'
+            f'<img src="{IMAGE_BASE}/{key}-1600.jpg" srcset="{srcset_jpg}" sizes="{sizes}" alt="{html.escape(r["alt"])}" '
+            f'width="{r["width"]}" height="{r["height"]}" loading="lazy" decoding="async"></picture>'
+            f'<figcaption>{html.escape(r["caption"])}<span class="credit">{credit}</span>'
+            f'<span class="img-context">{html.escape(r["context"])}</span></figcaption></figure>')
+
+def image_credits():
+    items = "".join(
+        f'<li id="img-{key}"><strong>{html.escape(r["caption"])}</strong><br>'
+        f'Photo: <a href="{html.escape(r["source"])}" rel="noopener" target="_blank">{html.escape(r["author"])}</a>, '
+        f'<a href="{html.escape(r["licence_url"])}" rel="license noopener" target="_blank">{html.escape(r["licence"])}</a>. '
+        f'Taken {html.escape(r["date_taken"])}. {html.escape(r["changes"])} Rights checked {html.escape(r["verified"])}.</li>'
+        for key, r in IMAGES.items())
+    return ('<section class="img-credits"><h2>Image credits</h2><p class="small">Every photo on this site has a rights record in '
+            'images.json. Each photo is shared under the licence named.</p><ul>' + items + '</ul></section>')
+
+PCH_DATA = ROOT / "data" / "pau-cin-hau.unicodedata.txt"
+PCH_CATEGORIES = {"Lo": "Other letter", "Mn": "Nonspacing mark", "Mc": "Spacing mark", "Nd": "Decimal digit", "Po": "Other punctuation"}
+def pch_chart():
+    """Pau Cin Hau chart from the Unicode data file. Groups are Unicode general categories; counts are computed here."""
+    rows = []
+    for line in PCH_DATA.read_text(encoding="utf8").splitlines():
+        if not line.strip() or line.startswith("#"): continue
+        cp, name, cat = line.split(";")[:3]
+        rows.append((int(cp, 16), name, cat))
+    groups = {}
+    for cp, name, cat in rows: groups.setdefault(cat, []).append((cp, name))
+    bodies = []
+    for cat, items in groups.items():
+        label = PCH_CATEGORIES.get(cat, cat)
+        trs = "".join(f'<tr><td class="pch-glyph">{html.escape(chr(cp))}</td><td><code>U+{cp:05X}</code></td><td>{html.escape(name)}</td></tr>' for cp, name in items)
+        bodies.append(f'<tbody><tr class="pch-group"><th scope="rowgroup" colspan="3">{html.escape(label)} ({cat}): {len(items)} characters</th></tr>{trs}</tbody>')
+    total = sum(len(v) for v in groups.values())
+    return ('<p class="pch-fallback" hidden>The Pau Cin Hau font did not load, so the glyphs are not shown. The code points and names below are still correct.</p>'
+            '<figure class="pch-figure"><div class="table-wrap pch-wrap" role="region" tabindex="0" aria-label="Pau Cin Hau characters, ' + str(total) + ' in total (scrolls sideways)">'
+            '<table class="pch-table"><thead><tr><th scope="col">Glyph</th><th scope="col">Code point</th><th scope="col">Unicode name</th></tr></thead>'
+            + "".join(bodies) + '</table></div>'
+            '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
+
+HERO_CREDIT = "Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
+def zogam_map():
+    """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
+    return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
+def hero_moments():
+    items = []
+    for m in json.loads((ROOT / "data" / "moments.json").read_text(encoding="utf8")):
+        cls = "hero-moment today" if m.get("today") else "hero-moment"
+        items.append(f'<li><a class="{cls}" href="{m["href"]}"><span class="hero-dot" aria-hidden="true"></span>'
+                     f'<span class="hero-when">{html.escape(m["when"])}</span>'
+                     f'<span class="hero-long">{html.escape(m["short"])}</span>'
+                     f'<span class="hero-mini" aria-hidden="true">{html.escape(m["mobile"])}</span></a></li>')
+    return "".join(items)
+def hero_stats():
+    return f"9 chapters · {len(SRC)} sources · About 15 minutes · Map area approximate, not a territorial claim · {HERO_CREDIT}"
+
 def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
+    if "{{pch-chart}}" in body: body = body.replace("{{pch-chart}}", pch_chart())
+    if "{{zogam-map}}" in body: body = body.replace("{{zogam-map}}", zogam_map())
+    body = body.replace("{{hero-moments}}", hero_moments()).replace("{{hero-stats}}", hero_stats()).replace("{{hero-credit}}", HERO_CREDIT)
+    body = IMG_RE.sub(lambda m: img_figure(m.group(1)), body)  # before cite(): the caption can carry no [[ ]], but keep the order
+    body = PHOTO_RE.sub(lambda m: photo(m.group(1)), body)  # before cite(): figcaptions carry [[source]]
     body = re.sub(r"\[\[([\w-]+)\]\]", cite, body)
-    body = re.sub(r"\{\{(photo|oralhistory):(.*?)\}\}", lambda m: ph(m.group(1), m.group(2)), body)
+    body = re.sub(r"\{\{oralhistory:(.*?)\}\}", lambda m: ph("oralhistory", m.group(1)), body)
     body = re.sub(r"\{\{short\}\}(.*?)\{\{/short\}\}", lambda m: '<aside class="short"><h2 class="short-h">The short version</h2>'+m.group(1)+'<p class="short-more">Want the details? Keep reading. Every fact below is sourced.</p></aside>', body, flags=re.S)
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
@@ -143,8 +284,6 @@ def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     ICON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
     nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{" aria-current=\"page\"" if h==fname else ""}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>') for h,l in NAV)
-    leaflet = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">'
-               '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>') if home else ""
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))
     url = SITE_URL + clean(fname)
     slug = fname[:-5]
@@ -177,12 +316,11 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <meta property="og:image" content="{img}"><meta property="og:image:secure_url" content="{img}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{html.escape(img_alt)}">
 {'' if home else f'<meta property="article:published_time" content="{pdates(fname)[0]}"><meta property="article:modified_time" content="{pdates(fname)[1]}"><meta property="article:publisher" content="https://khual.net">'}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
-<meta name="theme-color" content="#9a4a2a">
-<script type="application/ld+json">{ld}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{FAVICON_HEAD}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');</script><script type="application/ld+json">{ld}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="{CDN_ORIGIN}">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">{leaflet}
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
 <link rel="author" href="https://khual.net">
@@ -196,10 +334,10 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
-<div><div class="foot-h">About</div><ul><li><a href="/timeline">Timeline</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
+<div><div class="foot-h">About</div><ul><li><a href="/timeline">Timeline</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/contribute#privacy">Privacy</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
 © 2026 <a href="https://khual.net" rel="author">Khual Web Service LLC</a>. Built and maintained by <a href="https://khual.net">Khual Web Service</a>, Tulsa, Oklahoma. Text <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
-<script src="/assets/sources.js?v={V('/sources.json')}"></script><script src="/assets/data.js?v={V('/assets/data.js')}"></script><script defer src="/assets/site.js?v={V('/assets/site.js')}"></script>{f'<script defer src="/assets/search.js?v={V("/assets/search.js")}"></script>' if search else ''}
+<script src="/assets/sources.js?v={V('/sources.json')}"></script><script src="/assets/data.js?v={V('/assets/data.js')}"></script><script defer src="/assets/site.js?v={V('/assets/site.js')}"></script><script defer src="/assets/overlay.js?v={V('/assets/overlay.js')}"></script>{f'<script defer src="/assets/search.js?v={V("/assets/search.js")}"></script>' if search else ''}
 </body></html>'''
 
 def write_llms():
@@ -216,7 +354,7 @@ def write_llms():
     full=[f"# {SITE_NAME}: full text","",f"Source: {SITE_URL} · Licence CC BY-SA 4.0 · Credit \"Zogam History\"",""]
     for c in ["index.html"]+CHAPTERS+["glossary.html"]:
         raw=(ROOT/"content"/c).read_text(); keys=list(dict.fromkeys(re.findall(r"\[\[([\w-]+)\]\]", raw)))
-        t=re.sub(r"\{\{/?short\}\}","",raw); t=re.sub(r"\{\{(photo|oralhistory):.*?\}\}","",t)
+        t=re.sub(r"\{\{/?short\}\}","",raw); t=re.sub(r"\{\{(photo|img|oralhistory):.*?\}\}","",t)
         t=re.sub(r"\{\{oral\}\}"," [Oral tradition]",t); t=re.sub(r"\{\{doc\}\}"," [Documented]",t); t=re.sub(r"\{\{sch\}\}"," [Scholarly interpretation]",t); t=re.sub(r"\{\{contested\}\}"," [Contested]",t)
         t=re.sub(r"\[\[([\w-]+)\]\]", lambda m: f"[{keys.index(m.group(1))+1}]", t)
         t=re.sub(r"<h1[^>]*>(.*?)</h1>", lambda m:"\n# "+m.group(1)+"\n", t, flags=re.S); t=re.sub(r"<h2[^>]*>(.*?)</h2>", lambda m:"\n## "+m.group(1)+"\n", t, flags=re.S)
@@ -250,6 +388,7 @@ def sources_page():
             lk = '' if s["url"]=="contribute.html" else f' <a href="{s["url"]}" rel="noopener" target="_blank">{"Catalogue search" if is_print(s) else "Link"}</a>'
             out.append(f'<div class="src" id="{s["key"]}"><div class="k">{html.escape(s["short"])}, {html.escape(tier(s)).lower()}{" (print, not yet verified online)" if is_print(s) else ""}</div>{html.escape(s["cite"])}{lk}{note}</div>')
         out.append("</section>")
+    out.append(image_credits())
     out.append('<h2>Recommended starting points</h2><ul><li>Sakhong, <em>In Search of Chin Identity</em> (2003)</li><li>Pau, <em>Indo-Burma Frontier and the Making of the Chin Hills</em> (2019)</li><li>Go, <em>Zo Chronicles</em> (2008)</li><li>Guite &amp; Haokip, eds., <em>The Anglo-Kuki War, 1917–1919</em> (2019)</li></ul>')
     return "\n".join(out)
 
@@ -302,17 +441,39 @@ def build_search_index():
     return len(idx)
 
 def main():
+    global IMAGES
+    refs = referenced_img_keys()
+    problems = img_problems(refs)
+    if problems:
+        print("IMAGE ERRORS. Build stopped before writing dist/:")
+        for p in problems: print("  - " + p)
+        sys.exit(1)
+    IMAGES = load_images()  # the upload step fills in each image's width and height
+    if not OFFLINE:
+        bad = unreachable_images(refs)
+        if bad:
+            print("IMAGES NOT REACHABLE on assets.khual.net. Build stopped before writing dist/:")
+            for b in bad: print("  - " + b)
+            sys.exit(1)
+    problems = photo_problems([(f.name, f.read_text()) for f in sorted((ROOT/"content").glob("*.html"))])
+    if problems:
+        print("PHOTO ERRORS. Build stopped before writing dist/:")
+        for p in problems: print("  - " + p)
+        sys.exit(1)
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
     NAV = [(clean(f) if False else f, l) for f,l in NAV]
     DIST.mkdir()
-    shutil.copytree(ROOT/"assets", DIST/"assets")
+    shutil.copytree(ROOT/"assets", DIST/"assets", ignore=shutil.ignore_patterns("originals"))  # rights archive, never served
+    # The snippet links to /favicon.ico, /apple-touch-icon.png, /site.webmanifest etc., so these go at the site root.
+    for f in FAVICON_DIR.iterdir():
+        if f.is_file() and f.name != "head-snippet.html": shutil.copy2(f, DIST/f.name)
     (DIST/"assets"/"sources.js").write_text("window.ZO_SRC="+json.dumps({s["key"]:s["short"] for s in SRC})+";")
     for f in sorted((ROOT/"content").glob("*.html")):
         raw = f.read_text(); m = re.match(r"<!-- title: (.*?) -->", raw)
         title = m.group(1) if m else f.stem
         _used.clear()
-        PAGE_CITES[f.name] = list(dict.fromkeys(re.findall(r"\[\[([\w-]+)\]\]", raw)))
+        PAGE_CITES[f.name] = list(dict.fromkeys(re.findall(r"\[\[([\w-]+)\]\]", raw) + [PHOTOS[p]["source"] for p in PHOTO_RE.findall(raw) if p in PHOTOS and PHOTOS[p].get("status") != "wanted"]))
         if f.name=="glossary.html":
             global GLOSS_RAW; GLOSS_RAW = raw
         body = render(raw)
@@ -345,6 +506,7 @@ def main():
     # check every source is cited somewhere
     used = set(re.findall(r"\[\[([\w-]+)\]\]", "".join(p.read_text() for p in (ROOT/"content").glob("*.html"))))
     used |= set(re.findall(r'"([\w-]+)"', re.search(r"src:\[.*", (ROOT/"assets/data.js").read_text(), re.S).group(0)))
+    used |= {p["source"] for p in PHOTOS.values() if p.get("source")}
     if missing: print("MISSING SOURCE KEYS:", missing); sys.exit(1)
     unused = set(S) - used
     print(f"Search index: {n_idx} entries."); print(f"Built {len(list(DIST.glob('*.html')))} pages. Unused sources: {sorted(unused) or 'none'}")

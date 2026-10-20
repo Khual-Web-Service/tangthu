@@ -1,0 +1,39 @@
+[
+  {
+    "when": "Long ago",
+    "short": "Out of the cave Khul, or Chhinlung",
+    "mobile": "Out of the cave Khul",
+    "href": "origins.html"
+  },
+  {
+    "when": "Before 1400",
+    "short": "From the Kabaw and Kale valleys up into the hills",
+    "mobile": "Kabaw and Kale valleys",
+    "href": "origins.html"
+  },
+  {
+    "when": "1890s",
+    "short": "British rule draws today's borders",
+    "mobile": "Today's borders drawn",
+    "href": "colonial.html"
+  },
+  {
+    "when": "1899–1902",
+    "short": "Missions in Hakha and Pau Cin Hau's script",
+    "mobile": "A Zo script",
+    "href": "faith.html"
+  },
+  {
+    "when": "1947–1948",
+    "short": "Panglong and Chin National Day",
+    "mobile": "Panglong",
+    "href": "modern.html"
+  },
+  {
+    "when": "Today",
+    "short": "From Mizoram to Malaysia, Indianapolis and Australia",
+    "mobile": "A worldwide people",
+    "href": "diaspora.html",
+    "today": true
+  }
+]
