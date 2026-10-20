@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build static site into dist/: python3 build.py"""
-import json, re, shutil, html, sys, urllib.request
+import json, re, shutil, html, sys, time, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -194,11 +194,14 @@ def unreachable_images(refs):
             for ext in ("webp", "jpg"):
                 url = f"{IMAGE_BASE}/{key}-{w}.{ext}"
                 req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "ZogamHistory-build/1.0"})
-                try:
-                    with urllib.request.urlopen(req, timeout=15) as r:
-                        if r.status != 200: bad.append(f"{url}: HTTP {r.status}")
-                except Exception as e:
-                    bad.append(f"{url}: {e}")
+                for attempt in range(3):  # retry: one slow response on the CDN must not fail the whole build
+                    try:
+                        with urllib.request.urlopen(req, timeout=15) as r:
+                            if r.status != 200: bad.append(f"{url}: HTTP {r.status}")
+                        break
+                    except Exception as e:
+                        if attempt == 2: bad.append(f"{url}: {e}")
+                        else: time.sleep(2)
     return bad
 
 def img_figure(key):
