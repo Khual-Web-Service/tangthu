@@ -141,7 +141,8 @@ def V(path):
     return hashlib.sha1((ROOT/path.lstrip("/")).read_bytes()).hexdigest()[:8] if (ROOT/path.lstrip("/")).exists() else TODAY.replace("-","")
 def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
-    nav = "".join(f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>' for h,l in NAV)
+    ICON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
+    nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{" aria-current=\"page\"" if h==fname else ""}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>') for h,l in NAV)
     leaflet = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">'
                '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>') if home else ""
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))

@@ -38,11 +38,13 @@ nav.main a:hover{color:var(--green)}
 nav.main a[aria-current]{color:var(--ink);border-bottom-color:var(--green)}
 .searchicon{display:none;align-items:center;justify-content:center;min-width:44px;min-height:44px;color:var(--ink);border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
 .searchicon:hover{border-color:var(--ink)}
+.navsearch{display:inline-flex;align-items:center}
 .baractions{display:flex;align-items:center;gap:.5rem}
 .navtoggle{display:none;min-height:44px;padding:0 1rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);color:var(--ink);font:500 .95rem var(--font)}
 @media (max-width:1100px){
   .navtoggle{display:block}
   .searchicon{display:inline-flex}
+  nav.main .navsearch{display:none!important}
   nav.main{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:.4rem 24px 1rem}
   nav.main.open{display:flex}
   nav.main a{padding:.85rem 0;border-bottom:1px solid var(--line)}

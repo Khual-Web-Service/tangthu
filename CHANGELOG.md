@@ -10,7 +10,7 @@ All notable changes to Zogam History are recorded here.
 ## 2026-10-20 (mobile search icon)
 
 ### Added
-- **Search icon on mobile and tablet:** a magnifier button to the left of the Menu button (screens up to 1100px) opens the search page. It has a 44px tap target and a screen-reader label.
+- **Search icon on mobile and tablet:** a magnifier button to the left of the Menu button (screens up to 1100px) opens the search page. It has a 44px tap target and a screen-reader label. On desktop the "Search" menu word is now the same icon.
 
 ## 2026-10-20 (naming traditions)
 
