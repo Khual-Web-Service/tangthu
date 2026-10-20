@@ -181,3 +181,9 @@
 - **Repo:** GitHub Khual-Web-Service/tangthu. Every change is logged in `CHANGELOG.md`.
 - **Standing rule from Khual:** always include the source, both on the site and in replies.
 - **Page dates:** `page-dates.json` holds each page's published and last-updated dates; they appear on the page, in the APA/MLA/Chicago "Cite this page" box, in the page metadata and in the sitemap. Bump a page's `updated` date whenever its content changes.
+
+## Proverbs and source checks (19 Oct 2026)
+- Added 13 Paunak to the Culture page from Thang Thawn Tuang Guite's "Zomite Paunak" (A) post; the blog's label index blocks automated access, so posts B–H still need their URLs.
+- Gin Khan Nang, "Zomi Life and Culture" (2007; Zomi Daily 2009) verified and added. Conflicts to resolve: Khan Thuam's death 1840 (Nang) vs 1848 (site); Khuado end of September (Nang) vs October (site); "Chin" from the Chin dynasty (treat as contested).
+- Rejected: tribalmercy.org "About the Zo Tribe" (unsourced, errors); an AI search answer listing "Zomi Tangthu" (Thang Lian Pau) and "Zogam Tangthu A Tom" (Khup Za Go), neither found in any catalogue.
+- Lead: Wikipedia "Goukhothang" gives c. 1821–1872 citing Carey & Tuck vol. I p. 141; check before using the blog's Goukhothang post.

@@ -277,3 +277,8 @@ main.wide > section.hero{margin-top:0}
 .contribute p{grid-column:1}
 .contribute .btn{grid-column:2;grid-row:1/3}
 @media (max-width:640px){.contribute{grid-template-columns:1fr}.contribute .btn{grid-column:1;grid-row:auto;justify-self:start}}
+
+/* Paunak (proverbs) list */
+dl.proverbs { margin: 1.5rem 0; }
+dl.proverbs dt { font-weight: 600; font-style: italic; margin-top: 1.1rem; }
+dl.proverbs dd { margin: .25rem 0 0 1.25rem; }

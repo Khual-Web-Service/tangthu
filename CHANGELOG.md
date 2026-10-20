@@ -2,6 +2,17 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (proverbs and new sources)
+
+### Added
+- **Culture page, "Paunak: Zomi proverbs":** 13 proverbs in Zolai with English translations and meanings, labelled as oral tradition. Zolai wording follows a community collection; translations are the site's own and still need checking by a native speaker.
+- **Sources:** Thang Thawn Tuang Guite, “Zomite Paunak” (Zogam History blog, 2023); Gin Khan Nang, “Zomi Life and Culture” (Fuller Theological Seminary paper, 2007, via Zomi Daily).
+- **Styles:** layout for the proverb list.
+
+### Changed
+- **Culture page, "The hornbill":** the hornbill-couple emblem is now also cited to Gin Khan Nang (2007), so it no longer rests on the 2011 blog alone; the source note is updated to match.
+- **Page dates:** Culture page `updated` remains 2026-10-19 (already today's date).
+
 ## 2026-10-19 (dates and citations)
 
 ### Added
