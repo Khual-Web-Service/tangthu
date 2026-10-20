@@ -1,9 +1,13 @@
 /* Zogam History — design tokens. Weave: Zopuan — white ground, thin gold edge lines, broad green bands framing a red centre split by a white line */
+/* Until Literata loads, text uses Georgia scaled to Literata's size and line metrics, so the swap does not move the page.
+   Values: Literata (Latin subset, default instance) vs Georgia on macOS, measured with fontTools; see CHANGELOG. */
+@font-face{font-family:"Literata Fallback";src:local("Georgia");font-style:normal;size-adjust:108.19%;ascent-override:108.79%;descent-override:28.47%;line-gap-override:0%}
+@font-face{font-family:"Literata Fallback";src:local("Georgia Italic"),local("Georgia-Italic");font-style:italic;size-adjust:108.19%;ascent-override:108.79%;descent-override:28.47%;line-gap-override:0%}
 :root{
   --mist:#EFEDE6; --paper:#F8F6F0; --ink:#14231A; --ink-2:#3A3C35; --stone:#66655C;
   --line:#CDD1C4; --green:#0E5A33; --green-2:#093F24; --red:#C21F18; --gold:#B8862E;
   --oral:#6A3D78; --doc:#0E5A33; --sch:#8A6418;
-  --font:"Literata",Georgia,"Times New Roman",serif;
+  --font:"Literata","Literata Fallback",Georgia,"Times New Roman",serif;
   --measure:42rem; --wide:74rem; --r:6px; --meta:max(15px,.9rem); --toc:200px; --gutter:40px;
   --weave:repeating-linear-gradient(90deg,#F3F0E8 0 14px,#B8862E 14px 15px,#F3F0E8 15px 22px,#C9962B 22px 23px,#0E5A33 23px 38px,#D8261E 38px 49px,#F3F0E8 49px 51px,#D8261E 51px 62px,#0E5A33 62px 77px,#C9962B 77px 78px,#F3F0E8 78px 85px,#B8862E 85px 86px,#F3F0E8 86px 100px);
 }
@@ -140,6 +144,10 @@ figure.photo figcaption .img-context{font-style:italic}
 .tl-year{font-weight:600;color:var(--green)}
 .tl-body{display:none;padding:0 .6rem 1rem 10.3rem;font-size:.98rem;color:var(--ink-2)}
 .tl-item.open .tl-body{display:block}
+.no-js .tl-body{display:block}  /* without JavaScript every event's text and sources are shown */
+.no-js .filters{display:none}   /* and the filters, which need JavaScript, are hidden */
+.tl-era{margin:2rem 0 1rem}.tl-era h2{font-size:1.25rem;margin:0 0 .3rem}
+.tl-empty{color:var(--stone);font-style:italic}
 .tl-body p{margin:.2rem 0}
 @media (max-width:640px){.tl-head{grid-template-columns:1fr}.tl-body{padding-left:.6rem}}
 

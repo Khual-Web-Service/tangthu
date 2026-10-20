@@ -50,6 +50,7 @@ DESC = {
  "search.html": ("Search — Zogam History", "Search every page of Zogam History: chapters, stories, proverbs, glossary terms, timeline events and sources."),
  "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
 }
+PAGE_TYPE = {"search.html": "SearchResultsPage", "sources.html": "CollectionPage", "contribute.html": "WebPage", "sitemap.html": "WebPage", "404.html": "WebPage"}  # chapters and stories are Article
 FAQ = [
  ("What is Zomi history?", "Zomi history is the history of the peoples who call themselves Zomi (“Zo people”) — including Tedim, Paite, Zou, Simte, Vaiphei and related communities — in Myanmar’s Chin State, India’s Manipur and Mizoram, and the diaspora. The name was proposed in 1950 and adopted by the Zomi Baptist Convention in 1953."),
  ("What is Zo history?", "Zo history covers the wider family of related peoples — Zomi, Chin, Kuki, Lai, Mizo and Zou — who share Kuki-Chin languages and origin traditions such as Khul and Chhinlung, across Myanmar, Northeast India and Bangladesh."),
@@ -95,7 +96,17 @@ ACCESSED = "19 October 2026"
 DATES = json.loads((ROOT/"page-dates.json").read_text()) if (ROOT/"page-dates.json").exists() else {}
 MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 def pdates(f):
-    x = DATES.get(f, {}); return x.get("published", TODAY), x.get("updated", TODAY)
+    """(published, updated) from page-dates.json. Never the build date: check_dates() stops the build if a page has no date."""
+    x = DATES.get(f, {})
+    pub = x.get("published") or x.get("updated"); upd = x.get("updated") or x.get("published")
+    if not pub: sys.exit(f'page-dates.json has no date for "{f}"')
+    return pub, upd
+def check_dates(names):
+    missing_dates = [n for n in names if not (DATES.get(n, {}).get("published") or DATES.get(n, {}).get("updated"))]
+    if missing_dates:
+        print("DATE ERRORS. Add a published or updated date to page-dates.json for:")
+        for n in missing_dates: print("  - " + n)
+        sys.exit(1)
 def long_date(iso):
     y,m,dd = map(int, iso.split("-")); return f"{dd} {MONTHS[m-1]} {y}"
 def us_date(iso):
@@ -257,6 +268,102 @@ def pch_chart():
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
 HERO_CREDIT = "Map area approximate, not a territorial claim · Boundaries: geoBoundaries (CC BY 4.0)"  # photo credit is set in images.json (hornbill.webp)
+TIMELINE_ERAS = [(1800, "early", "Origin traditions and early records"), (1900, "british", "British rule and the Chin Hills"),
+                 (1947, "mission", "Mission, script and early war"), (1980, "indep", "Independence and new names"), (None, "recent", "Since 1980")]
+def parse_timeline():
+    """Events from assets/data.js (window.ZO_TIMELINE), sorted by start year as the browser filter sorts them."""
+    src = (ROOT / "assets" / "data.js").read_text(encoding="utf8")
+    block = re.search(r"window\.ZO_TIMELINE = \[(.*?)\n\];", src, re.S).group(1)
+    events = []
+    for line in block.splitlines():
+        if not line.strip().startswith("{"): continue
+        f = {}
+        for k, v in re.findall(r'(\w+):("(?:[^"\\]|\\.)*"|-?[\d.]+|\[[^\]]*\])', line):
+            if v.startswith("["): f[k] = re.findall(r'"([^"]*)"', v)
+            elif v.startswith('"'): f[k] = json.loads(v)
+            else: f[k] = float(v) if "." in v else int(v)
+        if not {"y", "s", "t", "th", "ev", "d", "src"} <= f.keys(): sys.exit(f"assets/data.js: event missing fields: {line.strip()[:80]}")
+        events.append(f)
+    return sorted(events, key=lambda e: e["s"])
+TIMELINE = parse_timeline()
+def timeline_era(s):
+    for limit, key, name in TIMELINE_ERAS:
+        if limit is None or s < limit: return key, name
+TIMELINE_THEMES = [("all","All"),("origins","Origins"),("colonial","Colonial"),("faith","Faith & literacy"),("identity","Identity"),("modern","Modern"),("diaspora","Diaspora")]
+TIMELINE_EVIDENCE = [("all","All evidence"),("oral","Oral tradition"),("sch","Scholarly"),("doc","Documented")]
+def timeline_filters():
+    """Filter buttons are in the HTML so nothing is inserted after load (no layout shift). site.js wires them; without JS they are hidden."""
+    def group(name, label, opts):
+        def btn(k, v):
+            on = k == "all"
+            pressed, cls = ("true", ' class="on"') if on else ("false", "")
+            return f'<button type="button" data-k="{k}" aria-pressed="{pressed}"{cls}>{html.escape(v)}</button>'
+        btns = "".join(btn(k, v) for k, v in opts)
+        return f'<div class="fgroup" role="group" aria-label="{label}" data-group="{name}">{btns}</div>'
+    return ('<div class="filters">' + group("th", "Filter by theme", TIMELINE_THEMES) + group("ev", "Filter by evidence", TIMELINE_EVIDENCE) + '</div>'
+            f'<p class="small tl-live" aria-live="polite">{len(TIMELINE)} events shown</p>')
+def timeline_html():
+    """The timeline as static HTML: filters, then events grouped by era. site.js adds the filtering; with no JavaScript every event and its sources are shown."""
+    out, cur, n = [timeline_filters()], None, 0
+    for e in TIMELINE:
+        key, name = timeline_era(e["s"])
+        if key != cur:
+            if cur is not None: out.append("</ol></section>")
+            out.append(f'<section class="tl-era" id="era-{key}"><h2>{html.escape(name)}</h2><ol class="tl-list">')
+            cur = key
+        n += 1; bid = f"tl-{n}"
+        srcs = " ".join(f"[[{k}]]" for k in e["src"])
+        out.append(f'<li class="tl-item ev-{e["ev"]}" data-th="{e["th"]}" data-ev="{e["ev"]}">'
+                   f'<button type="button" class="tl-head" aria-expanded="false" aria-controls="{bid}">'
+                   f'<span class="tl-year">{html.escape(e["y"])}</span><span class="tl-title">{html.escape(e["t"])}</span>'
+                   f'<span class="tag {e["ev"]}">{html.escape(TIMELINE_LABEL[e["ev"]])}</span></button>'
+                   f'<div class="tl-body" id="{bid}"><p>{html.escape(e["d"])}</p><p class="small">Sources: {srcs}</p></div></li>')
+    out.append("</ol></section>")
+    return "".join(out) + '<p class="tl-empty" hidden>No events match.</p>'
+TIMELINE_LABEL = {"oral": "Oral tradition", "doc": "Documented", "sch": "Scholarly"}
+def csp():
+    """Content-Security-Policy-Report-Only. Origins are the ones the pages actually load (checked against the build output)."""
+    gtag = ["https://www.googletagmanager.com", "https://www.google-analytics.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://analytics.google.com"]
+    parts = [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdnjs.cloudflare.com",  # inline: the gtag loader, the citation-copy script and the theme class
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",      # inline: Leaflet sets style attributes
+        f"font-src 'self' https://fonts.gstatic.com {CDN_ORIGIN}",
+        f"img-src 'self' data: {CDN_ORIGIN} https://*.tile.openstreetmap.org https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com",
+        "connect-src 'self' " + " ".join(gtag + ["https://region1.google-analytics.com"]),
+        "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'self'",
+    ]
+    return "; ".join(parts)
+def write_headers():
+    """Cloudflare Pages _headers. Path rules ignore query strings, so the ?v= hashed scripts and styles are listed by path."""
+    immutable = ["/assets/style.css", "/assets/site.js", "/assets/data.js", "/assets/sources.js", "/assets/overlay.js", "/assets/search.js"]
+    lines = [
+        "/*",
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains",
+        "  X-Content-Type-Options: nosniff",
+        "  Referrer-Policy: strict-origin-when-cross-origin",
+        "  X-Frame-Options: SAMEORIGIN",
+        "  Permissions-Policy: camera=(), microphone=(), geolocation=()",
+        f"  Content-Security-Policy-Report-Only: {csp()}",
+        "/assets/*",
+        "  Cache-Control: public, max-age=86400",
+    ]
+    for p in immutable: lines += [p, "  Cache-Control: public, max-age=31536000, immutable"]
+    lines += [
+        "/sitemap.xml", "  Content-Type: application/xml; charset=utf-8",
+        "/llms.txt", "  Content-Type: text/plain; charset=utf-8",
+        "/llms-full.txt", "  Content-Type: text/plain; charset=utf-8",
+    ]
+    (DIST/"_headers").write_text("\n".join(lines) + "\n")
+def security_txt():
+    """RFC 9116. Expires one year from the build date."""
+    expires = (datetime.date.fromisoformat(TODAY) + datetime.timedelta(days=365)).isoformat()
+    return (f"Contact: mailto:tangthu@khual.net\nExpires: {expires}T00:00:00.000Z\nPreferred-Languages: en\n"
+            f"Canonical: {SITE_URL}/.well-known/security.txt\n")
+HERO_PRELOAD = ('<link rel="preload" as="image" href="/assets/img/hornbill-480.webp" fetchpriority="high" '
+                'imagesrcset="/assets/img/hornbill-480.webp 480w, /assets/img/hornbill.webp 1050w" imagesizes="(max-width: 767px) 240px, 320px">')
+RAW_TEMPLATE = re.compile(r"\{\{|\[\[")  # unrendered template syntax ({{...}} or [[...]]) must never be published
+PLACEHOLDER_TOKENS = ["[CREDIT", "[LICENSE", "TODO", "TBD", "[PLACEHOLDER"]  # case-sensitive, checked inside <main> only
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -276,6 +383,7 @@ def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
     if "{{pch-chart}}" in body: body = body.replace("{{pch-chart}}", pch_chart())
     if "{{zogam-map}}" in body: body = body.replace("{{zogam-map}}", zogam_map())
+    if "{{timeline-events}}" in body: body = body.replace("{{timeline-events}}", timeline_html())
     body = body.replace("{{hero-moments}}", hero_moments()).replace("{{hero-stats}}", hero_stats()).replace("{{hero-credit}}", HERO_CREDIT)
     body = IMG_RE.sub(lambda m: img_figure(m.group(1)), body)  # before cite(): the caption can carry no [[ ]], but keep the order
     body = PHOTO_RE.sub(lambda m: photo(m.group(1)), body)  # before cite(): figcaptions carry [[source]]
@@ -301,19 +409,25 @@ def page(fname, title, body, wide=False, home=False, search=False):
     img_alt = f"{title if not home else SITE_NAME}: share card from Zogam History, a sourced history of the Zomi and Zo peoples"
     crumbs = [{"@type":"ListItem","position":1,"name":"Home","item":SITE_URL+"/"}]
     if not home: crumbs.append({"@type":"ListItem","position":2,"name":title,"item":url})
+    page_node = {"@type":PAGE_TYPE.get(fname, "WebPage" if home else "Article"),"@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
+       "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]}
     graph = [
-      {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
+      {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","logo":{"@type":"ImageObject","url":SITE_URL+"/icon-512.png","width":512,"height":512},"sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
       {"@type":"WebSite","@id":SITE_URL+"/#site","url":SITE_URL+"/","name":SITE_NAME,"alternateName":["Tangthu","Zomi History","Zo History"],"inLanguage":"en","description":DESC["index.html"][1],"publisher":{"@id":"https://khual.net/#org"},"copyrightHolder":{"@id":"https://khual.net/#org"},"copyrightYear":2026,"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"sameAs":["https://github.com/Khual-Web-Service/tangthu"]},
-      {"@type":"WebPage" if home else "Article","@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
-       "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]},
+      page_node,
       {"@type":"BreadcrumbList","itemListElement":crumbs}]
     if fname=="glossary.html":
         terms=re.findall(r'<dt id="([^"]+)">(.*?)</dt>\s*<dd>(.*?)</dd>', GLOSS_RAW, re.S)
-        graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":url+"#terms"} for i,n,d in terms]})
+        page_node["mainEntity"] = {"@id": url+"#terms"}
+        graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","url":url,"inLanguage":"en","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":{"@id":url+"#terms"}} for i,n,d in terms]})
+    if fname=="timeline.html":
+        graph.append({"@type":"ItemList","@id":url+"#events","name":"Zomi and Zo history timeline","numberOfItems":len(TIMELINE),
+                      "itemListOrder":"https://schema.org/ItemListOrderAscending",
+                      "itemListElement":[{"@type":"ListItem","position":i+1,"name":f'{e["y"]}: {e["t"]}',"description":e["d"]} for i,e in enumerate(TIMELINE)]})
     if home:
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
-    robots = '<meta name="robots" content="noindex">' if fname=="404.html" else '<meta name="robots" content="index,follow,max-image-preview:large">'
+    robots = {"404.html": '<meta name="robots" content="noindex">', "search.html": '<meta name="robots" content="noindex,follow">'}.get(fname, '<meta name="robots" content="index,follow,max-image-preview:large">')
     return f'''<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(t)}</title>
@@ -327,9 +441,10 @@ def page(fname, title, body, wide=False, home=False, search=False):
 {'' if home else f'<meta property="article:published_time" content="{pdates(fname)[0]}"><meta property="article:modified_time" content="{pdates(fname)[1]}"><meta property="article:publisher" content="https://khual.net">'}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
 {FAVICON_HEAD}
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');</script><script type="application/ld+json">{ld}</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');window.addEventListener('load',function(){{var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L';document.head.appendChild(s);}});</script><script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="{CDN_ORIGIN}">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
+{HERO_PRELOAD if home else ''}
 <link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
@@ -471,6 +586,8 @@ def main():
         for p in problems: print("  - " + p)
         sys.exit(1)
     for w in todo_warnings(): print("WARNING: " + w)
+    generated = ["sources.html", "search.html", "404.html", "sitemap.html"]
+    check_dates([f.name for f in (ROOT / "content").glob("*.html")] + generated)
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
     NAV = [(clean(f) if False else f, l) for f,l in NAV]
@@ -496,8 +613,9 @@ def main():
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p>Try <a href="/search">searching the site</a>, or <a href="index.html">return home</a>.</p>'))
     order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]
     pages = order
-    pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
-    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
+    # Indexable pages only: /search is noindex, /sitemap is the human map, and about.html waits for real editor names.
+    sitemap_pages = [p for p in order if p not in ("search.html", "sitemap.html")]
+    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod></url>" for p in sitemap_pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     bots = ["Googlebot","Google-Extended","Bingbot","GPTBot","OAI-SearchBot","ChatGPT-User","ClaudeBot","Claude-SearchBot","Claude-User","anthropic-ai","PerplexityBot","Perplexity-User","Applebot","Applebot-Extended","CCBot","Meta-ExternalAgent","DuckAssistBot","Amazonbot","cohere-ai","YouBot"]
     robots = "# Zogam History welcomes search engines and AI assistants.\n# Content: CC BY-SA 4.0. Please credit \"Zogam History, " + SITE_URL + "\".\n\n"
@@ -512,13 +630,30 @@ def main():
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
     (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",sm))
-    (DIST/"_headers").write_text("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/assets/*\n  Cache-Control: public, max-age=86400\n/sitemap.xml\n  Content-Type: application/xml; charset=utf-8\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n")
+    write_headers()
+    (DIST/".well-known").mkdir(exist_ok=True)
+    (DIST/".well-known"/"security.txt").write_text(security_txt())
     n_idx = build_search_index()
     # check every source is cited somewhere
     used = set(re.findall(r"\[\[([\w-]+)\]\]", "".join(p.read_text() for p in (ROOT/"content").glob("*.html"))))
     used |= set(re.findall(r'"([\w-]+)"', re.search(r"src:\[.*", (ROOT/"assets/data.js").read_text(), re.S).group(0)))
     used |= {p["source"] for p in PHOTOS.values() if p.get("source")}
     if missing: print("MISSING SOURCE KEYS:", missing); sys.exit(1)
+    # Raw template syntax must never reach a rendered page. The placeholder boxes are rendered HTML, so they pass.
+    leaks = []
+    for f in sorted(DIST.glob("*.html")):
+        for m in RAW_TEMPLATE.finditer(f.read_text()):
+            t = f.read_text(); leaks.append(f"{f.name}: {t[max(0, m.start()-30):m.start()+40]!r}")
+    for f in sorted(DIST.glob("*.html")):
+        m = re.search(r"<main[^>]*>(.*)</main>", f.read_text(), re.S)
+        body = m.group(1) if m else ""
+        for token in PLACEHOLDER_TOKENS:
+            for x in re.finditer(re.escape(token), body):
+                leaks.append(f"{f.name}: {token!r} in {body[max(0, x.start()-30):x.start()+40]!r}")
+    if leaks:
+        print("OUTPUT ERRORS. Unrendered template syntax or a placeholder token reached a rendered page:")
+        for l in leaks: print("  - " + l)
+        sys.exit(1)
     unused = set(S) - used
     print(f"Search index: {n_idx} entries."); print(f"Built {len(list(DIST.glob('*.html')))} pages. Unused sources: {sorted(unused) or 'none'}")
 
