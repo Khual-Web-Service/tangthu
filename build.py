@@ -147,9 +147,15 @@ def refs_block(title):
       'document.querySelectorAll(".copycite").forEach(function(b){b.addEventListener("click",function(){var t=b.previousElementSibling.textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1500)},function(){});});});})();</script>')
     return f'<details class="refs" id="sources"><summary><h2 id="refs-h">Sources for this page <span class="count">({len(_used)})</span></h2><span class="small">Tap to see where every fact comes from</span></summary><p class="small">The small numbers in the text link here. Each source is labelled by type. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</details>'
 
+def ph(kind, text):
+    if kind == "photo":
+        return f'<figure class="placeholder"><div class="ico">IMG</div><p><strong>Community photo wanted</strong>{text}</p></figure>'
+    return f'<aside class="placeholder"><div class="ico">♪</div><p><strong>Oral history wanted</strong>{text} <a href="contribute.html">How to share it</a></p></aside>'
+
 def photo(pid):
     p = PHOTOS[pid]
-    if p.get("status") == "wanted": return ""  # unfilled placeholder: renders as nothing (the caption stays in photos.json)
+    if p.get("status") == "wanted":
+        return ph("photo", p["caption"])
     cap = p["caption"] + (f" — {p['credit']}" if p.get("credit") else "")
     src = html.escape(p["url"] if p.get("url") else CDN_BASE + "/" + p["file"])  # "url" for files served by the site itself
     return (f'<figure><img src="{src}" alt="{html.escape(p["alt"])}" width="{int(p["width"])}" height="{int(p["height"])}" loading="lazy" decoding="async">'
@@ -356,7 +362,7 @@ def security_txt():
             f"Canonical: {SITE_URL}/.well-known/security.txt\n")
 HERO_PRELOAD = ('<link rel="preload" as="image" href="/assets/img/hornbill-480.webp" fetchpriority="high" '
                 'imagesrcset="/assets/img/hornbill-480.webp 480w, /assets/img/hornbill.webp 1050w" imagesizes="(max-width: 767px) 240px, 320px">')
-FORBIDDEN_IN_OUTPUT = ["[CREDIT", "[LICENSE", "{{photo:", "{{oralhistory:"]  # placeholders that must never be published
+RAW_TEMPLATE = re.compile(r"\{\{|\[\[")  # unrendered template syntax ({{...}} or [[...]]) must never be published
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -381,7 +387,7 @@ def render(body):
     body = IMG_RE.sub(lambda m: img_figure(m.group(1)), body)  # before cite(): the caption can carry no [[ ]], but keep the order
     body = PHOTO_RE.sub(lambda m: photo(m.group(1)), body)  # before cite(): figcaptions carry [[source]]
     body = re.sub(r"\[\[([\w-]+)\]\]", cite, body)
-    body = re.sub(r"\{\{oralhistory:(.*?)\}\}", "", body, flags=re.S)  # unfilled prompts render as nothing
+    body = re.sub(r"\{\{oralhistory:(.*?)\}\}", lambda m: ph("oralhistory", m.group(1)), body)
     body = re.sub(r"\{\{short\}\}(.*?)\{\{/short\}\}", lambda m: '<aside class="short"><h2 class="short-h">The short version</h2>'+m.group(1)+'<p class="short-more">Want the details? Keep reading. Every fact below is sourced.</p></aside>', body, flags=re.S)
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
@@ -632,13 +638,13 @@ def main():
     used |= set(re.findall(r'"([\w-]+)"', re.search(r"src:\[.*", (ROOT/"assets/data.js").read_text(), re.S).group(0)))
     used |= {p["source"] for p in PHOTOS.values() if p.get("source")}
     if missing: print("MISSING SOURCE KEYS:", missing); sys.exit(1)
-    # Template tokens and the homepage credit placeholder must never reach a rendered page.
+    # Raw template syntax must never reach a rendered page. The placeholder boxes are rendered HTML, so they pass.
     leaks = []
     for f in sorted(DIST.glob("*.html")):
-        for token in FORBIDDEN_IN_OUTPUT:
-            if token in f.read_text(): leaks.append(f"{f.name} contains {token!r}")
+        for m in RAW_TEMPLATE.finditer(f.read_text()):
+            t = f.read_text(); leaks.append(f"{f.name}: {t[max(0, m.start()-30):m.start()+40]!r}")
     if leaks:
-        print("OUTPUT ERRORS. A placeholder reached a rendered page:")
+        print("OUTPUT ERRORS. Unrendered template syntax reached a rendered page:")
         for l in leaks: print("  - " + l)
         sys.exit(1)
     unused = set(S) - used

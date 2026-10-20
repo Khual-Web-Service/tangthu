@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (placeholder boxes kept)
+
+### Changed
+- Kept community photo and oral-history invitation boxes; leak guard now checks only unrendered template syntax.
+
 ## 2026-10-20 (phase 2: performance and headers)
 
 ### Added
