@@ -189,7 +189,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 </head><body>
 <div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
+<header class="site"><div class="bar"><a class="searchicon" href="/search" aria-label="Search the site"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></a><a class="brand" href="/">Zogam <em>History</em></a>
 <button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><div class="foot-grid">

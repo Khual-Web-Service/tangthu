@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (mobile search icon)
+
+### Added
+- **Search icon on mobile and tablet:** a magnifier button at the top left of the header (screens up to 1100px) opens the search page. It has a 44px tap target and a screen-reader label.
+
 ## 2026-10-20 (naming traditions)
 
 ### Added
