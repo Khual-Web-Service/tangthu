@@ -324,3 +324,6 @@ img,svg,video,iframe{max-width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){html,.onpage ul{scroll-behavior:auto}}
 /* Windows high-contrast / forced colours */
 @media (forced-colors:active){.tag,.btn,.onpage a[aria-current],.filters button[aria-pressed="true"]{border:1px solid CanvasText}.selvedge,.weave{forced-color-adjust:none}}
+.brand{display:inline-flex;align-items:center;min-height:44px}
+.src a{display:inline-block;padding:.5rem 0}
+sup.fn a{padding:.55em .25em}
