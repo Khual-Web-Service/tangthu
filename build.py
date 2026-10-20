@@ -363,6 +363,7 @@ def security_txt():
 HERO_PRELOAD = ('<link rel="preload" as="image" href="/assets/img/hornbill-480.webp" fetchpriority="high" '
                 'imagesrcset="/assets/img/hornbill-480.webp 480w, /assets/img/hornbill.webp 1050w" imagesizes="(max-width: 767px) 240px, 320px">')
 RAW_TEMPLATE = re.compile(r"\{\{|\[\[")  # unrendered template syntax ({{...}} or [[...]]) must never be published
+PLACEHOLDER_TOKENS = ["[CREDIT", "[LICENSE", "TODO", "TBD", "[PLACEHOLDER"]  # case-sensitive, checked inside <main> only
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -643,8 +644,14 @@ def main():
     for f in sorted(DIST.glob("*.html")):
         for m in RAW_TEMPLATE.finditer(f.read_text()):
             t = f.read_text(); leaks.append(f"{f.name}: {t[max(0, m.start()-30):m.start()+40]!r}")
+    for f in sorted(DIST.glob("*.html")):
+        m = re.search(r"<main[^>]*>(.*)</main>", f.read_text(), re.S)
+        body = m.group(1) if m else ""
+        for token in PLACEHOLDER_TOKENS:
+            for x in re.finditer(re.escape(token), body):
+                leaks.append(f"{f.name}: {token!r} in {body[max(0, x.start()-30):x.start()+40]!r}")
     if leaks:
-        print("OUTPUT ERRORS. Unrendered template syntax reached a rendered page:")
+        print("OUTPUT ERRORS. Unrendered template syntax or a placeholder token reached a rendered page:")
         for l in leaks: print("  - " + l)
         sys.exit(1)
     unused = set(S) - used
