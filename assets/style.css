@@ -36,13 +36,13 @@ nav.main{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;font-size:.95rem}
 nav.main a{color:var(--ink-2);text-decoration:none;padding:.4rem 0;border-bottom:2px solid transparent}
 nav.main a:hover{color:var(--green)}
 nav.main a[aria-current]{color:var(--ink);border-bottom-color:var(--green)}
-.searchicon{display:none;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin-right:-1rem;color:var(--ink);border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.searchicon{display:none;align-items:center;justify-content:center;min-width:44px;min-height:44px;color:var(--ink);border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
 .searchicon:hover{border-color:var(--ink)}
+.baractions{display:flex;align-items:center;gap:.5rem}
 .navtoggle{display:none;min-height:44px;padding:0 1rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);color:var(--ink);font:500 .95rem var(--font)}
 @media (max-width:1100px){
   .navtoggle{display:block}
   .searchicon{display:inline-flex}
-  .brand{margin-right:auto}
   nav.main{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:.4rem 24px 1rem}
   nav.main.open{display:flex}
   nav.main a{padding:.85rem 0;border-bottom:1px solid var(--line)}
