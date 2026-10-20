@@ -11,6 +11,9 @@ All notable changes to Zogam History are recorded here.
 - **Accessible:** labelled form, result count announced to screen readers, filter buttons report their state, Enter moves to the first result, and a message for readers without JavaScript.
 - **Build:** `build.py` now writes `assets/search-index.json`; the 404 page and site map link to search.
 
+### Fixed
+- **Updates reach readers immediately:** stylesheet and scripts are now loaded with a version stamp (`?v=…`) that changes whenever the file changes, so the 24-hour asset cache no longer serves an old design after an update.
+
 ## 2026-10-19 (mobile and accessibility)
 
 ### Changed

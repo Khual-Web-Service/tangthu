@@ -10,7 +10,7 @@
   function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   Object.keys(KINDS).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=KINDS[k];b.setAttribute('aria-pressed',k==='all'?'true':'false');
     b.onclick=function(){kind=k;[].forEach.call(fbar.children,function(z){z.setAttribute('aria-pressed',z===b?'true':'false');});run();};fbar.appendChild(b);});
-  fetch('/assets/search-index.json').then(function(r){return r.json();}).then(function(data){
+  fetch('/assets/search-index.json?v='+(document.currentScript&&document.currentScript.src.split('v=')[1]||Date.now()),{cache:'no-cache'}).then(function(r){return r.json();}).then(function(data){
     (window.ZO_TIMELINE||[]).forEach(function(e){data.push({t:e.y+': '+e.t,p:'Timeline',u:'/timeline',x:e.d,k:'timeline',e:[e.ev]});});
     data.forEach(function(d){d.p==='Home'&&(d.k=d.k==='page'?'section':d.k);if(d.k==='page')d.k='section';d._t=norm(d.t);d._x=norm(d.x);d._s=squash(d.t+' '+d.x);});
     idx=data; var u=new URLSearchParams(location.search).get('q'); if(u){q.value=u;} run(); if(!u)q.focus();

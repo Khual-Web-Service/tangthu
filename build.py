@@ -135,6 +135,10 @@ def render(body):
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
 
+import hashlib
+def V(path):
+    """Cache-busting version stamp from the asset's content."""
+    return hashlib.sha1((ROOT/path.lstrip("/")).read_bytes()).hexdigest()[:8] if (ROOT/path.lstrip("/")).exists() else TODAY.replace("-","")
 def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     nav = "".join(f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>' for h,l in NAV)
@@ -176,7 +180,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css">{leaflet}
+<link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">{leaflet}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
@@ -194,7 +198,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <div><div class="foot-h">About</div><ul><li><a href="/timeline">Timeline</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/sources">Sources &amp; standards</a></li><li><a href="/contribute">Contribute &amp; licence</a></li><li><a href="/sitemap">Site map</a></li><li><a href="https://github.com/Khual-Web-Service/tangthu">GitHub</a></li><li><a href="mailto:tangthu@khual.net">tangthu@khual.net</a></li></ul></div>
 </div><p class="foot-legal">
 © 2026 <a href="https://khual.net" rel="author">Khual Web Service LLC</a>. Built and maintained by <a href="https://khual.net">Khual Web Service</a>, Tulsa, Oklahoma. Text <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code MIT. Non-partisan and educational.</p></footer>
-<script src="/assets/sources.js"></script><script src="/assets/data.js"></script><script defer src="/assets/site.js"></script>{'<script defer src="/assets/search.js"></script>' if search else ''}
+<script src="/assets/sources.js?v={V('/sources.json')}"></script><script src="/assets/data.js?v={V('/assets/data.js')}"></script><script defer src="/assets/site.js?v={V('/assets/site.js')}"></script>{f'<script defer src="/assets/search.js?v={V("/assets/search.js")}"></script>' if search else ''}
 </body></html>'''
 
 def write_llms():
