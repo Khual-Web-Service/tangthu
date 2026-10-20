@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build static site into dist/: python3 build.py"""
-import json, re, shutil, html, sys, urllib.request
+import json, re, shutil, html, sys, time, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -169,10 +169,16 @@ def referenced_img_keys():
     for p in (ROOT / "content").glob("*.html"): keys |= set(IMG_RE.findall(p.read_text()))
     return sorted(keys)
 
+def is_todo(r):
+    return str(r.get("credit", "")).strip().upper() == "TODO"
+def todo_warnings():
+    return [f'images.json "{k}": credit is TODO (license: {r.get("license", "-")})' for k, r in IMAGES.items() if is_todo(r)]
+
 def img_problems(refs):
     """Image errors in images.json, assets/img and the content. Empty means the image step can run."""
     problems = []
     for key, r in IMAGES.items():
+        if is_todo(r): continue  # placeholder credit: warned about by todo_warnings(), not an error
         for field in IMAGE_REQUIRED:
             if not str(r.get(field, "")).strip(): problems.append(f'images.json "{key}": missing "{field}"')
         if r.get("people") and not str(r.get("consent") or "").strip():
@@ -194,11 +200,14 @@ def unreachable_images(refs):
             for ext in ("webp", "jpg"):
                 url = f"{IMAGE_BASE}/{key}-{w}.{ext}"
                 req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "ZogamHistory-build/1.0"})
-                try:
-                    with urllib.request.urlopen(req, timeout=15) as r:
-                        if r.status != 200: bad.append(f"{url}: HTTP {r.status}")
-                except Exception as e:
-                    bad.append(f"{url}: {e}")
+                for attempt in range(3):  # retry: one slow response on the CDN must not fail the whole build
+                    try:
+                        with urllib.request.urlopen(req, timeout=15) as r:
+                            if r.status != 200: bad.append(f"{url}: HTTP {r.status}")
+                        break
+                    except Exception as e:
+                        if attempt == 2: bad.append(f"{url}: {e}")
+                        else: time.sleep(2)
     return bad
 
 def img_figure(key):
@@ -220,7 +229,7 @@ def image_credits():
         f'Photo: <a href="{html.escape(r["source"])}" rel="noopener" target="_blank">{html.escape(r["author"])}</a>, '
         f'<a href="{html.escape(r["licence_url"])}" rel="license noopener" target="_blank">{html.escape(r["licence"])}</a>. '
         f'Taken {html.escape(r["date_taken"])}. {html.escape(r["changes"])} Rights checked {html.escape(r["verified"])}.</li>'
-        for key, r in IMAGES.items())
+        for key, r in IMAGES.items() if not is_todo(r))
     return ('<section class="img-credits"><h2>Image credits</h2><p class="small">Every photo on this site has a rights record in '
             'images.json. Each photo is shared under the licence named.</p><ul>' + items + '</ul></section>')
 
@@ -247,7 +256,7 @@ def pch_chart():
             + "".join(bodies) + '</table></div>'
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
-HERO_CREDIT = "Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
+HERO_CREDIT = "Map area approximate, not a territorial claim · Boundaries: geoBoundaries (CC BY 4.0)"  # photo credit is set in images.json (hornbill.webp)
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -261,7 +270,7 @@ def hero_moments():
                      f'<span class="hero-mini" aria-hidden="true">{html.escape(m["mobile"])}</span></a></li>')
     return "".join(items)
 def hero_stats():
-    return f"9 chapters · {len(SRC)} sources · About 15 minutes · Map area approximate, not a territorial claim · {HERO_CREDIT}"
+    return f"9 chapters · {len(SRC)} sources · About 15 minutes"
 
 def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
@@ -283,7 +292,8 @@ def V(path):
 def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     ICON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
-    nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{" aria-current=\"page\"" if h==fname else ""}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>') for h,l in NAV)
+    cur = lambda h: ' aria-current="page"' if h == fname else ""  # no backslash inside f-string braces: Python 3.9 rejects it
+    nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{cur(h)}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{cur(h)}>{l}</a>') for h,l in NAV)
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))
     url = SITE_URL + clean(fname)
     slug = fname[:-5]
@@ -460,6 +470,7 @@ def main():
         print("PHOTO ERRORS. Build stopped before writing dist/:")
         for p in problems: print("  - " + p)
         sys.exit(1)
+    for w in todo_warnings(): print("WARNING: " + w)
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
     NAV = [(clean(f) if False else f, l) for f,l in NAV]

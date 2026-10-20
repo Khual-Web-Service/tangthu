@@ -13,5 +13,5 @@
     <g data-place="Kalemyo"><circle cx="318.3" cy="284.4" r="3.5"/><text x="327.3" y="288.4">Kalemyo</text></g>
     <g class="zm-hakha" data-place="Hakha"><circle cx="264.8" cy="352.9" r="3.5"/><text x="273.8" y="356.9">Hakha</text></g>
   </g>
-  <g class="zm-countries"><text class="zm-country" x="30" y="40">INDIA</text><text class="zm-country" x="404" y="420" text-anchor="end">MYANMAR</text><text class="zm-country zm-bd" x="4" y="470">BANGLADESH</text></g>
+  <g class="zm-countries"><text class="zm-country" x="30" y="52">INDIA</text><text class="zm-country zm-my" x="404" y="420" text-anchor="end">MYANMAR</text><text class="zm-country zm-bd" x="4" y="470">BANGLADESH</text></g>
 </svg>

@@ -2,6 +2,51 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phone moments: swipe row)
+
+### Changed
+- Phones: "The story in six moments" is one horizontal swipe row again, with cards 150px wide, snap points, and no vertical scrolling. Cards grow to fit their text.
+- Replaces the two-column grid from the previous commit.
+
+## 2026-10-20 (phone moments grid)
+
+### Changed
+- Phones: "The story in six moments" is a two-column grid (three rows) instead of a horizontal scroller. The row no longer scrolls sideways (scroll width equals client width at 390px). Cards grow to fit their text, so none are clipped. The moments sit below the fold; the fold for the title, one-liner, buttons and link is unchanged (link bottom 836px).
+
+## 2026-10-20 (phone hero gutter)
+
+### Changed
+- Phones: hero text, moments heading and timeline cards start 24px from the edge (was 16px), clear of the 6px weave border. Button spans 24–366px at 390px wide. Fold unchanged: link bottom 836px.
+
+## 2026-10-20 (build runs on Python 3.9)
+
+### Fixed
+- `build.py` no longer uses a backslash inside an f-string expression (the `aria-current` attribute in the header nav). Python 3.9 rejects that syntax, so the build failed there. Output is unchanged.
+
+## 2026-10-20 (A3 hero, desktop map clears the timeline)
+
+### Changed
+- Desktop (1024px and up): the map column is sized from the hero height and stops 260px above the bottom, so it no longer runs into the "Six moments" strip. Width follows the map's 420:680 aspect ratio, so the map is no longer forced to the full column width.
+- Hornbill positions are percentages of the map column, so it stays on the homeland at every width.
+- Measured: map bottom 17px above the moments strip at 1024×768, 41px at 1342×900 and 1440×900. Hero fits the 900px viewport at 1342 and 1440.
+- Known: at 1024×768 the hero is 760px tall (minimum), so it runs 65px past a 768px viewport.
+
+## 2026-10-20 (A3 hero, phone fixes)
+
+### Changed
+- Phones (under 768px): map scale 0.75 (307×497 px) at top −50px, so the homeland clears the fade. Map block 330px, so the text link ends at 836px in an 844px viewport.
+- Hornbill: 240px wide, 8px below the header, bird's own cutout (1050×708). Alpha hit test: 0 hits on every label and dot at 390×844 and 430×932.
+- Labels: 20 units inside the map (about 15px on screen), halo kept. Kalemyo is hidden below 768px. Tedim clears the fade by 40px.
+- INDIA 21px from the left edge (16px minimum).
+- "Start reading": #102014 text, weight 600.
+
+### Changed (build)
+- `HERO_CREDIT` no longer includes "Photo: [CREDIT / LICENSE]". Photo credit lives in `images.json`: `hornbill.webp` is `"credit": "TODO"`. The build prints a warning and does not publish the entry.
+
+### Known gaps
+- Headroom above the land is not achieved: the homeland begins at the top of the block. Clearing the bird from the land needs either a shorter fade, a smaller map, or a taller block, and the fold rules out a taller block.
+- The Churachandpur dot is 0.4px below the nearest wing tip.
+
 ## 2026-10-20 (analytics privacy note)
 
 ### Added
