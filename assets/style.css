@@ -358,6 +358,6 @@ mark{background:color-mix(in srgb,var(--gold) 45%,transparent);color:inherit;pad
 .search-row button{min-height:52px;background:transparent;color:var(--ink);border:1.5px solid var(--stone);font:600 1rem var(--font);padding:0 1.1rem;border-radius:var(--r);cursor:pointer}
 .search-row button[hidden]{display:none}
 /* Header search only where there is room; otherwise the "Search" menu item */
-@media (max-width:1399px){.hsearch{display:none}nav.main a[href="/search"]{display:inline-block}}
+@media (max-width:1599px){.hsearch{display:none}nav.main a[href="/search"]{display:inline-block}}
 @media (max-width:1100px){nav.main a[href="/search"]{display:block}}
 .hsearch{flex:0 0 11rem}
