@@ -2,6 +2,14 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (A3 hero, desktop map clears the timeline)
+
+### Changed
+- Desktop (1024px and up): the map column is sized from the hero height and stops 260px above the bottom, so it no longer runs into the "Six moments" strip. Width follows the map's 420:680 aspect ratio, so the map is no longer forced to the full column width.
+- Hornbill positions are percentages of the map column, so it stays on the homeland at every width.
+- Measured: map bottom 17px above the moments strip at 1024×768, 41px at 1342×900 and 1440×900. Hero fits the 900px viewport at 1342 and 1440.
+- Known: at 1024×768 the hero is 760px tall (minimum), so it runs 65px past a 768px viewport.
+
 ## 2026-10-20 (A3 hero, phone fixes)
 
 ### Changed

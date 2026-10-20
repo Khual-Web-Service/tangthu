@@ -512,7 +512,7 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
 
 /* Desktop: the A3 layout. Map to the right, timeline across the bottom, fixed height. */
 @media (min-width:1024px){
-  .hero{height:clamp(760px,calc(100vh - var(--hdr,73px)),900px);--m:clamp(380px,32vw,460px)}  /* --m: map column width; everything in the hero scales from it */
+  .hero{--hh:clamp(760px,calc(100vh - var(--hdr,73px)),900px);height:var(--hh);--m:clamp(380px,32vw,460px)}  /* --m: map column width; everything in the hero scales from it */
   .hero-wrap{display:block;position:absolute;top:0;bottom:0;left:0;right:0;max-width:var(--wide);margin:0 auto}  /* same max-width as header .bar; centred above 1184px */
   .hero-text{position:absolute;left:24px;top:0;max-width:min(760px,calc(100% - var(--m) - 96px));padding:48px 0 0}  /* keeps 48px+ between text and map */
   .hero-kicker{margin-bottom:10px}
@@ -522,11 +522,11 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
   .hero-cta{flex-direction:row;gap:14px;margin-top:24px}
   .hero-btn{width:auto;height:52px;padding:0 26px;font-size:18px}
   .hero-btn-ghost{height:52px;padding:0 24px;border:1.5px solid #ECEEE7;border-radius:6px;font-size:18px;text-decoration:none;box-sizing:border-box}
-  figure.hero-art{position:absolute;right:24px;top:16px;width:var(--m);height:auto;margin:0;overflow:visible}
+  figure.hero-art{position:absolute;right:24px;top:16px;width:min(var(--m),calc((var(--hh) - 276px)*.6176));height:calc(var(--hh) - 276px);margin:0;overflow:visible}  /* map stops above the moments strip; width = the map's own width at 420:680 */
   .hero-art::after{display:none}
-  .hero-art .zogam-map{position:static;display:block;width:100%;height:auto;transform:none}
+  .hero-art .zogam-map{position:static;display:block;width:100%;height:100%;transform:none}  /* preserveAspectRatio centres the map in the column */
   /* bird: 69% of map width, left 26%, top -72px at 420px. Image used as supplied: no rotate, flip or crop */
-  .hero-art .hero-bird{left:calc(var(--m)*.26);top:calc(var(--m)*-.0216);width:calc(var(--m)*.69);height:auto;filter:drop-shadow(0 18px 24px rgba(0,0,0,.55));background:none}
+  .hero-art .hero-bird{left:26%;top:calc(var(--m)*-.0216);width:69%;height:auto;filter:drop-shadow(0 18px 24px rgba(0,0,0,.55));background:none}
   /* map caption: right-aligned at the bottom of the hero, above the weave and the fade. Not directly under the map: that spot sits on the timeline's right column */
   .hero-credit{display:block;position:absolute;right:24px;bottom:24px;z-index:2;margin:0;padding:0;text-align:right;font-size:13px;color:#A3A69A}
   /* fade: full width, sits above the map (z1) and below the text (z2+) */
