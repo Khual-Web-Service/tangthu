@@ -1,0 +1,38 @@
+{
+  "colonial/chief-house-village": {
+    "status": "wanted",
+    "caption": "Colonial-era photograph of a chief’s house or village (with permissions)"
+  },
+  "origins/kabaw-valley-landscape": {
+    "status": "wanted",
+    "caption": "Kabaw Valley landscape or a site associated with migration memory"
+  },
+  "modern/relief-after-coup": {
+    "status": "wanted",
+    "caption": "Community relief efforts (faces blurred / with consent)"
+  },
+  "diaspora/us-gathering": {
+    "status": "wanted",
+    "caption": "Diaspora church, Chin National Day or Khuado gathering in the US"
+  },
+  "culture/khuado-celebration": {
+    "status": "wanted",
+    "caption": "Khuado celebration — dance, food or gathering"
+  },
+  "culture/puan-tedim": {
+    "status": "wanted",
+    "caption": "Handwoven puan or traditional dress, with weaver’s name and village"
+  },
+  "faith/early-printed-books": {
+    "status": "wanted",
+    "caption": "Early printed hymnal, Bible or primer in a Zo language"
+  },
+  "stories/khampat-bungpui": {
+    "status": "wanted",
+    "caption": "The Khampat bungpui or another site linked to migration memory"
+  },
+  "evidence/memorial-stone": {
+    "status": "wanted",
+    "caption": "A memorial stone (mualsuang) or feast-of-merit post, with village name and the family’s permission"
+  }
+}

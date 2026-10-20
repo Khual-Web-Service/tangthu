@@ -4,18 +4,27 @@ window.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('sup.fn a');if(a){var d=document.getElementById('sources');if(d)d.open=true;}});
   window.addEventListener('hashchange',openRefs);openRefs();
   var hd=document.querySelector('header.site');function setH(){if(hd)document.documentElement.style.setProperty('--hdr',hd.offsetHeight+'px');}setH();window.addEventListener('resize',setH);
-  // sticky section menu: highlight the section being read
+  // sticky section menu: highlight the section being read. One nav for both layouts.
   var op=document.querySelector('.onpage');
-  if(op){
-    var links=[].slice.call(op.querySelectorAll('a')),heads=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));}),ul=op.querySelector('ul'),cur=-1,tick=false;
-    function spy(){tick=false;var line=(hd?hd.offsetHeight:60)+op.offsetHeight+40,i=-1;
-      heads.forEach(function(h,k){if(h&&h.getBoundingClientRect().top<=line)i=k;});
-      if(i===cur)return;cur=i;links.forEach(function(l,k){if(k===i)l.setAttribute('aria-current','true');else l.removeAttribute('aria-current');});
-      if(i>=0){var a=links[i];ul.scrollTo({left:a.offsetLeft-ul.offsetLeft-12,behavior:'smooth'});}}
-    window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(spy);}},{passive:true});spy();
+  if(op&&'IntersectionObserver' in window){
+    var links=[].slice.call(op.querySelectorAll('a')),ul=op.querySelector('ul'),cur=-1,seen={};
+    var targets=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+    function mark(i){links.forEach(function(l,k){if(k===i)l.setAttribute('aria-current','true');else l.removeAttribute('aria-current');});
+      if(ul.scrollWidth>ul.clientWidth){var a=links[i];ul.scrollTo({left:a.offsetLeft-ul.offsetLeft-12,behavior:'smooth'});}}
+    var band=(hd?hd.offsetHeight:60)+24;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){seen[e.target.id]=e.isIntersecting?e.boundingClientRect.top:null;});
+      var best=null,bestTop=Infinity;
+      targets.forEach(function(t,k){if(t&&seen[t.id]!=null&&seen[t.id]<bestTop){bestTop=seen[t.id];best=k;}});
+      if(best!==null&&best!==cur){cur=best;mark(best);}
+    },{rootMargin:'-'+band+'px 0px -70% 0px'});
+    targets.forEach(function(t){if(t)io.observe(t);});
   }
+  // Pau Cin Hau chart: once fonts have settled, show the note if neither our font nor the Google one loaded
+  var pf=document.querySelector('.pch-fallback');
+  if(pf&&document.fonts){window.addEventListener('load',function(){document.fonts.ready.then(function(){var ok=false;document.fonts.forEach(function(f){if(/Pau Cin Hau/.test(f.family)&&f.status==='loaded')ok=true;});if(!ok)pf.hidden=false;});});}
   // "/" jumps to search (unless typing in a field)
-  document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;e.preventDefault();var f=document.getElementById('q')||document.getElementById('hq');if(f&&f.offsetParent!==null)f.focus();else location.href='/search';});
+  document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;e.preventDefault();var f=document.getElementById('q')||document.getElementById('hq');if(f&&f.offsetParent!==null)f.focus();else if(window.ZoOverlay)ZoOverlay.open();else location.href='/search';});
   // mobile nav
   var b=document.querySelector('.navtoggle'), n=document.querySelector('nav.main');
   if(b&&n){

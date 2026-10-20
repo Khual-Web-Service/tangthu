@@ -4,7 +4,7 @@
   --line:#CDD1C4; --green:#2E7A3E; --green-2:#1F5A2C; --red:#7A1830; --gold:#E3A92B;
   --oral:#6A3D78; --doc:#2E7A3E; --sch:#8A6418;
   --font:"Literata",Georgia,"Times New Roman",serif;
-  --measure:42rem; --wide:74rem; --r:6px;
+  --measure:42rem; --wide:74rem; --r:6px; --meta:max(15px,.9rem); --toc:200px; --gutter:40px;
   --weave:repeating-linear-gradient(90deg,#1B1626 0 10px,#EDE6E3 10px 12px,#7A1830 12px 28px,#2A0A16 28px 29px,#7A1830 29px 36px,#2A0A16 36px 37px,#7A1830 37px 44px,#EDE6E3 44px 47px,#2E7A3E 47px 50px,#C8283C 50px 54px,#E3A92B 54px 56px,#C8283C 56px 60px,#2E7A3E 60px 63px,#EDE6E3 63px 66px,#7A1830 66px 73px,#2A0A16 73px 74px,#7A1830 74px 81px,#2A0A16 81px 82px,#7A1830 82px 98px,#EDE6E3 98px 100px);
 }
 @media (prefers-color-scheme:dark){:root{
@@ -61,18 +61,18 @@ p{margin:0 0 1.1rem;text-wrap:pretty}
 ul,ol{padding-left:1.3rem}
 li{margin:.35rem 0}
 .lede{font-size:1.28rem;line-height:1.6;color:var(--ink-2);font-weight:350}
-.small{font-size:.88rem;color:var(--stone)}
+.small{font-size:var(--meta);color:var(--stone)}
 .chapter-eyebrow{margin:0;font-style:italic;color:var(--stone);font-size:1rem}
 blockquote{margin:1.6rem 0;padding:.2rem 0 .2rem 1.2rem;border-left:3px solid var(--ink)}
 blockquote.oral-note{border-left-color:var(--oral);color:var(--ink-2);font-style:italic}
 
 /* Evidence labels */
-.tag{display:inline-flex;align-items:center;font:600 .78rem/1 var(--font);padding:.38em .75em;border-radius:999px;white-space:nowrap;vertical-align:middle;color:#fff}
+.tag{display:inline-flex;align-items:center;font:600 var(--meta)/1 var(--font);padding:.38em .75em;border-radius:999px;white-space:nowrap;vertical-align:middle;color:#fff}
 .tag.oral{background:var(--oral)}.tag.doc{background:var(--doc)}.tag.sch{background:var(--sch)}.tag.contested{background:var(--red)}
 @media (prefers-color-scheme:dark){.tag{color:#121411}}
 
 /* Footnotes */
-sup.fn{font-size:.66em;line-height:0;margin-left:.08em;font-weight:600}
+sup.fn{font-size:max(15px,.66em);line-height:0;margin-left:.08em;font-weight:600}
 sup.fn a{text-decoration:none;color:var(--green);padding:0 .1em}
 sup.fn a:hover{text-decoration:underline}
 a.cite{font-size:.8rem;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--gold) 22%,transparent);padding:.1em .5em;border-radius:4px;white-space:nowrap}
@@ -84,6 +84,12 @@ a.cite{font-size:.8rem;text-decoration:none;color:var(--ink);background:color-mi
 .placeholder p{margin:0;font-size:1rem}
 .placeholder strong{display:block;font-style:italic;font-weight:600;color:var(--ink-2)}
 .placeholder-box,.pending{color:var(--stone);font-style:italic}
+figure:not(.placeholder){margin:2rem 0}
+figure:not(.placeholder) img{display:block;width:100%;max-width:100%;height:auto;border-radius:var(--r);background:var(--paper)}
+figcaption{margin-top:.6rem;font-size:.95rem;color:var(--ink-2)}
+figure.photo figcaption .credit,figure.photo figcaption .img-context{display:block;font-size:var(--meta);color:var(--stone)}
+figure.photo figcaption .img-context{font-style:italic}
+.img-credits li{margin:.8rem 0}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;min-height:48px;padding:0 1.4rem;background:var(--green);color:#fff;text-decoration:none;font:600 1rem var(--font);border-radius:var(--r)}
@@ -149,9 +155,9 @@ a.cite{font-size:.8rem;text-decoration:none;color:var(--ink);background:color-mi
 .namecard p{margin:0;font-size:1rem}
 
 /* Tables */
-.table-wrap{overflow-x:auto;margin:1.4rem 0;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.table-wrap{overflow-x:auto;margin:1.4rem 0;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:inset -16px 0 14px -14px rgba(27,22,38,.3)}
 table.evidence{border-collapse:collapse;width:100%;min-width:620px;font-size:.95rem}
-table.evidence th{text-align:left;font-weight:600;font-size:.88rem;color:var(--stone);padding:.8rem 1rem;border-bottom:1px solid var(--line)}
+table.evidence th{text-align:left;font-weight:600;font-size:var(--meta);color:var(--stone);padding:.8rem 1rem;border-bottom:1px solid var(--line)}
 table.evidence td{padding:1rem;border-bottom:1px solid var(--line);vertical-align:top}
 table.evidence tr:last-child td{border-bottom:0}
 table.evidence td:first-child{font-weight:600;white-space:nowrap}
@@ -159,26 +165,26 @@ table.evidence td:first-child{font-weight:600;white-space:nowrap}
 /* Chapter navigation */
 .chapter-nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:4rem 0 0}
 .chapter-nav a{display:flex;flex-direction:column;gap:.15rem;padding:1rem 1.2rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);text-decoration:none;color:var(--ink);font-size:1.2rem;font-weight:500}
-.chapter-nav a span{font-size:.9rem;font-weight:400;font-style:italic;color:var(--stone)}
+.chapter-nav a span{font-size:var(--meta);font-weight:400;font-style:italic;color:var(--stone)}
 .chapter-nav a:hover{border-color:var(--green);color:var(--green)}
 .chapter-nav .next{text-align:right;align-items:flex-end}
 
 /* References */
 .refs{margin-top:3.5rem;padding-top:.5rem;border-top:1px solid var(--line)}
 .refs h2{font-size:1.4rem}
-.refs ol{padding-left:1.7rem;font-size:.92rem;line-height:1.6}
+.refs ol{padding-left:1.7rem;font-size:var(--meta);line-height:1.6}
 .refs li{margin:.9rem 0}
 .refs li::marker{font-weight:600;color:var(--green)}
 .refs li:target{background:color-mix(in srgb,var(--gold) 18%,transparent);outline:2px solid var(--gold);outline-offset:6px;border-radius:2px}
-.badge{display:inline-block;font-size:.76rem;line-height:1.6;padding:0 .5rem;border-radius:4px;background:var(--mist);border:1px solid var(--line);color:var(--stone);margin-right:.3rem;white-space:nowrap}
+.badge{display:inline-block;font-size:var(--meta);line-height:1.6;padding:0 .5rem;border-radius:4px;background:var(--mist);border:1px solid var(--line);color:var(--stone);margin-right:.3rem;white-space:nowrap}
 .badge.type{color:var(--ink);font-weight:600}
 .badge.warn{color:var(--red);border-color:color-mix(in srgb,var(--red) 50%,var(--line))}
-.refs .note,.src .note{font-size:.84rem;color:var(--stone);font-style:italic;margin-top:.25rem}
+.refs .note,.src .note{font-size:var(--meta);color:var(--stone);font-style:italic;margin-top:.25rem}
 .pagedates{margin:-.3rem 0 1rem;color:var(--stone)}
 .cite-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline;margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line)}
 .cite-row .cite-text{flex:1 1 16rem;overflow-wrap:anywhere}
-.copycite{font:inherit;font-size:.85rem;padding:.2rem .7rem;border:1px solid var(--line);border-radius:4px;background:var(--mist);color:var(--ink);cursor:pointer}
-.citebox{margin-top:2rem;padding:1rem 1.2rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:.92rem}
+.copycite{font:inherit;font-size:var(--meta);padding:.2rem .7rem;border:1px solid var(--line);border-radius:4px;background:var(--mist);color:var(--ink);cursor:pointer}
+.citebox{margin-top:2rem;padding:1rem 1.2rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:var(--meta)}
 
 /* Sources page */
 .standards{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:var(--r);padding:.3rem 1.4rem 1.1rem;margin:2rem 0}
@@ -186,7 +192,7 @@ table.evidence td:first-child{font-weight:600;white-space:nowrap}
 .src-group h2{padding-bottom:.4rem;border-bottom:1px solid var(--line)}
 .src{margin:1rem 0;padding-left:1rem;border-left:3px solid var(--line);font-size:.95rem;scroll-margin-top:6rem}
 .src:target{border-left-color:var(--gold);background:var(--paper)}
-.src .k{font-size:.85rem;font-style:italic;color:var(--stone);margin-bottom:.15rem}
+.src .k{font-size:var(--meta);font-style:italic;color:var(--stone);margin-bottom:.15rem}
 .sitemap{list-style:none;padding:0}
 .sitemap li{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line)}
 .sitemap a strong{font-size:1.2rem;font-weight:600}
@@ -214,11 +220,11 @@ footer.site a:hover{text-decoration:underline}
 .short h2.short-h{margin:0 0 .6rem;font-size:1.25rem;font-weight:600}
 .short ul{margin:0;padding-left:1.2rem}
 .short li{margin:.55rem 0;line-height:1.55}
-.short-more{margin:.9rem 0 0;font-size:.92rem;font-style:italic;color:var(--stone)}
+.short-more{margin:.9rem 0 0;font-size:var(--meta);font-style:italic;color:var(--stone)}
 .moments{margin:2.5rem 0 1rem}
 .moments h2{margin-top:0}
 .moment-list{list-style:none;padding:0;margin:1.2rem 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr));gap:1rem;counter-reset:m}
-.moment-list li{margin:0;padding:1.2rem 1.3rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:.82rem;color:var(--stone)}
+.moment-list li{margin:0;padding:1.2rem 1.3rem;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);font-size:var(--meta);color:var(--stone)}
 .moment-list > li > a{display:flex;flex-direction:column;gap:.35rem;text-decoration:none;color:var(--ink);margin-bottom:.5rem}
 .moment-list .when{font-size:1.5rem;font-weight:600;color:var(--green);line-height:1.1}
 .moment-list .what{font-size:1.06rem;line-height:1.5}
@@ -370,3 +376,77 @@ mark{background:color-mix(in srgb,var(--gold) 45%,transparent);color:inherit;pad
 .hsearch{display:none!important}
 nav.main a[href="/search"]{display:inline-block}
 @media (max-width:1100px){nav.main a[href="/search"]{display:block}}
+
+/* Desktop reading layout (chapter pages). Shared tokens, so every rem size scales together. */
+
+/* From 1024px: larger reading text (110% of the 16px root, so 1.1rem body is about 19.4px) */
+@media (min-width:1024px){
+  html{font-size:110%}
+  body{line-height:1.68}
+  :root{--measure:39rem}
+  main{max-width:calc(var(--measure) + 48px)}  /* the text column itself is --measure; the 24px side padding sits outside it */
+}
+
+/* Smooth scroll for in-page links, off for reduced motion (set above) */
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+
+/* From 1200px: "On this page" becomes a sticky vertical list in the left gutter. Same nav element and
+   links as the pill bar below 1200px; only its layout changes. Intro (eyebrow, dates, title, lede) spans
+   the top, then the article body fills the centre column. Grid rows 1-4 are the intro, so the nav starts at row 5. */
+@media (min-width:1200px){
+  main:has(> nav.onpage){display:grid;grid-template-columns:var(--toc) minmax(0,var(--measure)) var(--toc);column-gap:var(--gutter);row-gap:0;justify-content:center;max-width:calc(var(--measure) + 2 * (var(--toc) + var(--gutter)) + 48px)}
+  main:has(> nav.onpage) > *{grid-column:2}
+  main:has(> nav.onpage) > .chapter-eyebrow,
+  main:has(> nav.onpage) > .pagedates,
+  main:has(> nav.onpage) > h1,
+  main:has(> nav.onpage) > .lede{grid-column:1 / -1}
+  main:has(> nav.onpage) > .table-wrap{grid-column:2 / 4;justify-self:start;width:min(900px,100%)}
+  main:has(> nav.onpage) h2[id]{scroll-margin-top:calc(var(--hdr,58px) + 24px)}
+  main:has(> nav.onpage) > .onpage{grid-column:1;grid-row:5 / span 400;align-self:start;position:sticky;top:calc(var(--hdr,58px) + 24px);max-height:calc(100vh - var(--hdr,58px) - 48px);overflow-y:auto;margin:0;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:1}
+  .onpage-label{display:block;margin:0 0 .6rem;font-size:var(--meta);font-style:italic;color:var(--stone)}
+  .onpage ul{display:block;margin:0;padding:0;overflow:visible}
+  .onpage li{margin:0}
+  .onpage a{display:block;min-height:0;white-space:normal;padding:.35rem 0 .35rem .9rem;border:0;border-left:2px solid var(--line);border-radius:0;background:none;color:var(--ink-2);font-size:var(--meta);line-height:1.4;text-decoration:none}
+  .onpage a:hover{color:var(--green)}
+  .onpage a[aria-current]{background:none;border-left:3px solid var(--green);color:var(--green)}
+}
+
+/* Search overlay (every page). Colours come from the shared tokens, so dark mode follows automatically. */
+.zo-search-backdrop{position:fixed;inset:0;z-index:2000;background:rgba(18,20,17,.55);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px}
+.zo-search-backdrop[hidden]{display:none}
+.zo-search{width:min(640px,100%);max-height:76vh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.35);overflow:hidden}
+.zo-bar{display:flex;gap:.6rem;align-items:center;padding:.8rem .9rem;border-bottom:1px solid var(--line)}
+.zo-label{position:absolute;left:-9999px}
+.zo-input{flex:1;min-width:0;min-height:48px;font:400 1.05rem var(--font);color:var(--ink);background:var(--mist);border:1px solid var(--stone);border-radius:var(--r);padding:0 .9rem}
+.zo-input:focus{outline:2px solid var(--gold);outline-offset:2px}
+.zo-close{min-height:44px;padding:0 .9rem;font:500 .95rem var(--font);color:var(--ink);background:var(--mist);border:1px solid var(--stone);border-radius:var(--r);cursor:pointer}
+.zo-status{margin:0;padding:.5rem 1rem 0;color:var(--stone);font-size:var(--meta)}
+.zo-body{overflow-y:auto;padding:.3rem .5rem .8rem}
+.zo-list{list-style:none;margin:0;padding:0}
+.zo-list:empty{display:none}
+.zo-group{padding:.7rem .6rem .2rem;font-size:var(--meta);font-weight:600;color:var(--green)}
+.zo-opt{padding:.6rem .7rem;border-radius:var(--r);cursor:pointer;border-left:3px solid transparent}
+.zo-opt[aria-selected=true]{background:color-mix(in srgb,var(--green) 12%,transparent);border-left-color:var(--green)}
+.zo-type{display:block;font-size:var(--meta);color:var(--stone)}
+.zo-opt strong{display:block;font-weight:600;color:var(--ink);line-height:1.35}
+.zo-snip{display:block;font-size:var(--meta);color:var(--ink-2);line-height:1.45;margin-top:.15rem}
+.zo-opt mark,.zo-snip mark{background:color-mix(in srgb,var(--gold) 35%,transparent);color:inherit;border-radius:2px}
+.zo-all{color:var(--green);font-weight:600;border-top:1px solid var(--line);margin-top:.3rem;border-left-color:transparent}
+.zo-empty{padding:.6rem .7rem .4rem;color:var(--ink-2)}
+.zo-empty p{margin:.2rem 0}
+.zo-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.zo-chips button{min-height:44px;padding:0 .9rem;font:500 .95rem var(--font);border:1px solid var(--stone);border-radius:999px;background:var(--mist);color:var(--ink);cursor:pointer}
+html.zo-lock{overflow:hidden}
+@media (max-width:640px){.zo-search-backdrop{padding:0}.zo-search{width:100%;height:100%;max-height:none;border-radius:0;border:0}}
+
+/* Pau Cin Hau chart (Faith page). The font is self-hosted on assets.khual.net (OFL, see fonts/). */
+@font-face{font-family:"Pau Cin Hau Chart";font-style:normal;font-weight:400;font-display:swap;src:url(https://assets.khual.net/tangthu/fonts/NotoSansPauCinHau-Regular.woff2) format("woff2");unicode-range:U+11AC0-11AF8}
+.pch-table{min-width:520px;font-size:var(--meta);border-collapse:collapse}
+.pch-table th,.pch-table td{padding:.5rem .8rem;text-align:left;vertical-align:middle;border-bottom:1px solid var(--line)}
+.pch-table thead th{font-weight:600;color:var(--stone)}
+.pch-table code{font-size:var(--meta)}
+.pch-group th{padding-top:1rem;color:var(--green);font-weight:600;background:var(--paper)}
+.pch-glyph{font-family:"Pau Cin Hau Chart","Noto Sans Pau Cin Hau",sans-serif;font-size:2rem;line-height:1.2;width:4.5rem;text-align:center!important}
+.pch-fallback{padding:.8rem 1rem;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:var(--r);background:var(--paper);font-size:var(--meta)}
+.pch-fallback[hidden]{display:none}
+

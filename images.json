@@ -1,0 +1,36 @@
+{
+  "kennedy-peak": {
+    "file": "assets/img/originals/kennedy-peak.jpg",
+    "caption": "Kennedy Peak, seen from the Kalay–Tedim road. It stands 2,703 m above sea level.",
+    "alt": "Kennedy Peak in the Chin Hills, seen from the Kalay–Tedim road.",
+    "author": "Ericwinny",
+    "source": "https://commons.wikimedia.org/wiki/File:KennedyPeak.jpg",
+    "licence": "CC BY-SA 4.0",
+    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "date_taken": "2018-02-25",
+    "changes": "Resized and converted to WebP and JPG; EXIF removed. No other changes.",
+    "people": false,
+    "consent": null,
+    "context": "Modern photograph. It illustrates present-day geography, not historical evidence.",
+    "verified": "2026-10-20",
+    "width": 1600,
+    "height": 1200
+  },
+  "tedim-south": {
+    "file": "assets/img/originals/tedim-south.jpg",
+    "caption": "Tedim, seen from the south.",
+    "alt": "The town of Tedim in the hills, seen from the south.",
+    "author": "Ericwinny",
+    "source": "https://commons.wikimedia.org/wiki/File:Tedim.jpg",
+    "licence": "CC BY-SA 4.0",
+    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "date_taken": "2018-02-24",
+    "changes": "Resized and converted to WebP and JPG; EXIF removed. No other changes.",
+    "people": false,
+    "consent": null,
+    "context": "Modern photograph. It shows the town as it is today, not the ancient settlement.",
+    "verified": "2026-10-20",
+    "width": 1600,
+    "height": 1200
+  }
+}

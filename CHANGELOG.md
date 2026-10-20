@@ -2,7 +2,86 @@
 
 All notable changes to Zogam History are recorded here.
 
-## 2026-10-20 (essay origin claims)
+## 2026-10-20 (analytics privacy note)
+
+### Added
+- **Privacy & analytics** section on the Contribute page (`#privacy`). It says what Google Analytics collects, that names and emails are not collected through it, how to opt out, and links Google's policy pages.
+- **Privacy** link in the footer, to `/contribute#privacy`, on every page.
+
+## 2026-10-20 (Pau Cin Hau alphabet chart)
+
+### Added
+- **Pau Cin Hau chart** on the Faith & Literacy page: all 57 characters of U+11AC0–11AF8, with glyph, code point and Unicode name. The rows are generated at build time from `data/pau-cin-hau.unicodedata.txt` (UnicodeData.txt). Every character is general category Lo (other letter) and was assigned in Unicode 7.0, per DerivedAge.txt. The table scrolls sideways within its own box on phones. If the font does not load, a note replaces the glyphs.
+- **Noto Sans Pau Cin Hau** (subset covering this block, 7.3 KB, woff2) self-hosted at `https://assets.khual.net/tangthu/fonts/`, with its OFL-1.1 licence file. Source files are in `fonts/`.
+- `scripts/upload_images.py` also uploads the files listed in `fonts.json`, under the same never-overwrite rule.
+
+## 2026-10-20 (Google Analytics)
+
+### Added
+- Google tag (G-H19PT9QY1L) on every page, added in the build's page head.
+
+## 2026-10-20 (live search overlay)
+
+### Added
+- **Search overlay on every page.** Opens from the header search icon, from `/` and from Ctrl/Cmd+K. It shows the top 8 results grouped as Pages, Glossary, Timeline and Sources, each with a highlighted snippet. Arrow keys move through the results, Enter opens one, and Esc closes it. The last row, "See all N results", goes to `/search?q=…`. With no query it suggests three searches. It has a focus trap, a labelled dialog, a combobox, and it locks page scrolling.
+- **Lazy loading.** The overlay script is small. The search engine (`search.js`, 5.7 KB) and the index (about 103 KB raw, about 36 KB gzipped) load the first time the overlay opens, or when the search icon is hovered or focused. Pages that are never searched don't download them.
+
+### Changed
+- **One search engine.** `assets/search.js` exposes `ZoSearch.search(query, {type, limit})`, used by both the `/search` page and the overlay. Ranking, Zolai spelling handling (doubled vowels, apostrophes) and highlighting are unchanged. `/search` gives the same results as before on the queries checked.
+- `/` now opens the overlay on chapter pages. On `/search` it still focuses the page's own box.
+
+## 2026-10-20 (desktop reading layout)
+
+### Changed
+- **Text size and column (shared tokens).** From 1024px the root text is 110%, so body text is about 19.4px, with line-height 1.68. The column is `--measure` at 39rem (686px), about 70 characters a line. Headings, the lead and the short-version box are rem-based, so they scale with it. Below 1024px nothing changes.
+- **Minimum 15px** for meta text, footnote text, captions, labels and table headings, through the `--meta` token. Footnote numbers are at least 15px too. The pill bar below 1200px is unchanged.
+- **"On this page" at 1200px and wider** is a sticky vertical list in the left gutter (200px, 40px gaps). It uses the same markup and links as the pill bar. The active section gets a green label and left border. Below 1200px it stays the pill bar.
+- **Wide tables at 1200px and wider** span the text column and the right gutter, up to 900px. They stay left-aligned with the text, so they don't overlap the sidebar. Below 1200px, tables scroll sideways inside their own box, which has a subtle edge cue.
+- **Section highlighting** uses one IntersectionObserver in `assets/site.js`, replacing the old scroll-spy that measured the pill bar.
+- In-page links scroll smoothly, unless the user prefers reduced motion. Headings clear the sticky header on desktop.
+
+## 2026-10-20 (rights-checked images)
+
+### Added
+- **`images.json`**, the rights record for every photo. Each entry gives the author, licence and licence URL, source, date taken, changes, context and the date rights were checked. People need a consent note.
+- **`{{img:key}}` tag.** It renders a `<figure>` with a `<picture>` (WebP, JPG fallback, 800 and 1600 px), lazy loading and the credit line. Photos are served only from `https://assets.khual.net/tangthu/img/`.
+- **Two photos, both CC BY-SA 4.0 by Ericwinny (Wikimedia Commons):** Kennedy Peak on the Origins page, and Tedim seen from the south in the Ciimnuai section of Stories.
+- **`scripts/upload_images.py`** makes the web versions (1600 and 800 px, WebP and JPG, EXIF removed) and uploads what R2 does not have. It has `--dry-run`, skips identical files, never overwrites and never deletes.
+- **Image credits** section on the Sources page, generated from `images.json`.
+- **Build checks.** The build stops if an image key is missing, a rights field is empty, consent is missing for a photo of people, or an original has no record. It also checks that every `{{img:…}}` image is reachable on assets.khual.net. `--no-upload` skips the upload and the reachability check.
+
+### Changed
+- The Kennedy Peak photo moved from `photos.json` to `images.json`. Its old site-hosted copy was removed.
+- `assets/img/originals/` is excluded from the published site.
+- The preview server builds with `--no-upload`, so saving a file never uploads anything.
+- `README.md` gains an "Adding images" section.
+
+## 2026-10-20 (Kennedy Peak photo)
+
+### Added
+- **Photo on the Origins page:** "Kennedy Peak, seen from the Kalay–Tedim road." Photo by Ericwinny, licensed CC BY-SA 4.0, from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:KennedyPeak.jpg). Resized to 1200 px and converted to WebP, and the credit line says so. Served from `assets/photos/origins/`, not from R2, because `wrangler` is currently broken on this machine. Move it to R2 once that's fixed.
+- A `url` option in `photos.json` for photos served by the site itself. Entries with `file` still use R2.
+
+## 2026-10-20 (Zogam favicons)
+
+### Changed
+- **Site icons** now come from `zogam-favicons/`. The build copies its icon files to the site root (`favicon.ico`, `favicon.svg`, `favicon-16/32.png`, `apple-touch-icon.png`, `icon-192/512.png`, `site.webmanifest`) and puts `zogam-favicons/head-snippet.html` into every page's `<head>`. This replaces the old `/assets/favicon.svg` link.
+- The theme colour is now `#E4133D` (from the favicon snippet), replacing `#9a4a2a`.
+
+## 2026-10-20 (site images on R2)
+
+### Added
+- **Photo registry `photos.json`**, keyed by photo id (for example `culture/puan-tedim`). Each entry gives the file, alt text, caption, credit, source key, width and height.
+- **`{{photo:<id>}}` placeholders** render as a `<figure>` with the image served from `https://assets.khual.net/tangthu/img/`. The figcaption's source goes through the normal citation pipeline, so it appears as a numbered note and in that page's source list. The base URL is `CDN_BASE` in `build.py`, overridable with `TANGTHU_CDN`.
+- **`scripts/upload_images.sh`** converts `images/` to WebP (at most 1600 px wide, via `cwebp` or Pillow) and uploads to R2 bucket `kws-assets` under `tangthu/img/`. It never overwrites: a changed original is published as `-v2`, `-v3`, and a name already in the bucket is treated the same way. Published files are recorded in `images/.uploaded`.
+- **`images/README.md`** documents the naming rules and folder layout.
+- A `<link rel="preconnect">` to `assets.khual.net` on every page. The site sends no Content-Security-Policy, so nothing needed changing there.
+
+### Changed
+- The build stops with a list of errors, and writes nothing to `dist/`, if a `{{photo:…}}` id is missing from `photos.json`, a published photo has no `alt` or `source`, or a `source` is not a key in `sources.json`.
+- Nine photos still wanted in the chapters (`colonial`, `origins`, `modern`, `diaspora`, `culture` ×2, `stories`, `faith`, `evidence`) moved from free-text placeholders to ids, marked `"status": "wanted"`. They render exactly as before, so their page dates are unchanged.
+- `images/` is git-ignored, except its README.
+
 
 ### Added
 - **Stories page, "The essay's wider origin story":** every remaining claim from Mang Ngaih Cin's essay, stated as written, including the Zhou "Zo dynasty", the flight from the Qin, five explanations of "Chin", the central-Burma word origins, the AD 800 valley date and the Ciimnuai/Lailun split. Labelled contested, each marked "not enough evidence" where that applies.
