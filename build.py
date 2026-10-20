@@ -272,9 +272,22 @@ TIMELINE = parse_timeline()
 def timeline_era(s):
     for limit, key, name in TIMELINE_ERAS:
         if limit is None or s < limit: return key, name
+TIMELINE_THEMES = [("all","All"),("origins","Origins"),("colonial","Colonial"),("faith","Faith & literacy"),("identity","Identity"),("modern","Modern"),("diaspora","Diaspora")]
+TIMELINE_EVIDENCE = [("all","All evidence"),("oral","Oral tradition"),("sch","Scholarly"),("doc","Documented")]
+def timeline_filters():
+    """Filter buttons are in the HTML so nothing is inserted after load (no layout shift). site.js wires them; without JS they are hidden."""
+    def group(name, label, opts):
+        def btn(k, v):
+            on = k == "all"
+            pressed, cls = ("true", ' class="on"') if on else ("false", "")
+            return f'<button type="button" data-k="{k}" aria-pressed="{pressed}"{cls}>{html.escape(v)}</button>'
+        btns = "".join(btn(k, v) for k, v in opts)
+        return f'<div class="fgroup" role="group" aria-label="{label}" data-group="{name}">{btns}</div>'
+    return ('<div class="filters">' + group("th", "Filter by theme", TIMELINE_THEMES) + group("ev", "Filter by evidence", TIMELINE_EVIDENCE) + '</div>'
+            f'<p class="small tl-live" aria-live="polite">{len(TIMELINE)} events shown</p>')
 def timeline_html():
-    """The timeline as static HTML, grouped by era. site.js adds filters on top; with no JavaScript every event and its sources are shown."""
-    out, cur, n = [], None, 0
+    """The timeline as static HTML: filters, then events grouped by era. site.js adds the filtering; with no JavaScript every event and its sources are shown."""
+    out, cur, n = [timeline_filters()], None, 0
     for e in TIMELINE:
         key, name = timeline_era(e["s"])
         if key != cur:
@@ -291,6 +304,47 @@ def timeline_html():
     out.append("</ol></section>")
     return "".join(out) + '<p class="tl-empty" hidden>No events match.</p>'
 TIMELINE_LABEL = {"oral": "Oral tradition", "doc": "Documented", "sch": "Scholarly"}
+def csp():
+    """Content-Security-Policy-Report-Only. Origins are the ones the pages actually load (checked against the build output)."""
+    gtag = ["https://www.googletagmanager.com", "https://www.google-analytics.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://analytics.google.com"]
+    parts = [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdnjs.cloudflare.com",  # inline: the gtag loader, the citation-copy script and the theme class
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",      # inline: Leaflet sets style attributes
+        f"font-src 'self' https://fonts.gstatic.com {CDN_ORIGIN}",
+        f"img-src 'self' data: {CDN_ORIGIN} https://*.tile.openstreetmap.org https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com",
+        "connect-src 'self' " + " ".join(gtag + ["https://region1.google-analytics.com"]),
+        "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'self'",
+    ]
+    return "; ".join(parts)
+def write_headers():
+    """Cloudflare Pages _headers. Path rules ignore query strings, so the ?v= hashed scripts and styles are listed by path."""
+    immutable = ["/assets/style.css", "/assets/site.js", "/assets/data.js", "/assets/sources.js", "/assets/overlay.js", "/assets/search.js"]
+    lines = [
+        "/*",
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains",
+        "  X-Content-Type-Options: nosniff",
+        "  Referrer-Policy: strict-origin-when-cross-origin",
+        "  X-Frame-Options: SAMEORIGIN",
+        "  Permissions-Policy: camera=(), microphone=(), geolocation=()",
+        f"  Content-Security-Policy-Report-Only: {csp()}",
+        "/assets/*",
+        "  Cache-Control: public, max-age=86400",
+    ]
+    for p in immutable: lines += [p, "  Cache-Control: public, max-age=31536000, immutable"]
+    lines += [
+        "/sitemap.xml", "  Content-Type: application/xml; charset=utf-8",
+        "/llms.txt", "  Content-Type: text/plain; charset=utf-8",
+        "/llms-full.txt", "  Content-Type: text/plain; charset=utf-8",
+    ]
+    (DIST/"_headers").write_text("\n".join(lines) + "\n")
+def security_txt():
+    """RFC 9116. Expires one year from the build date."""
+    expires = (datetime.date.fromisoformat(TODAY) + datetime.timedelta(days=365)).isoformat()
+    return (f"Contact: mailto:tangthu@khual.net\nExpires: {expires}T00:00:00.000Z\nPreferred-Languages: en\n"
+            f"Canonical: {SITE_URL}/.well-known/security.txt\n")
+HERO_PRELOAD = ('<link rel="preload" as="image" href="/assets/img/hornbill-480.webp" fetchpriority="high" '
+                'imagesrcset="/assets/img/hornbill-480.webp 480w, /assets/img/hornbill.webp 1050w" imagesizes="(max-width: 767px) 240px, 320px">')
 FORBIDDEN_IN_OUTPUT = ["[CREDIT", "[LICENSE", "{{photo:", "{{oralhistory:"]  # placeholders that must never be published
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
@@ -367,9 +421,10 @@ def page(fname, title, body, wide=False, home=False, search=False):
 {'' if home else f'<meta property="article:published_time" content="{pdates(fname)[0]}"><meta property="article:modified_time" content="{pdates(fname)[1]}"><meta property="article:publisher" content="https://khual.net">'}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
 {FAVICON_HEAD}
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');</script><script type="application/ld+json">{ld}</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');window.addEventListener('load',function(){{var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L';document.head.appendChild(s);}});</script><script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="{CDN_ORIGIN}">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
+{HERO_PRELOAD if home else ''}
 <link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
@@ -552,7 +607,9 @@ def main():
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
     (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",sm))
-    (DIST/"_headers").write_text("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/assets/*\n  Cache-Control: public, max-age=86400\n/sitemap.xml\n  Content-Type: application/xml; charset=utf-8\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n")
+    write_headers()
+    (DIST/".well-known").mkdir(exist_ok=True)
+    (DIST/".well-known"/"security.txt").write_text(security_txt())
     n_idx = build_search_index()
     # check every source is cited somewhere
     used = set(re.findall(r"\[\[([\w-]+)\]\]", "".join(p.read_text() for p in (ROOT/"content").glob("*.html"))))

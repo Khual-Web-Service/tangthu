@@ -39,23 +39,19 @@ window.addEventListener('DOMContentLoaded',function(){
   // timeline: the events are already in the HTML (build.py renders them). This adds filters and expanders on top.
   var tl=document.getElementById('timeline');
   if(tl&&tl.querySelector('.tl-item')){
-    var themes={all:"All",origins:"Origins",colonial:"Colonial",faith:"Faith & literacy",identity:"Identity",modern:"Modern",diaspora:"Diaspora"};
-    var evs={all:"All evidence",oral:"Oral tradition",sch:"Scholarly",doc:"Documented"};
-    var st={th:"all",ev:"all"};
-    var bar=document.createElement('div');bar.className='filters';
-    function mk(group,obj){var g=document.createElement('div');g.className='fgroup';g.setAttribute('role','group');g.setAttribute('aria-label',group==='th'?'Filter by theme':'Filter by evidence');
-      Object.keys(obj).forEach(function(k){var x=document.createElement('button');x.type='button';x.textContent=obj[k];x.dataset.k=k;x.setAttribute('aria-pressed',k==='all'?'true':'false');
-        if(k==='all')x.classList.add('on');
-        x.onclick=function(){st[group]=k;g.querySelectorAll('button').forEach(function(z){z.classList.toggle('on',z===x);z.setAttribute('aria-pressed',z===x?'true':'false')});draw();};
-        g.appendChild(x);});bar.appendChild(g);}
-    mk('th',themes);mk('ev',evs);tl.insertBefore(bar,tl.firstChild);
-    var live=document.createElement('p');live.className='small';live.setAttribute('aria-live','polite');bar.after(live);
-    var items=[].slice.call(tl.querySelectorAll('.tl-item')),eras=[].slice.call(tl.querySelectorAll('.tl-era')),empty=tl.querySelector('.tl-empty');
+    var st={th:'all',ev:'all'};
+    var live=tl.querySelector('.tl-live'),empty=tl.querySelector('.tl-empty');
+    var items=[].slice.call(tl.querySelectorAll('.tl-item')),eras=[].slice.call(tl.querySelectorAll('.tl-era'));
     items.forEach(function(li){var h=li.querySelector('.tl-head');h.onclick=function(){var o=li.classList.toggle('open');h.setAttribute('aria-expanded',o)};});
     function draw(){var n=0;
       items.forEach(function(li){var on=(st.th==='all'||li.dataset.th===st.th)&&(st.ev==='all'||li.dataset.ev===st.ev);li.hidden=!on;if(on)n++;});
       eras.forEach(function(s){s.hidden=!s.querySelector('.tl-item:not([hidden])');});
-      live.textContent=n+' event'+(n===1?'':'s')+' shown';if(empty)empty.hidden=n>0;}
+      if(live)live.textContent=n+' event'+(n===1?'':'s')+' shown';if(empty)empty.hidden=n>0;}
+    tl.querySelectorAll('.filters .fgroup').forEach(function(g){
+      var group=g.dataset.group;
+      g.querySelectorAll('button').forEach(function(x){x.onclick=function(){st[group]=x.dataset.k;
+        g.querySelectorAll('button').forEach(function(z){z.classList.toggle('on',z===x);z.setAttribute('aria-pressed',z===x?'true':'false')});draw();};});
+    });
     draw();
   }
 
