@@ -169,10 +169,16 @@ def referenced_img_keys():
     for p in (ROOT / "content").glob("*.html"): keys |= set(IMG_RE.findall(p.read_text()))
     return sorted(keys)
 
+def is_todo(r):
+    return str(r.get("credit", "")).strip().upper() == "TODO"
+def todo_warnings():
+    return [f'images.json "{k}": credit is TODO (license: {r.get("license", "-")})' for k, r in IMAGES.items() if is_todo(r)]
+
 def img_problems(refs):
     """Image errors in images.json, assets/img and the content. Empty means the image step can run."""
     problems = []
     for key, r in IMAGES.items():
+        if is_todo(r): continue  # placeholder credit: warned about by todo_warnings(), not an error
         for field in IMAGE_REQUIRED:
             if not str(r.get(field, "")).strip(): problems.append(f'images.json "{key}": missing "{field}"')
         if r.get("people") and not str(r.get("consent") or "").strip():
@@ -223,7 +229,7 @@ def image_credits():
         f'Photo: <a href="{html.escape(r["source"])}" rel="noopener" target="_blank">{html.escape(r["author"])}</a>, '
         f'<a href="{html.escape(r["licence_url"])}" rel="license noopener" target="_blank">{html.escape(r["licence"])}</a>. '
         f'Taken {html.escape(r["date_taken"])}. {html.escape(r["changes"])} Rights checked {html.escape(r["verified"])}.</li>'
-        for key, r in IMAGES.items())
+        for key, r in IMAGES.items() if not is_todo(r))
     return ('<section class="img-credits"><h2>Image credits</h2><p class="small">Every photo on this site has a rights record in '
             'images.json. Each photo is shared under the licence named.</p><ul>' + items + '</ul></section>')
 
@@ -250,7 +256,7 @@ def pch_chart():
             + "".join(bodies) + '</table></div>'
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
-HERO_CREDIT = "Map area approximate, not a territorial claim · Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
+HERO_CREDIT = "Map area approximate, not a territorial claim · Boundaries: geoBoundaries (CC BY 4.0)"  # photo credit is set in images.json (hornbill.webp)
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -463,6 +469,7 @@ def main():
         print("PHOTO ERRORS. Build stopped before writing dist/:")
         for p in problems: print("  - " + p)
         sys.exit(1)
+    for w in todo_warnings(): print("WARNING: " + w)
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
     NAV = [(clean(f) if False else f, l) for f,l in NAV]

@@ -448,9 +448,9 @@ main.wide > section.hero{margin:-2rem calc(50% - 50vw) 0}  /* cancels main's top
 .hero .hero-btn,.hero .hero-btn:hover{color:#102014}  /* beats `.hero a`, which made the label light and failed contrast */
 .hero-btn:focus-visible,.hero-btn-ghost:focus-visible,.hero-moment:focus-visible{outline:2px solid #E3A92B;outline-offset:3px}
 .hero-wrap{display:contents}  /* phones and tablets: children flow as before; desktop turns this into the container */
-figure.hero-art{position:relative;height:341px;margin:0;overflow:hidden}
-.hero-art .zogam-map{position:absolute;left:-19.5px;top:-9.75px;width:409.5px;height:663px;display:block;overflow:visible}
-.hero-art .hero-bird{position:absolute;left:86px;top:8px;width:283px;height:auto;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55));background:none}  /* phones: same proportions as desktop, on the 409.5px map */
+figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* phone: fits the fold at 390x844 and 430x932 */
+.hero-art .zogam-map{position:absolute;left:-0.5px;top:-50px;width:307px;height:497px;  /* phone: 0.75 scale; top leaves sky for the hornbill, Tedim clears the fade */display:block;overflow:visible}
+.hero-art .hero-bird{position:absolute;left:135px;top:8px;width:240px;height:auto;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55));background:none}  /* phones: same proportions as desktop, on the 409.5px map */
 .hero-art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(to top,#121411,rgba(18,20,17,0));pointer-events:none}
 .hero-credit{margin:0;padding:6px 16px 0;text-align:right;font-size:13px;color:#A3A69A}
 .hero-fade{display:none}
@@ -474,7 +474,7 @@ figure.hero-art{position:relative;height:341px;margin:0;overflow:hidden}
 .zogam-map .zm-land{fill:url(#zm-weave);fill-opacity:.55;stroke:#C8283C;stroke-opacity:.55;stroke-width:1.5;stroke-linejoin:round}
 .zogam-map .zm-border{fill:none;stroke:#ECEEE7;stroke-opacity:.85;stroke-width:1.6;stroke-dasharray:6 6;stroke-linecap:round;stroke-linejoin:round}
 .zogam-map .zm-places circle{fill:#ECEEE7}
-.zogam-map .zm-places text{font-family:var(--font);font-size:15.4px;fill:#ECEEE7}
+.zogam-map .zm-places text{font-family:var(--font);font-size:20px;fill:#ECEEE7}  /* 20 units at 0.75 scale is about 15px on screen */
 @media (max-width:767px){.zogam-map .zm-hakha,.zogam-map .zm-bd,.zogam-map [data-place="Kalemyo"],.zogam-map .zm-my{display:none}}
 .zogam-map .zm-country{font-family:var(--font);font-size:13.3px;letter-spacing:2.4px;fill:#A3A69A}
 .zogam-map .zm-places text,.zogam-map .zm-country{paint-order:stroke;stroke:#121411;stroke-width:3px;stroke-linejoin:round}  /* labels stay readable where a line crosses them */

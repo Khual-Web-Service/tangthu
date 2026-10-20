@@ -2,6 +2,22 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (A3 hero, phone fixes)
+
+### Changed
+- Phones (under 768px): map scale 0.75 (307×497 px) at top −50px, so the homeland clears the fade. Map block 330px, so the text link ends at 836px in an 844px viewport.
+- Hornbill: 240px wide, 8px below the header, bird's own cutout (1050×708). Alpha hit test: 0 hits on every label and dot at 390×844 and 430×932.
+- Labels: 20 units inside the map (about 15px on screen), halo kept. Kalemyo is hidden below 768px. Tedim clears the fade by 40px.
+- INDIA 21px from the left edge (16px minimum).
+- "Start reading": #102014 text, weight 600.
+
+### Changed (build)
+- `HERO_CREDIT` no longer includes "Photo: [CREDIT / LICENSE]". Photo credit lives in `images.json`: `hornbill.webp` is `"credit": "TODO"`. The build prints a warning and does not publish the entry.
+
+### Known gaps
+- Headroom above the land is not achieved: the homeland begins at the top of the block. Clearing the bird from the land needs either a shorter fade, a smaller map, or a taller block, and the fold rules out a taller block.
+- The Churachandpur dot is 0.4px below the nearest wing tip.
+
 ## 2026-10-20 (analytics privacy note)
 
 ### Added
