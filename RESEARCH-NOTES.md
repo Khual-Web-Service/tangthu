@@ -172,7 +172,7 @@
   - A green, red and gold centre band.
   - A navy-black hem.
   - Small blue, yellow and green motifs.
-- **Site palette is now Zopuan:** ink #1B1626, green #2E7A3E, maroon #7A1830, gold #E3A92B, red accent #C8283C, white #EDE6E3. The stripe (`--weave`) is plain stripes only; motifs are not drawn.
+- **Site palette is now Zopuan (revised 20 Oct 2026 from Khual's photo of a green-red-white puan):** white #F3F0E8, green #0E5A33, red #D8261E (text #C21F18), gold edge lines #C9962B/#B8862E, ink #14231A. Colours taken from a photo, not a written source. The stripe (`--weave`) is plain stripes only; motifs are not drawn.
 - **Hornbill (Culture page, labelled oral tradition):**
   - A noble, sacred bird that eats only fruit; a model of faithful lifelong marriage.
   - Feathers were worn on important occasions; the hornbill is used as a Zomi emblem tying together Zomi in India, Myanmar and Bangladesh.

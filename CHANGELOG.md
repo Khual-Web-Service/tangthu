@@ -94,6 +94,12 @@ All notable changes to Zogam History are recorded here.
 - Nine photos still wanted in the chapters (`colonial`, `origins`, `modern`, `diaspora`, `culture` ×2, `stories`, `faith`, `evidence`) moved from free-text placeholders to ids, marked `"status": "wanted"`. They render exactly as before, so their page dates are unchanged.
 - `images/` is git-ignored, except its README.
 
+## 2026-10-20 (puan palette)
+
+### Changed
+- **Site colours and weave stripe** now follow the green-red-white puan in Khual's photo: white ground, thin gold edge lines, broad green bands and a red centre split by a white line. Replaces the earlier maroon Zopuan palette. Source: photo supplied by Khual (no written source).
+
+## 2026-10-20 (essay origin claims)
 
 ### Added
 - **Stories page, "The essay's wider origin story":** every remaining claim from Mang Ngaih Cin's essay, stated as written, including the Zhou "Zo dynasty", the flight from the Qin, five explanations of "Chin", the central-Burma word origins, the AD 800 valley date and the Ciimnuai/Lailun split. Labelled contested, each marked "not enough evidence" where that applies.
