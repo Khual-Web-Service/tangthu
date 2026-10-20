@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phone moments grid)
+
+### Changed
+- Phones: "The story in six moments" is a two-column grid (three rows) instead of a horizontal scroller. The row no longer scrolls sideways (scroll width equals client width at 390px). Cards grow to fit their text, so none are clipped. The moments sit below the fold; the fold for the title, one-liner, buttons and link is unchanged (link bottom 836px).
+
 ## 2026-10-20 (phone hero gutter)
 
 ### Changed
