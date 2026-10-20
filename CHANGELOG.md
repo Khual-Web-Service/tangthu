@@ -2,6 +2,13 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phase 4 review fixes)
+
+### Changed
+- Question answers: origin dates on the Kabaw Valley answer are now attributed to traditional accounts. The Zo-name etymology is stated as proposed and unsettled. Motive and reported-figure claims on the Labour Corps, Pau Cin Hau and Khan Thuam pages are attributed ("reported", "recorded as"). All 18 answers stay at 40–60 words.
+- Uncited ledes: faith cites its existing sources for the script claim. Modern, colonial and names ledes now cite existing sources, or drop claims that had none. The homepage intro and "Every fact sourced" line are reworded to "with sources".
+- /sources standards line: "Every factual claim is cited."
+
 ## 2026-10-20 (phase 4: on-page structure)
 
 ### Changed

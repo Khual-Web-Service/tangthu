@@ -495,7 +495,7 @@ def sources_page():
     out = ['<h1>Sources &amp; Further Reading</h1>',
            '''<section class="standards"><h2>Editorial standards</h2>
 <ul>
-<li><strong>Factual claims are cited.</strong> Numbered notes on each page link to the full reference at the bottom of that page and to this bibliography.</li>
+<li><strong>Every factual claim is cited.</strong> Numbered notes on each page link to the full reference at the bottom of that page and to this bibliography.</li>
 <li><strong>Three evidence labels.</strong> <em>Oral tradition</em> (songs, genealogies, memory), <em>Documented</em> (contemporary records, official data), and <em>Scholarly interpretation</em> (arguments by historians). They are never mixed silently.</li>
 <li><strong>Source types are shown.</strong> Primary, scholarly, reference, news and community sources are labelled. Colonial, missionary and advocacy writing is used as evidence of a viewpoint, not as neutral authority.</li>
 <li><strong>Contested topics.</strong> On names, borders and the Manipur conflict we report what each community says and what official figures show, and attribute every claim. We do not take sides.</li>
