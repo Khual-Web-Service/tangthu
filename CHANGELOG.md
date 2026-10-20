@@ -2,6 +2,14 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (approved H1 and title changes)
+
+### Changed
+- Approved H1s and browser titles on Origins, Stories, Timeline, Modern History, Culture, Diaspora, Glossary, Contribute, Sources, Names and Faith. The JSON-LD headline, og:title, twitter:title and breadcrumb use the new title.
+- Titles are 60 characters or fewer. Names is 52 and Faith is 51.
+- Search, Site map, 404 and Evidence are unchanged.
+- Page dates are updated for these pages.
+
 ## 2026-10-20 (phase 4 review fixes)
 
 ### Changed
