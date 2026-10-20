@@ -27,8 +27,8 @@ def stamp():
     return time.strftime("%H:%M:%S")
 
 def build():
-    # --no-upload: a preview rebuild on every save must never push files to R2
-    r = subprocess.run([sys.executable, str(REPO / "build.py"), "--no-upload"], cwd=REPO, capture_output=True, text=True)
+    # --offline: no network calls on every save
+    r = subprocess.run([sys.executable, str(REPO / "build.py"), "--offline"], cwd=REPO, capture_output=True, text=True)
     if r.returncode == 0:
         state["rev"] += 1
         print(f"[{stamp()}] rebuilt", flush=True)

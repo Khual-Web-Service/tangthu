@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build static site into dist/: python3 build.py"""
-import json, re, shutil, html, sys, subprocess, urllib.request
+import json, re, shutil, html, sys, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -12,7 +12,7 @@ PHOTO_RE = re.compile(r"\{\{photo:(.*?)\}\}")
 PHOTO_REQUIRED = ("alt", "caption", "source", "width", "height")  # plus "file" or "url"
 IMAGE_BASE = "https://assets.khual.net/tangthu/img"  # every {{img:key}} is served from here
 IMAGE_REQUIRED = ("file", "caption", "alt", "author", "source", "licence", "licence_url", "date_taken", "changes", "context", "verified")
-NO_UPLOAD = "--no-upload" in sys.argv  # offline builds: skip the R2 upload and the reachability check
+OFFLINE = "--offline" in sys.argv  # skip the reachability check (no network). Uploads are manual: scripts/upload_images.py
 IMG_RE = re.compile(r"\{\{img:([\w-]+)\}\}")
 def load_images():
     return json.loads((ROOT / "images.json").read_text()) if (ROOT / "images.json").exists() else {}
@@ -186,20 +186,6 @@ def img_problems(refs):
         if key not in IMAGES: problems.append(f"{{{{img:{key}}}}} has no entry in images.json")
     return problems
 
-def run_upload():
-    env_file = ROOT / ".env"
-    have = set()
-    if env_file.exists():
-        have = {l.split("=", 1)[0].strip() for l in env_file.read_text(encoding="utf8").splitlines() if "=" in l and not l.lstrip().startswith("#")}
-    needed = {"R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET"}
-    if not (needed <= have) and not needed <= set(os.environ):
-        print("WARNING: R2 credentials not set. Skipping image upload. Reachability is still checked.")
-        return
-    py = ROOT / ".venv" / "bin" / "python"
-    try:
-        subprocess.run([str(py if py.exists() else sys.executable), str(ROOT / "scripts" / "upload_images.py")], check=True)
-    except subprocess.CalledProcessError:
-        sys.exit("Image upload failed, so the build stopped. Run scripts/upload_images.py --dry-run to see why, or build with --no-upload.")
 
 def unreachable_images(refs):
     bad = []
@@ -462,9 +448,8 @@ def main():
         print("IMAGE ERRORS. Build stopped before writing dist/:")
         for p in problems: print("  - " + p)
         sys.exit(1)
-    if not NO_UPLOAD: run_upload()
     IMAGES = load_images()  # the upload step fills in each image's width and height
-    if not NO_UPLOAD:
+    if not OFFLINE:
         bad = unreachable_images(refs)
         if bad:
             print("IMAGES NOT REACHABLE on assets.khual.net. Build stopped before writing dist/:")

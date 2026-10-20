@@ -20,6 +20,11 @@ All notable changes to Zogam History are recorded here.
 ### Added
 - Google tag (G-H19PT9QY1L) on every page, added in the build's page head.
 
+## 2026-10-20 (uploads out of the build)
+
+### Changed
+- `python3 build.py` no longer uploads images or needs R2 credentials. It only checks that images are reachable on assets.khual.net. Uploads are run manually with `scripts/upload_images.py`. `--no-upload` is replaced by `--offline`, which skips the reachability check.
+
 ## 2026-10-20 (landing hero, A3 design)
 
 ### Changed
