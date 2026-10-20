@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (build runs on Python 3.9)
+
+### Fixed
+- `build.py` no longer uses a backslash inside an f-string expression (the `aria-current` attribute in the header nav). Python 3.9 rejects that syntax, so the build failed there. Output is unchanged.
+
 ## 2026-10-20 (A3 hero, desktop map clears the timeline)
 
 ### Changed

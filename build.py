@@ -292,7 +292,8 @@ def V(path):
 def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     ICON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
-    nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{" aria-current=\"page\"" if h==fname else ""}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>') for h,l in NAV)
+    cur = lambda h: ' aria-current="page"' if h == fname else ""  # no backslash inside f-string braces: Python 3.9 rejects it
+    nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{cur(h)}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{cur(h)}>{l}</a>') for h,l in NAV)
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))
     url = SITE_URL + clean(fname)
     slug = fname[:-5]
