@@ -179,7 +179,7 @@ def img_problems(refs):
             problems.append(f'images.json "{key}": people is true, so consent must be noted')
         if r.get("file") and not (ROOT / r["file"]).exists(): problems.append(f'images.json "{key}": {r["file"]} not found')
     listed = {r.get("file") for r in IMAGES.values()}
-    for f in sorted((ROOT / "assets" / "img").rglob("*")):
+    for f in sorted((ROOT / "assets" / "img" / "originals").rglob("*")):  # the rights archive; site graphics such as hornbill.webp are not photos
         if f.is_file() and not f.name.startswith(".") and str(f.relative_to(ROOT)) not in listed:
             problems.append(f"{f.relative_to(ROOT)} has no images.json entry")
     for key in refs:
@@ -253,9 +253,27 @@ def pch_chart():
             + "".join(bodies) + '</table></div>'
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
+HERO_CREDIT = "Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
+def zogam_map():
+    """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
+    return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
+def hero_moments():
+    items = []
+    for m in json.loads((ROOT / "data" / "moments.json").read_text(encoding="utf8")):
+        cls = "hero-moment today" if m.get("today") else "hero-moment"
+        items.append(f'<li><a class="{cls}" href="{m["href"]}"><span class="hero-dot" aria-hidden="true"></span>'
+                     f'<span class="hero-when">{html.escape(m["when"])}</span>'
+                     f'<span class="hero-long">{html.escape(m["short"])}</span>'
+                     f'<span class="hero-mini" aria-hidden="true">{html.escape(m["mobile"])}</span></a></li>')
+    return "".join(items)
+def hero_stats():
+    return f"9 chapters · {len(SRC)} sources · About 15 minutes · Map area approximate, not a territorial claim · {HERO_CREDIT}"
+
 def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
     if "{{pch-chart}}" in body: body = body.replace("{{pch-chart}}", pch_chart())
+    if "{{zogam-map}}" in body: body = body.replace("{{zogam-map}}", zogam_map())
+    body = body.replace("{{hero-moments}}", hero_moments()).replace("{{hero-stats}}", hero_stats()).replace("{{hero-credit}}", HERO_CREDIT)
     body = IMG_RE.sub(lambda m: img_figure(m.group(1)), body)  # before cite(): the caption can carry no [[ ]], but keep the order
     body = PHOTO_RE.sub(lambda m: photo(m.group(1)), body)  # before cite(): figcaptions carry [[source]]
     body = re.sub(r"\[\[([\w-]+)\]\]", cite, body)
@@ -272,8 +290,6 @@ def page(fname, title, body, wide=False, home=False, search=False):
     FOOT_CH = "".join('<li><a href="%s">%s</a></li>' % (clean(c), html.escape(CH_LABEL[c])) for c in CHAPTERS)
     ICON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
     nav = "".join((f'<a class="navsearch" href="{clean(h)}" aria-label="Search" title="Search"{" aria-current=\"page\"" if h==fname else ""}>{ICON}</a>' if h=="search.html" else f'<a href="{clean(h)}"{" aria-current=\"page\"" if h==fname else ""}>{l}</a>') for h,l in NAV)
-    leaflet = ('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">'
-               '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>') if home else ""
     t, d = DESC.get(fname, (f"{title} — {SITE_NAME}", ""))
     url = SITE_URL + clean(fname)
     slug = fname[:-5]
@@ -310,7 +326,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');</script><script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="{CDN_ORIGIN}">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">{leaflet}
+<link rel="stylesheet" href="/assets/style.css?v={V('/assets/style.css')}">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="AI guide">
 <link rel="author" href="https://khual.net">

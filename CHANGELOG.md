@@ -20,6 +20,18 @@ All notable changes to Zogam History are recorded here.
 ### Added
 - Google tag (G-H19PT9QY1L) on every page, added in the build's page head.
 
+## 2026-10-20 (landing hero, A3 design)
+
+### Changed
+- **Home hero rebuilt to the approved A3 design.** A dark hero with the headline, the homeland map (`partials/zogam-map.svg`, inlined once and cropped per breakpoint with CSS), the great hornbill cut-out (`assets/img/hornbill.webp`, placeholder until the licensed photo arrives), and the six-moments timeline. On phones the timeline is swipe cards; on tablets a 3 x 2 grid; on desktop a 6-column timeline across the bottom.
+- **Six moments come from one list** (`data/moments.json`). The old six-moments section below the hero has been removed, since the hero timeline replaces it. The long descriptions are gone; each moment links to its chapter.
+- **Map labels** INDIA, MYANMAR and BANGLADESH added; Churachandpur labelled to the left of its dot.
+- **Leaflet** no longer loads with the home page. It loads when the map section nears the screen.
+- The hero's bird and map animate in (CSS only); the bird stays still. Reduced motion turns the animation off.
+
+### Credit
+- The photo credit is a placeholder, `[CREDIT / LICENSE]`, in `build.py` (`HERO_CREDIT`). The map boundaries credit (geoBoundaries, CC BY 4.0) is shown beside it.
+
 ## 2026-10-20 (live search overlay)
 
 ### Added

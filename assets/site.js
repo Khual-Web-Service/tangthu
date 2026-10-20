@@ -63,13 +63,21 @@ window.addEventListener('DOMContentLoaded',function(){
     draw();
   }
 
-  // map
+  // map: Leaflet loads only when the map comes near the screen (not on the hero)
   var m=document.getElementById('map');
-  if(m&&!window.L){m.innerHTML='<p class="small" style="padding:1rem">The interactive map could not load. Places covered: '+(window.ZO_PLACES||[]).map(function(p){return p.n}).join(', ')+'.</p>';m.style.height='auto';}
-  if(m&&window.L){
+  function fallback(){m.innerHTML='<p class="small" style="padding:1rem">The interactive map could not load. Places covered: '+(window.ZO_PLACES||[]).map(function(p){return p.n}).join(', ')+'.</p>';m.style.height='auto';}
+  function initMap(){
     var map=L.map(m,{scrollWheelZoom:false,tap:false,keyboard:true}).setView([23.0,93.1],7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,attribution:'© OpenStreetMap contributors'}).addTo(map);
     (window.ZO_REGIONS||[]).forEach(function(r){L.polygon(r.p,{color:r.c,weight:1.5,fillOpacity:.18,dashArray:'4 4'}).addTo(map).bindTooltip(r.n+' (approximate)',{sticky:true});});
     (window.ZO_PLACES||[]).forEach(function(p){L.circleMarker(p.ll,{radius:6,color:'#2b2118',weight:1,fillColor:'#c58b3a',fillOpacity:.95}).addTo(map).bindPopup('<strong>'+p.n+'</strong><br>'+p.d);});
+  }
+  function loadLeaflet(){
+    var css=document.createElement('link');css.rel='stylesheet';css.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.appendChild(css);
+    var js=document.createElement('script');js.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';js.onload=initMap;js.onerror=fallback;document.head.appendChild(js);
+  }
+  if(m){
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();loadLeaflet();}},{rootMargin:'300px'});io.observe(m);}
+    else loadLeaflet();
   }
 });
