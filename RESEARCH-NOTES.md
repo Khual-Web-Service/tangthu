@@ -187,3 +187,10 @@
 - Gin Khan Nang, "Zomi Life and Culture" (2007; Zomi Daily 2009) verified and added. Conflicts to resolve: Khan Thuam's death 1840 (Nang) vs 1848 (site); Khuado end of September (Nang) vs October (site); "Chin" from the Chin dynasty (treat as contested).
 - Rejected: tribalmercy.org "About the Zo Tribe" (unsourced, errors); an AI search answer listing "Zomi Tangthu" (Thang Lian Pau) and "Zogam Tangthu A Tom" (Khup Za Go), neither found in any catalogue.
 - Lead: Wikipedia "Goukhothang" gives c. 1821–1872 citing Carey & Tuck vol. I p. 141; check before using the blog's Goukhothang post.
+
+## LTTuang Scribd documents (19 Oct 2026)
+- Ten documents decoded (old Zolai font, a different letter key per document). Decoded texts and fact lists were kept outside the repo; the site cites the Scribd uploads.
+- Confirmed by Khual: refuge "Rallang" (decoded as Fallang), veng "Sekzaang", the seven pheleu spellings, beh "Hatlang(h)" (decoded "Hhalthleng"), death year 1981 for Bo Mang Za Thang, officers Sakamaki and Inada, and "Lt. Col. Mutachi" quoted as written.
+- Uncertain: the organisation printed as "THWP" in Thang Za Tuan (Khual suggests Tedim Hills Welfare Association), left off the site.
+- Lead to read: Gin Khan Thang & Paoneikhai Suantak, "Tributary hill polity, chiefs and overlords in the northern Chin Hills" (ResearchGate 309654178), for Khan Thuam at Rallang.
+- Scribd's "AI-enhanced" titles are unreliable (e.g. the CDA biography is titled "History of Sung Sut Village").

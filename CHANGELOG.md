@@ -2,6 +2,28 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-19 (LTTuang Scribd archive)
+
+Ten Zolai documents uploaded to Scribd by L. T. Tuang were read and decoded from an old non-Unicode font; every claim added below was checked against the decoded text, and doubtful words were confirmed with Khual.
+
+### Added
+- **Names & Identity, "Beh and phung":** what a *beh* is, and Thang Lian Pau's 2002 list of about 200 beh and 12 phung, with a note that the list mixes tribe and area names.
+- **Origins, "Six theories in a Zomi newsletter":** the 1983 *Workers' New Letter* review of six origin theories (via Zomi Messenger) and Khen Za Sian's Zhou/Qin argument, labelled contested.
+- **Stories:** the Khan Thuam plot of 1783, the nine chiefs, refuge at Rallang, and the two lists of his sons; a new story on Kam Hau, the founding of Tedim (c. 1804 and 1810), its five *veng*, the eight-member council and the *Kamhau Upadi* (from 1848; printed 1972, and per Nang also 1925); and the Kamhau chief line 1820–1948.
+- **Culture, textiles:** seven weaving motifs (*pheleu*), dye plants, traditional garments, and the 1966 Zomi National Dress Committee.
+- **Faith & Literacy:** first Tedim-area baptisms (4 April 1904), Zomi Baptist baptism figures 1915–1980, Cope's Matthew (1915), and the 1931 Census and Bible Society references to the Pau Cin Hau script.
+- **Modern:** new "Second World War" section (1942 road via Tonzang, 1943 Chin Levy, the Chin Defence Army and Bo Mang Za Thang); Thang Za Tuan's account of the 1946 and 1947 Panglong conferences.
+- **Sources:** thangliampau2002, thangliampau2010, zomimsg-piancil, khenzasian, zomimsg-khanthuam, zomimsg-kamhau, thangzatuan-pzm, khupzago1980, zomimsg-puan, cda-mzt.
+
+### Flagged (not resolved)
+- Khan Thuam's death: 1848 (site), 1840 (Nang); Kam Hau's rule from 1820 (Thang Lian Pau).
+- Khan Thuam's sons: five or seven.
+- Pau Cin Hau alphabet: 37 letters (Khup Za Go) vs 57 (Unicode proposal).
+- Chin delegation's 1947 Panglong arrival: 6 February (published documents) vs 2 February (Thang Za Tuan).
+
+### Changed
+- **Page dates:** Names, Origins, Stories, Culture, Faith and Modern updated to 2026-10-19.
+
 ## 2026-10-19 (proverbs and new sources)
 
 ### Added
