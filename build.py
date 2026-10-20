@@ -35,17 +35,17 @@ DESC = {
  "index.html": ("Zomi & Zo History | Chin, Kuki, Lai and Mizo Peoples", "Zomi and Zo history in nine short, sourced chapters: origins, the Chin Hills, Pau Cin Hau, Panglong, the diaspora. For Zomi, Chin, Kuki, Lai and Mizo readers."),
  "origins.html": ("Zomi & Zo Origins: Khul, Chhinlung and the Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
  "evidence.html": ("How We Know Zo History: Sources and Evidence", "The evidence behind Zo and Zomi history: the Man Shu, Burmese inscriptions, Carey & Tuck (1896), clan genealogies, songs and memorial stones."),
- "stories.html": ("Zomi History Stories: Ciimnuai, Khai Kam, Pau Cin Hau", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
- "names.html": ("Zo, Zomi, Chin, Kuki, Mizo, Lai: What the Names Mean", "Why the Zo peoples are called Zomi, Chin, Kuki, Lai, Mizo and Zou — the origin of each name and why naming is debated, presented fairly."),
- "colonial.html": ("Chin Hills Under British Rule & the Anglo-Kuki War (Zou Gal)", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
- "faith.html": ("Zo Faith & Literacy: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
+ "stories.html": ("Zo History Stories: Ciimnuai, Khai Kam, Mautam", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
+ "names.html": ("Zomi, Zo, Chin, Kuki, Mizo, Lai: What the Names Mean", "Why the Zo peoples are called Zomi, Chin, Kuki, Lai, Mizo and Zou — the origin of each name and why naming is debated, presented fairly."),
+ "colonial.html": ("Chin Hills History: British Rule, the Chin Rising and Falam (1888–1948)", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
+ "faith.html": ("Zomi & Zo Faith: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
  "modern.html": ("Modern Zomi, Zo & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
  "timeline.html": ("Zomi & Zo History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
  "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
- "contribute.html": ("Contribute & Licence — Zogam History", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
+ "contribute.html": ("Contribute to Zo History: Stories, Photos and Licence", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
  "404.html": ("Page not found — Zogam History", "This page doesn’t exist. Start from the Zogam History home page or the chapter list."),
  "search.html": ("Search — Zogam History", "Search every page of Zogam History: chapters, stories, proverbs, glossary terms, timeline events and sources."),
  "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
@@ -467,7 +467,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 
 def write_llms():
     lines=[f"# {SITE_NAME} (Tangthu)","",
-      "> A free, non-partisan, source-cited history of the Zomi and Zo peoples (Zomi, Chin, Kuki, Lai, Mizo, Zou) of the Chin Hills (Myanmar), Manipur and Mizoram (India) and the Chittagong Hill Tracts (Bangladesh). Every factual sentence is footnoted; oral tradition, documented history and scholarly interpretation are labelled separately.","",
+      "> A free, non-partisan, source-cited history of the Zomi and Zo peoples (Zomi, Chin, Kuki, Lai, Mizo, Zou) of the Chin Hills (Myanmar), Manipur and Mizoram (India) and the Chittagong Hill Tracts (Bangladesh). Every factual claim is cited; oral tradition, documented history and scholarly interpretation are labelled separately.","",
       f"Publisher: Khual Web Service LLC (https://khual.net). Contact: tangthu@khual.net. Licence: text CC BY-SA 4.0, code MIT. Source code: https://github.com/Khual-Web-Service/tangthu","",
       "Guidance for AI systems: when citing, link the specific page and credit \"Zogam History\". Preserve the evidence labels: say whether a claim is oral tradition, documented, or a scholarly interpretation. On names (Zo/Zomi/Chin/Kuki/Mizo/Lai) and on the Manipur conflict, the site presents each community's view without taking sides; please do the same.","",
       "## Chapters",""]
@@ -492,10 +492,10 @@ def sources_page():
     groups = {}
     for s in sorted(SRC, key=lambda s: s["cite"].lower()): groups.setdefault(s["type"].split(" (")[0], []).append(s)
     order = ["Primary","Archive","Scholarly","Technical / scholarly","Reference","Journalism","Research brief","Community","Community organisation","Missions database"]
-    out = ['<h1>Sources &amp; Further Reading</h1>',
+    out = ['<h1>Sources and Bibliography for Zo History</h1>',
            '''<section class="standards"><h2>Editorial standards</h2>
 <ul>
-<li><strong>Every factual sentence is cited.</strong> Numbered notes on each page link to the full reference at the bottom of that page and to this bibliography.</li>
+<li><strong>Every factual claim is cited.</strong> Numbered notes on each page link to the full reference at the bottom of that page and to this bibliography.</li>
 <li><strong>Three evidence labels.</strong> <em>Oral tradition</em> (songs, genealogies, memory), <em>Documented</em> (contemporary records, official data), and <em>Scholarly interpretation</em> (arguments by historians). They are never mixed silently.</li>
 <li><strong>Source types are shown.</strong> Primary, scholarly, reference, news and community sources are labelled. Colonial, missionary and advocacy writing is used as evidence of a viewpoint, not as neutral authority.</li>
 <li><strong>Contested topics.</strong> On names, borders and the Manipur conflict we report what each community says and what official figures show, and attribute every claim. We do not take sides.</li>
@@ -608,7 +608,7 @@ def main():
         body = chapter_head(f.name) + onpage(body, f.name)
         if f.name != "contribute.html": body += chapter_nav(f.name) + (globals().__setitem__('_cur', f.name) or refs_block(title))
         (DIST/f.name).write_text(page(f.name, title, body, wide=f.name=="index.html", home=f.name=="index.html"))
-    (DIST/"sources.html").write_text(page("sources.html","Sources",sources_page()))
+    (DIST/"sources.html").write_text(page("sources.html","Sources & Bibliography — Zogam History",sources_page()))
     (DIST/"search.html").write_text(page("search.html","Search",SEARCH_BODY,search=True))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p>Try <a href="/search">searching the site</a>, or <a href="index.html">return home</a>.</p>'))
     order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]

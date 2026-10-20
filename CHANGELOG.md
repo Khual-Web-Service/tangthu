@@ -2,6 +2,33 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (approved H1 and title changes)
+
+### Changed
+- Approved H1s and browser titles on Origins, Stories, Timeline, Modern History, Culture, Diaspora, Glossary, Contribute, Sources, Names and Faith. The JSON-LD headline, og:title, twitter:title and breadcrumb use the new title.
+- Titles are 60 characters or fewer. Names is 52 and Faith is 51.
+- Search, Site map, 404 and Evidence are unchanged.
+- Page dates are updated for these pages.
+
+## 2026-10-20 (phase 4 review fixes)
+
+### Changed
+- Question answers: origin dates on the Kabaw Valley answer are now attributed to traditional accounts. The Zo-name etymology is stated as proposed and unsettled. Motive and reported-figure claims on the Labour Corps, Pau Cin Hau and Khan Thuam pages are attributed ("reported", "recorded as"). All 18 answers stay at 40–60 words.
+- Uncited ledes: faith cites its existing sources for the script claim. Modern, colonial and names ledes now cite existing sources, or drop claims that had none. The homepage intro and "Every fact sourced" line are reworded to "with sources".
+- /sources standards line: "Every factual claim is cited."
+
+## 2026-10-20 (phase 4: on-page structure)
+
+### Changed
+- Question headings with direct answers (40–60 words, built from text and citations already on the page) on each chapter: origins, evidence, stories, names, colonial, faith, modern, culture and diaspora.
+- Colonial page title, H1 and browser title: "Chin Hills History: British Rule, the Chin Rising and Falam (1888–1948)".
+- Stories title drops Pau Cin Hau ("Zomi History Stories: Ciimnuai, Khai Kam, Khan Thuam"). His full account is on Faith & Literacy; Stories has a short summary that links there.
+- Ciimnuai, Pau Cin Hau and linguistic evidence each have one main home: Stories, Faith & Literacy and How We Know. Other pages link to them.
+- Contextual in-text links added across chapters and the homepage. The homepage has a 163-word "The story in brief" section under the hero, citing existing sources.
+- The /sources standards line now reads "Factual claims are cited." Several lede sentences are not yet cited, so "Every factual sentence" would overstate it.
+- The stories lede cites its existing Khan Thuam and Pau Cin Hau sources.
+- Evidence: an uncited sentence about 1508 and 1799 references is rewritten without new claims. "Linguistics" moved from origins to How We Know, with the existing citations.
+
 ## 2026-10-20 (placeholder boxes kept)
 
 ### Changed
