@@ -50,6 +50,7 @@ DESC = {
  "search.html": ("Search — Zogam History", "Search every page of Zogam History: chapters, stories, proverbs, glossary terms, timeline events and sources."),
  "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
 }
+PAGE_TYPE = {"search.html": "SearchResultsPage", "sources.html": "CollectionPage", "contribute.html": "WebPage", "sitemap.html": "WebPage", "404.html": "WebPage"}  # chapters and stories are Article
 FAQ = [
  ("What is Zomi history?", "Zomi history is the history of the peoples who call themselves Zomi (“Zo people”) — including Tedim, Paite, Zou, Simte, Vaiphei and related communities — in Myanmar’s Chin State, India’s Manipur and Mizoram, and the diaspora. The name was proposed in 1950 and adopted by the Zomi Baptist Convention in 1953."),
  ("What is Zo history?", "Zo history covers the wider family of related peoples — Zomi, Chin, Kuki, Lai, Mizo and Zou — who share Kuki-Chin languages and origin traditions such as Khul and Chhinlung, across Myanmar, Northeast India and Bangladesh."),
@@ -95,7 +96,17 @@ ACCESSED = "19 October 2026"
 DATES = json.loads((ROOT/"page-dates.json").read_text()) if (ROOT/"page-dates.json").exists() else {}
 MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 def pdates(f):
-    x = DATES.get(f, {}); return x.get("published", TODAY), x.get("updated", TODAY)
+    """(published, updated) from page-dates.json. Never the build date: check_dates() stops the build if a page has no date."""
+    x = DATES.get(f, {})
+    pub = x.get("published") or x.get("updated"); upd = x.get("updated") or x.get("published")
+    if not pub: sys.exit(f'page-dates.json has no date for "{f}"')
+    return pub, upd
+def check_dates(names):
+    missing_dates = [n for n in names if not (DATES.get(n, {}).get("published") or DATES.get(n, {}).get("updated"))]
+    if missing_dates:
+        print("DATE ERRORS. Add a published or updated date to page-dates.json for:")
+        for n in missing_dates: print("  - " + n)
+        sys.exit(1)
 def long_date(iso):
     y,m,dd = map(int, iso.split("-")); return f"{dd} {MONTHS[m-1]} {y}"
 def us_date(iso):
@@ -391,15 +402,17 @@ def page(fname, title, body, wide=False, home=False, search=False):
     img_alt = f"{title if not home else SITE_NAME}: share card from Zogam History, a sourced history of the Zomi and Zo peoples"
     crumbs = [{"@type":"ListItem","position":1,"name":"Home","item":SITE_URL+"/"}]
     if not home: crumbs.append({"@type":"ListItem","position":2,"name":title,"item":url})
+    page_node = {"@type":PAGE_TYPE.get(fname, "WebPage" if home else "Article"),"@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
+       "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]}
     graph = [
-      {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
+      {"@type":"Organization","@id":"https://khual.net/#org","name":"Khual Web Service LLC","alternateName":["KhualWS","KWS"],"url":"https://khual.net","email":"tangthu@khual.net","logo":{"@type":"ImageObject","url":SITE_URL+"/icon-512.png","width":512,"height":512},"sameAs":["https://github.com/Khual-Web-Service"],"address":{"@type":"PostalAddress","addressLocality":"Tulsa","addressRegion":"OK","addressCountry":"US"}},
       {"@type":"WebSite","@id":SITE_URL+"/#site","url":SITE_URL+"/","name":SITE_NAME,"alternateName":["Tangthu","Zomi History","Zo History"],"inLanguage":"en","description":DESC["index.html"][1],"publisher":{"@id":"https://khual.net/#org"},"copyrightHolder":{"@id":"https://khual.net/#org"},"copyrightYear":2026,"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"sameAs":["https://github.com/Khual-Web-Service/tangthu"]},
-      {"@type":"WebPage" if home else "Article","@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
-       "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]},
+      page_node,
       {"@type":"BreadcrumbList","itemListElement":crumbs}]
     if fname=="glossary.html":
         terms=re.findall(r'<dt id="([^"]+)">(.*?)</dt>\s*<dd>(.*?)</dd>', GLOSS_RAW, re.S)
-        graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":url+"#terms"} for i,n,d in terms]})
+        page_node["mainEntity"] = {"@id": url+"#terms"}
+        graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","url":url,"inLanguage":"en","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":{"@id":url+"#terms"}} for i,n,d in terms]})
     if fname=="timeline.html":
         graph.append({"@type":"ItemList","@id":url+"#events","name":"Zomi and Zo history timeline","numberOfItems":len(TIMELINE),
                       "itemListOrder":"https://schema.org/ItemListOrderAscending",
@@ -407,7 +420,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
     if home:
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
-    robots = '<meta name="robots" content="noindex">' if fname=="404.html" else '<meta name="robots" content="index,follow,max-image-preview:large">'
+    robots = {"404.html": '<meta name="robots" content="noindex">', "search.html": '<meta name="robots" content="noindex,follow">'}.get(fname, '<meta name="robots" content="index,follow,max-image-preview:large">')
     return f'''<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(t)}</title>
@@ -566,6 +579,8 @@ def main():
         for p in problems: print("  - " + p)
         sys.exit(1)
     for w in todo_warnings(): print("WARNING: " + w)
+    generated = ["sources.html", "search.html", "404.html", "sitemap.html"]
+    check_dates([f.name for f in (ROOT / "content").glob("*.html")] + generated)
     if DIST.exists(): shutil.rmtree(DIST)
     global NAV
     NAV = [(clean(f) if False else f, l) for f,l in NAV]
@@ -591,8 +606,9 @@ def main():
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p>Try <a href="/search">searching the site</a>, or <a href="index.html">return home</a>.</p>'))
     order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]
     pages = order
-    pri = {"index.html":"1.0","origins.html":"0.9","names.html":"0.9","stories.html":"0.9","evidence.html":"0.8","colonial.html":"0.8","faith.html":"0.8","modern.html":"0.8","culture.html":"0.8","diaspora.html":"0.8","sources.html":"0.6","contribute.html":"0.4","sitemap.html":"0.3"}
-    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod><changefreq>monthly</changefreq><priority>{pri.get(p,'0.5')}</priority></url>" for p in pages)
+    # Indexable pages only: /search is noindex, /sitemap is the human map, and about.html waits for real editor names.
+    sitemap_pages = [p for p in order if p not in ("search.html", "sitemap.html")]
+    urls = "".join(f"<url><loc>{SITE_URL}{clean(p)}</loc><lastmod>{pdates(p)[1]}</lastmod></url>" for p in sitemap_pages)
     (DIST/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     bots = ["Googlebot","Google-Extended","Bingbot","GPTBot","OAI-SearchBot","ChatGPT-User","ClaudeBot","Claude-SearchBot","Claude-User","anthropic-ai","PerplexityBot","Perplexity-User","Applebot","Applebot-Extended","CCBot","Meta-ExternalAgent","DuckAssistBot","Amazonbot","cohere-ai","YouBot"]
     robots = "# Zogam History welcomes search engines and AI assistants.\n# Content: CC BY-SA 4.0. Please credit \"Zogam History, " + SITE_URL + "\".\n\n"

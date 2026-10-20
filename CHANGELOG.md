@@ -20,6 +20,17 @@ All notable changes to Zogam History are recorded here.
 - `style.css` is still a render-blocking stylesheet. It is 39.5 KB raw, about 10 KB compressed. Inlining it would repeat it on every page and stop it being cached, so it stays external.
 - Literata italic is kept. The site brand (`Zogam <em>History</em>`) is italic above the fold.
 
+## 2026-10-20 (phase 3: sitemap and schema)
+
+### Changed
+- **Sitemap `lastmod`** comes from `page-dates.json` (`updated`, falling back to `published`). The build no longer uses the build date. It stops with an error if a page has no date.
+- `page-dates.json` has entries for `sources.html`, `sitemap.html` and `404.html`, which the strict check needs. `contribute.html` already had one.
+- **Sitemap entries:** `changefreq` and `priority` are removed. `/sitemap` is no longer listed. `/search` is no longer listed either, because it is now `noindex`, and a noindex URL in a sitemap sends mixed signals.
+- **`/search`** is `noindex,follow`.
+- **Schema types:** `/search` is `SearchResultsPage`, `/sources` is `CollectionPage`, and `/contribute`, `/sitemap` and `/404` are `WebPage`. Chapters remain `Article`.
+- **Glossary:** the page's `mainEntity` points to the `DefinedTermSet`. Each term's `inDefinedTermSet` is `{"@id": ...}`, and the set has a `url` and `inLanguage`.
+- **Organization:** adds a `logo` (`ImageObject`, `icon-512.png` from the site's favicon set). This is the Zogam icon. Replace it with a Khual Web Service logo if one exists. `sameAs` is unchanged (GitHub only).
+
 ## 2026-10-20 (phase 1: critical fixes from the SEO audit)
 
 ### Changed

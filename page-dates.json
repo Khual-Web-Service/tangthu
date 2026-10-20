@@ -1,4 +1,8 @@
 {
+ "404.html": {
+  "published": "2026-10-19",
+  "updated": "2026-10-19"
+ },
  "colonial.html": {
   "published": "2026-10-19",
   "updated": "2026-10-19"
@@ -43,16 +47,24 @@
   "published": "2026-10-19",
   "updated": "2026-10-20"
  },
+ "search.html": {
+  "published": "2026-10-20",
+  "updated": "2026-10-20"
+ },
+ "sitemap.html": {
+  "published": "2026-10-19",
+  "updated": "2026-10-19"
+ },
+ "sources.html": {
+  "published": "2026-10-19",
+  "updated": "2026-10-19"
+ },
  "stories.html": {
   "published": "2026-10-19",
   "updated": "2026-10-20"
  },
  "timeline.html": {
   "published": "2026-10-19",
-  "updated": "2026-10-20"
- },
- "search.html": {
-  "published": "2026-10-20",
   "updated": "2026-10-20"
  }
 }
