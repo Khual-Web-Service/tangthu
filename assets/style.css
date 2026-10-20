@@ -436,7 +436,7 @@ main.wide > section.hero{margin:-2rem calc(50% - 50vw) 0}  /* cancels main's top
 @media (min-width:641px){main.wide > section.hero{margin-top:-3.2rem}}
 .hero{position:relative;width:100vw;background:#121411;color:#ECEEE7;overflow:hidden;isolation:isolate}
 .hero a{color:#ECEEE7}
-.hero-text{position:relative;z-index:2;padding:2.4rem 16px 0}
+.hero-text{position:relative;z-index:2;padding:2.4rem 24px 0}  /* phones: clear of the 6px weave edge */
 .hero-kicker{margin:0 0 14px;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#9FD3A9}
 .hero h1{margin:0;font-size:42px;font-weight:300;line-height:1.02;letter-spacing:-.02em;color:#ECEEE7}
 .hero-intro{display:none}
@@ -455,10 +455,10 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
 .hero-credit{margin:0;padding:6px 16px 0;text-align:right;font-size:13px;color:#A3A69A}
 .hero-fade{display:none}
 .hero-moments{margin:14px 0 0}
-.hero-moments-head{margin:0 16px 10px;font-size:15px}
+.hero-moments-head{margin:0 24px 10px;font-size:15px}
 .hero-moments-title{letter-spacing:.14em;text-transform:uppercase;color:#A3A69A}
 .hero-stats{display:none}
-.hero-timeline{list-style:none;margin:0;padding:0 16px;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.hero-timeline{list-style:none;margin:0;padding:0 24px;scroll-padding:0 24px;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .hero-timeline::-webkit-scrollbar{display:none}
 .hero-timeline li{flex:0 0 128px;scroll-snap-align:start}
 .hero-moment{display:flex;flex-direction:column;gap:6px;height:100px;box-sizing:border-box;padding:12px;border-radius:6px;background:#1C1F1A;border:1px solid rgba(236,238,231,.1);text-decoration:none;color:#ECEEE7}

@@ -2,6 +2,11 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phone hero gutter)
+
+### Changed
+- Phones: hero text, moments heading and timeline cards start 24px from the edge (was 16px), clear of the 6px weave border. Button spans 24–366px at 390px wide. Fold unchanged: link bottom 836px.
+
 ## 2026-10-20 (build runs on Python 3.9)
 
 ### Fixed
