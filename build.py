@@ -247,7 +247,7 @@ def pch_chart():
             + "".join(bodies) + '</table></div>'
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
-HERO_CREDIT = "Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
+HERO_CREDIT = "Map area approximate, not a territorial claim · Photo: [CREDIT / LICENSE] · Boundaries: geoBoundaries (CC BY 4.0)"
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -261,7 +261,7 @@ def hero_moments():
                      f'<span class="hero-mini" aria-hidden="true">{html.escape(m["mobile"])}</span></a></li>')
     return "".join(items)
 def hero_stats():
-    return f"9 chapters · {len(SRC)} sources · About 15 minutes · Map area approximate, not a territorial claim · {HERO_CREDIT}"
+    return f"9 chapters · {len(SRC)} sources · About 15 minutes"
 
 def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
