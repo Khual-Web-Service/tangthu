@@ -190,7 +190,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <div class="selvedge" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
-<button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav><form class="hsearch" role="search" action="/search" method="get"><label for="hq" class="vh">Search the site</label><input id="hq" name="q" type="search" placeholder="Search" autocomplete="off"><button type="submit" class="vh-btn" aria-label="Search">⌕</button></form></div></header>
+<button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button><nav class="main" id="mainnav" aria-label="Main">{nav}</nav></div></header>
 <main id="main"{' class="wide"' if wide else ""}>{body}</main>
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>

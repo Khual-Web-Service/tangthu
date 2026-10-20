@@ -7,12 +7,12 @@ All notable changes to Zogam History are recorded here.
 ### Added
 - **Search page (`/search`):** searches every section of every chapter, the glossary, all timeline events and every source, with results that highlight the matched words, link straight to the section, and show its evidence label. Filter by Pages, Glossary, Timeline or Sources.
 - **Zolai-friendly matching:** ignores apostrophes and accents, treats doubled vowels as single (so "Cimnuai" finds Ciimnuai), and matches joined or split names ("kamhau" finds Kam Hau).
-- **Search box in the header** on wide screens, and a "Search" item in the mobile menu; press `/` on any page to jump to search. Searches are shareable as links (`/search?q=…`).
+- **"Search" in the main menu** at every screen size; press `/` on any page to jump to search. Searches are shareable as links (`/search?q=…`).
 - **Accessible:** labelled form, result count announced to screen readers, filter buttons report their state, Enter moves to the first result, and a message for readers without JavaScript.
 - **Build:** `build.py` now writes `assets/search-index.json`; the 404 page and site map link to search.
 
 ### Fixed
-- **Search layout:** the Clear button is visible in dark mode, and the header search box only appears on wide screens (otherwise "Search" is a menu item), so the menu stays on one line.
+- **Search layout:** the Clear button is visible in dark mode, and the header search box was replaced by a "Search" menu item so the menu fits on one line.
 - **Updates reach readers immediately:** stylesheet and scripts are now loaded with a version stamp (`?v=…`) that changes whenever the file changes, so the 24-hour asset cache no longer serves an old design after an update.
 
 ## 2026-10-19 (mobile and accessibility)
