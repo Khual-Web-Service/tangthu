@@ -2,6 +2,12 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (naming traditions)
+
+### Added
+- **Stories page, "How the Tedim-area groups got their names":** traditions for Zo, Teizang, Saizang, Sihzang, Vangteh, Diim and Khuano, plus the essay's account of how Tedim speech formed. Labelled oral tradition, with a warning box marking them as speculation.
+- **Source:** Mang Ngaih Cin, “Zo Khang Tangthu” (Academia.edu). Its Zhou-dynasty and Qin claims are not used.
+
 ## 2026-10-20 (site search)
 
 ### Added
