@@ -136,15 +136,9 @@ def refs_block(title):
       'document.querySelectorAll(".copycite").forEach(function(b){b.addEventListener("click",function(){var t=b.previousElementSibling.textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1500)},function(){});});});})();</script>')
     return f'<details class="refs" id="sources"><summary><h2 id="refs-h">Sources for this page <span class="count">({len(_used)})</span></h2><span class="small">Tap to see where every fact comes from</span></summary><p class="small">The small numbers in the text link here. Each source is labelled by type. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</details>'
 
-def ph(kind, text):
-    if kind == "photo":
-        return f'<figure class="placeholder"><div class="ico">IMG</div><p><strong>Community photo wanted</strong>{text}</p></figure>'
-    return f'<aside class="placeholder"><div class="ico">♪</div><p><strong>Oral history wanted</strong>{text} <a href="contribute.html">How to share it</a></p></aside>'
-
 def photo(pid):
     p = PHOTOS[pid]
-    if p.get("status") == "wanted":
-        return ph("photo", p["caption"])
+    if p.get("status") == "wanted": return ""  # unfilled placeholder: renders as nothing (the caption stays in photos.json)
     cap = p["caption"] + (f" — {p['credit']}" if p.get("credit") else "")
     src = html.escape(p["url"] if p.get("url") else CDN_BASE + "/" + p["file"])  # "url" for files served by the site itself
     return (f'<figure><img src="{src}" alt="{html.escape(p["alt"])}" width="{int(p["width"])}" height="{int(p["height"])}" loading="lazy" decoding="async">'
@@ -257,6 +251,47 @@ def pch_chart():
             '<figcaption>Pau Cin Hau alphabet as encoded in Unicode 7.0 (2014). [[unicode-chart-pch]] [[unicode7]] [[pandey2010]] [[noto-pch]]</figcaption></figure>')
 
 HERO_CREDIT = "Map area approximate, not a territorial claim · Boundaries: geoBoundaries (CC BY 4.0)"  # photo credit is set in images.json (hornbill.webp)
+TIMELINE_ERAS = [(1800, "early", "Origin traditions and early records"), (1900, "british", "British rule and the Chin Hills"),
+                 (1947, "mission", "Mission, script and early war"), (1980, "indep", "Independence and new names"), (None, "recent", "Since 1980")]
+def parse_timeline():
+    """Events from assets/data.js (window.ZO_TIMELINE), sorted by start year as the browser filter sorts them."""
+    src = (ROOT / "assets" / "data.js").read_text(encoding="utf8")
+    block = re.search(r"window\.ZO_TIMELINE = \[(.*?)\n\];", src, re.S).group(1)
+    events = []
+    for line in block.splitlines():
+        if not line.strip().startswith("{"): continue
+        f = {}
+        for k, v in re.findall(r'(\w+):("(?:[^"\\]|\\.)*"|-?[\d.]+|\[[^\]]*\])', line):
+            if v.startswith("["): f[k] = re.findall(r'"([^"]*)"', v)
+            elif v.startswith('"'): f[k] = json.loads(v)
+            else: f[k] = float(v) if "." in v else int(v)
+        if not {"y", "s", "t", "th", "ev", "d", "src"} <= f.keys(): sys.exit(f"assets/data.js: event missing fields: {line.strip()[:80]}")
+        events.append(f)
+    return sorted(events, key=lambda e: e["s"])
+TIMELINE = parse_timeline()
+def timeline_era(s):
+    for limit, key, name in TIMELINE_ERAS:
+        if limit is None or s < limit: return key, name
+def timeline_html():
+    """The timeline as static HTML, grouped by era. site.js adds filters on top; with no JavaScript every event and its sources are shown."""
+    out, cur, n = [], None, 0
+    for e in TIMELINE:
+        key, name = timeline_era(e["s"])
+        if key != cur:
+            if cur is not None: out.append("</ol></section>")
+            out.append(f'<section class="tl-era" id="era-{key}"><h2>{html.escape(name)}</h2><ol class="tl-list">')
+            cur = key
+        n += 1; bid = f"tl-{n}"
+        srcs = " ".join(f"[[{k}]]" for k in e["src"])
+        out.append(f'<li class="tl-item ev-{e["ev"]}" data-th="{e["th"]}" data-ev="{e["ev"]}">'
+                   f'<button type="button" class="tl-head" aria-expanded="false" aria-controls="{bid}">'
+                   f'<span class="tl-year">{html.escape(e["y"])}</span><span class="tl-title">{html.escape(e["t"])}</span>'
+                   f'<span class="tag {e["ev"]}">{html.escape(TIMELINE_LABEL[e["ev"]])}</span></button>'
+                   f'<div class="tl-body" id="{bid}"><p>{html.escape(e["d"])}</p><p class="small">Sources: {srcs}</p></div></li>')
+    out.append("</ol></section>")
+    return "".join(out) + '<p class="tl-empty" hidden>No events match.</p>'
+TIMELINE_LABEL = {"oral": "Oral tradition", "doc": "Documented", "sch": "Scholarly"}
+FORBIDDEN_IN_OUTPUT = ["[CREDIT", "[LICENSE", "{{photo:", "{{oralhistory:"]  # placeholders that must never be published
 def zogam_map():
     """The homeland map (partials/zogam-map.svg), inlined once. Comments stripped; styling is in style.css."""
     return re.sub(r"<!--.*?-->", "", (ROOT / "partials" / "zogam-map.svg").read_text(encoding="utf8"), flags=re.S).strip()
@@ -276,11 +311,12 @@ def render(body):
     body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
     if "{{pch-chart}}" in body: body = body.replace("{{pch-chart}}", pch_chart())
     if "{{zogam-map}}" in body: body = body.replace("{{zogam-map}}", zogam_map())
+    if "{{timeline-events}}" in body: body = body.replace("{{timeline-events}}", timeline_html())
     body = body.replace("{{hero-moments}}", hero_moments()).replace("{{hero-stats}}", hero_stats()).replace("{{hero-credit}}", HERO_CREDIT)
     body = IMG_RE.sub(lambda m: img_figure(m.group(1)), body)  # before cite(): the caption can carry no [[ ]], but keep the order
     body = PHOTO_RE.sub(lambda m: photo(m.group(1)), body)  # before cite(): figcaptions carry [[source]]
     body = re.sub(r"\[\[([\w-]+)\]\]", cite, body)
-    body = re.sub(r"\{\{oralhistory:(.*?)\}\}", lambda m: ph("oralhistory", m.group(1)), body)
+    body = re.sub(r"\{\{oralhistory:(.*?)\}\}", "", body, flags=re.S)  # unfilled prompts render as nothing
     body = re.sub(r"\{\{short\}\}(.*?)\{\{/short\}\}", lambda m: '<aside class="short"><h2 class="short-h">The short version</h2>'+m.group(1)+'<p class="short-more">Want the details? Keep reading. Every fact below is sourced.</p></aside>', body, flags=re.S)
     for k,v in TAGS.items(): body = body.replace("{{"+k+"}}", v)
     return body
@@ -310,6 +346,10 @@ def page(fname, title, body, wide=False, home=False, search=False):
     if fname=="glossary.html":
         terms=re.findall(r'<dt id="([^"]+)">(.*?)</dt>\s*<dd>(.*?)</dd>', GLOSS_RAW, re.S)
         graph.append({"@type":"DefinedTermSet","@id":url+"#terms","name":"Zomi and Zo history glossary","hasDefinedTerm":[{"@type":"DefinedTerm","@id":url+"#"+i,"name":re.sub("<[^>]+>","",n),"description":re.sub(r"\s+"," ",re.sub(r"<a [^>]*>[^<]*</a>|\[\[[^\]]+\]\]|<[^>]+>","",d)).strip(),"inDefinedTermSet":url+"#terms"} for i,n,d in terms]})
+    if fname=="timeline.html":
+        graph.append({"@type":"ItemList","@id":url+"#events","name":"Zomi and Zo history timeline","numberOfItems":len(TIMELINE),
+                      "itemListOrder":"https://schema.org/ItemListOrderAscending",
+                      "itemListElement":[{"@type":"ListItem","position":i+1,"name":f'{e["y"]}: {e["t"]}',"description":e["d"]} for i,e in enumerate(TIMELINE)]})
     if home:
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
@@ -519,6 +559,15 @@ def main():
     used |= set(re.findall(r'"([\w-]+)"', re.search(r"src:\[.*", (ROOT/"assets/data.js").read_text(), re.S).group(0)))
     used |= {p["source"] for p in PHOTOS.values() if p.get("source")}
     if missing: print("MISSING SOURCE KEYS:", missing); sys.exit(1)
+    # Template tokens and the homepage credit placeholder must never reach a rendered page.
+    leaks = []
+    for f in sorted(DIST.glob("*.html")):
+        for token in FORBIDDEN_IN_OUTPUT:
+            if token in f.read_text(): leaks.append(f"{f.name} contains {token!r}")
+    if leaks:
+        print("OUTPUT ERRORS. A placeholder reached a rendered page:")
+        for l in leaks: print("  - " + l)
+        sys.exit(1)
     unused = set(S) - used
     print(f"Search index: {n_idx} entries."); print(f"Built {len(list(DIST.glob('*.html')))} pages. Unused sources: {sorted(unused) or 'none'}")
 

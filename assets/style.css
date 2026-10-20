@@ -140,6 +140,9 @@ figure.photo figcaption .img-context{font-style:italic}
 .tl-year{font-weight:600;color:var(--green)}
 .tl-body{display:none;padding:0 .6rem 1rem 10.3rem;font-size:.98rem;color:var(--ink-2)}
 .tl-item.open .tl-body{display:block}
+.no-js .tl-body{display:block}  /* without JavaScript every event's text and sources are shown */
+.tl-era{margin:2rem 0 1rem}.tl-era h2{font-size:1.25rem;margin:0 0 .3rem}
+.tl-empty{color:var(--stone);font-style:italic}
 .tl-body p{margin:.2rem 0}
 @media (max-width:640px){.tl-head{grid-template-columns:1fr}.tl-body{padding-left:.6rem}}
 

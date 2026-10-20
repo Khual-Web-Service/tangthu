@@ -2,6 +2,15 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phase 1: critical fixes from the SEO audit)
+
+### Changed
+- **Timeline is server-rendered.** All 42 events from `assets/data.js` are written into `/timeline` at build time, grouped into five eras, each with its date, text and numbered sources. An `ItemList` JSON-LD block lists them. The theme and evidence filters in `assets/site.js` now show and hide the existing items instead of rebuilding the list, so the page works without JavaScript.
+- **Photo and oral-history prompts that are not yet filled render as nothing.** Previously they showed "Community photo wanted" and "Oral history wanted" boxes. The captions remain in `photos.json`.
+- **Homepage hero:** the "Photo: [CREDIT / LICENSE]" text is removed. The boundary credit (geoBoundaries, CC BY 4.0) stays.
+
+### Added
+- `build.py` fails if `[CREDIT`, `[LICENSE`, `{{photo:` or `{{oralhistory:` appears in any rendered page.
 ## 2026-10-20 (phone moments: swipe row)
 
 ### Changed
