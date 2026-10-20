@@ -458,10 +458,10 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
 .hero-moments-head{margin:0 24px 10px;font-size:15px}
 .hero-moments-title{letter-spacing:.14em;text-transform:uppercase;color:#A3A69A}
 .hero-stats{display:none}
-.hero-timeline{list-style:none;margin:0;padding:0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible}  /* phones: six moments in two columns, no sideways scroll */
+.hero-timeline{list-style:none;margin:0;padding:0 24px;display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:0 24px;scrollbar-width:none;overscroll-behavior-x:contain}  /* phones: one swipeable row, cards peek at the edge */
 .hero-timeline::-webkit-scrollbar{display:none}
-.hero-timeline li{min-width:0}
-.hero-moment{display:flex;flex-direction:column;gap:6px;min-height:100px;box-sizing:border-box;padding:12px;border-radius:6px;background:#1C1F1A;border:1px solid rgba(236,238,231,.1);text-decoration:none;color:#ECEEE7}
+.hero-timeline li{flex:0 0 150px;scroll-snap-align:start}
+.hero-moment{display:flex;flex-direction:column;gap:6px;height:auto;min-height:100px;box-sizing:border-box;padding:12px;border-radius:6px;background:#1C1F1A;border:1px solid rgba(236,238,231,.1);text-decoration:none;color:#ECEEE7}
 .hero-moment.today{border-color:rgba(124,198,138,.4)}
 .hero-dot{display:none}
 .hero-when{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#E3A92B}

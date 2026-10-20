@@ -2,6 +2,12 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-20 (phone moments: swipe row)
+
+### Changed
+- Phones: "The story in six moments" is one horizontal swipe row again, with cards 150px wide, snap points, and no vertical scrolling. Cards grow to fit their text.
+- Replaces the two-column grid from the previous commit.
+
 ## 2026-10-20 (phone moments grid)
 
 ### Changed
