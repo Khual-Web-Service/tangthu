@@ -238,11 +238,11 @@ details.refs[open] summary h2::before{content:"− "}
 details.refs .count{color:var(--stone);font-weight:400}
 
 /* Sticky section menu */
-.onpage{position:sticky;top:var(--hdr,58px);z-index:900;margin:0 -24px 1rem;padding:.55rem 24px;background:color-mix(in srgb,var(--mist) 95%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.8rem}
+.onpage{position:sticky;top:var(--hdr,58px);z-index:900;margin:0 -24px 1rem;padding:.55rem 24px;background:var(--mist);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.8rem}
 .onpage-label{flex:0 0 auto;font-size:.85rem;font-style:italic;color:var(--stone)}
-.onpage ul{list-style:none;margin:0;padding:0;display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+.onpage ul{list-style:none;margin:0;padding:0 2px;display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;scroll-padding-inline:16px;scroll-snap-type:x proximity;mask-image:linear-gradient(to right,transparent 0,#000 16px,#000 calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(to right,transparent 0,#000 16px,#000 calc(100% - 24px),transparent 100%)}
 .onpage ul::-webkit-scrollbar{display:none}
-.onpage li{margin:0;flex:0 0 auto}
+.onpage li{margin:0;flex:0 0 auto;scroll-snap-align:center}
 .onpage a{display:inline-flex;align-items:center;min-height:36px;padding:0 .85rem;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink-2);text-decoration:none;font-size:.9rem;white-space:nowrap}
 .onpage a:hover{border-color:var(--green);color:var(--green)}
 .onpage a[aria-current]{background:var(--green);border-color:var(--green);color:#fff}
@@ -394,6 +394,7 @@ nav.main a[href="/search"]{display:inline-block}
    links as the pill bar below 1200px; only its layout changes. Intro (eyebrow, dates, title, lede) spans
    the top, then the article body fills the centre column. Grid rows 1-4 are the intro, so the nav starts at row 5. */
 @media (min-width:1200px){
+  :root{--toc:220px}
   main:has(> nav.onpage){display:grid;grid-template-columns:var(--toc) minmax(0,var(--measure)) var(--toc);column-gap:var(--gutter);row-gap:0;justify-content:center;max-width:calc(var(--measure) + 2 * (var(--toc) + var(--gutter)) + 48px)}
   main:has(> nav.onpage) > *{grid-column:2}
   main:has(> nav.onpage) > .chapter-eyebrow,
@@ -402,10 +403,10 @@ nav.main a[href="/search"]{display:inline-block}
   main:has(> nav.onpage) > .lede{grid-column:1 / -1}
   main:has(> nav.onpage) > .table-wrap{grid-column:2 / 4;justify-self:start;width:min(900px,100%)}
   main:has(> nav.onpage) h2[id]{scroll-margin-top:calc(var(--hdr,58px) + 24px)}
-  main:has(> nav.onpage) > .onpage{grid-column:1;grid-row:5 / span 400;align-self:start;position:sticky;top:calc(var(--hdr,58px) + 24px);max-height:calc(100vh - var(--hdr,58px) - 48px);overflow-y:auto;margin:0;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:1}
+  main:has(> nav.onpage) > .onpage{display:block;mask-image:none;grid-column:1;grid-row:5 / span 400;align-self:start;position:sticky;top:calc(var(--hdr,58px) + 24px);max-height:calc(100vh - var(--hdr,58px) - 48px);overflow-y:auto;margin:0;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:1}
   .onpage-label{display:block;margin:0 0 .6rem;font-size:var(--meta);font-style:italic;color:var(--stone)}
-  .onpage ul{display:block;margin:0;padding:0;overflow:visible}
-  .onpage li{margin:0}
+  .onpage ul{display:block;margin:0;padding:0;overflow:visible;mask-image:none;-webkit-mask-image:none;scroll-snap-type:none}
+  .onpage li{margin:0;scroll-snap-align:none}
   .onpage a{display:block;min-height:0;white-space:normal;padding:.35rem 0 .35rem .9rem;border:0;border-left:2px solid var(--line);border-radius:0;background:none;color:var(--ink-2);font-size:var(--meta);line-height:1.4;text-decoration:none}
   .onpage a:hover{color:var(--green)}
   .onpage a[aria-current]{background:none;border-left:3px solid var(--green);color:var(--green)}

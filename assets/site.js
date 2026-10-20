@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded',function(){
     var links=[].slice.call(op.querySelectorAll('a')),ul=op.querySelector('ul'),cur=-1,seen={};
     var targets=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
     function mark(i){links.forEach(function(l,k){if(k===i)l.setAttribute('aria-current','true');else l.removeAttribute('aria-current');});
-      if(ul.scrollWidth>ul.clientWidth){var a=links[i];ul.scrollTo({left:a.offsetLeft-ul.offsetLeft-12,behavior:'smooth'});}}
+      if(ul.scrollWidth>ul.clientWidth){var a=links[i],still=matchMedia('(prefers-reduced-motion: reduce)').matches;ul.scrollTo({left:a.offsetLeft-ul.offsetLeft-(ul.clientWidth-a.offsetWidth)/2,behavior:still?'auto':'smooth'});}}
     var band=(hd?hd.offsetHeight:60)+24;
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(e){seen[e.target.id]=e.isIntersecting?e.boundingClientRect.top:null;});
