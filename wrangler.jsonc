@@ -1,6 +1,7 @@
 {
   "name": "tangthu",
   "compatibility_date": "2026-10-01",
+  "previews": {},
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
