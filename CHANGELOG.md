@@ -12,6 +12,7 @@ All notable changes to Zogam History are recorded here.
 - **Build:** `build.py` now writes `assets/search-index.json`; the 404 page and site map link to search.
 
 ### Fixed
+- **Search layout:** the Clear button is visible in dark mode, and the header search box only appears on wide screens (otherwise "Search" is a menu item), so the menu stays on one line.
 - **Updates reach readers immediately:** stylesheet and scripts are now loaded with a version stamp (`?v=…`) that changes whenever the file changes, so the 24-hour asset cache no longer serves an old design after an update.
 
 ## 2026-10-19 (mobile and accessibility)
