@@ -33,19 +33,19 @@ TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
  "index.html": ("Zomi & Zo History | Chin, Kuki, Lai and Mizo Peoples", "Zomi and Zo history in nine short, sourced chapters: origins, the Chin Hills, Pau Cin Hau, Panglong, the diaspora. For Zomi, Chin, Kuki, Lai and Mizo readers."),
- "origins.html": ("Zomi & Zo Origins: Khul, Chhinlung and the Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
- "evidence.html": ("How We Know Zo History: Sources and Evidence", "The evidence behind Zo and Zomi history: the Man Shu, Burmese inscriptions, Carey & Tuck (1896), clan genealogies, songs and memorial stones."),
- "stories.html": ("Zo History Stories: Ciimnuai, Khai Kam, Mautam", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
+ "origins.html": ("Zomi Origins: Khul, Chhinlung and the Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
+ "evidence.html": ("How We Know Zomi History: Sources and Evidence", "The evidence behind Zo and Zomi history: the Man Shu, Burmese inscriptions, Carey & Tuck (1896), clan genealogies, songs and memorial stones."),
+ "stories.html": ("Zomi History Stories: Ciimnuai, Khai Kam, Mautam", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
  "names.html": ("Zomi, Zo, Chin, Kuki, Mizo, Lai: What the Names Mean", "Why the Zo peoples are called Zomi, Chin, Kuki, Lai, Mizo and Zou — the origin of each name and why naming is debated, presented fairly."),
  "colonial.html": ("Chin Hills History: British Rule, the Chin Rising and Falam (1888–1948)", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
- "faith.html": ("Zomi & Zo Faith: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
- "modern.html": ("Modern Zomi, Zo & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
+ "faith.html": ("Zomi Faith: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
+ "modern.html": ("Modern Zomi & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
- "timeline.html": ("Zomi & Zo History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
- "glossary.html": ("Zomi & Zo History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
+ "timeline.html": ("Zomi History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
+ "glossary.html": ("Zomi History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
- "contribute.html": ("Contribute to Zo History: Stories, Photos and Licence", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
+ "contribute.html": ("Contribute to Zomi History: Stories, Photos and Licence", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
  "404.html": ("Page not found — Zogam History", "This page doesn’t exist. Start from the Zogam History home page or the chapter list."),
  "search.html": ("Search — Zogam History", "Search every page of Zogam History: chapters, stories, proverbs, glossary terms, timeline events and sources."),
  "sitemap.html": ("Site map — Zogam History", "Every page on Zogam History, the free, sourced history of the Zomi and Zo peoples, grouped by chapter."),
@@ -492,7 +492,7 @@ def sources_page():
     groups = {}
     for s in sorted(SRC, key=lambda s: s["cite"].lower()): groups.setdefault(s["type"].split(" (")[0], []).append(s)
     order = ["Primary","Archive","Scholarly","Technical / scholarly","Reference","Journalism","Research brief","Community","Community organisation","Missions database"]
-    out = ['<h1>Sources and Bibliography for Zo History</h1>',
+    out = ['<h1>Sources and Bibliography for Zomi History</h1>',
            '''<section class="standards"><h2>Editorial standards</h2>
 <ul>
 <li><strong>Every factual claim is cited.</strong> Numbered notes on each page link to the full reference at the bottom of that page and to this bibliography.</li>
