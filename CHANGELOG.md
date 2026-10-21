@@ -2,6 +2,13 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-10-21 (Zomi in page titles)
+
+### Changed
+- Page titles, H1s and the matching og, twitter and JSON-LD headlines now say "Zomi" where they said "Zo" in the topic phrase: for example "Zomi Origins", "Zomi History", "Zomi Culture" and "Zomi Faith". Names lists such as "Zo, Zomi, Chin, Kuki, Mizo, Lai" are unchanged.
+- Evidence, Contribute and Sources titles follow the same wording.
+- Page dates are updated for the pages whose titles changed.
+
 ## 2026-10-20 (approved H1 and title changes)
 
 ### Changed
