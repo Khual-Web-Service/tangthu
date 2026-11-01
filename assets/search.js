@@ -3,6 +3,8 @@
 // returns ranked [{d, s}], terms(query), snippet(text, terms), esc(s), norm(s). Index: /assets/search-index.json
 // plus timeline events from data.js.
 (function(){
+  // The search page never submits: results update as you type.
+  document.querySelectorAll('form.search-form').forEach(function(f){f.addEventListener('submit',function(e){e.preventDefault();});});
   var VER=(document.currentScript&&document.currentScript.src.split('v=')[1])||'';
   var idx=null, ready=null;
   // Normalise: lower-case, strip accents and apostrophes, collapse doubled vowels so "Ciimnuai" ~ "Cimnuai", "Kamhau" ~ "Kam Hau"

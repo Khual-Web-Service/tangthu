@@ -32,17 +32,17 @@ FAVICON_HEAD = (FAVICON_DIR / "head-snippet.html").read_text().strip()  # icon l
 TODAY = datetime.date.today().isoformat()
 SITE_NAME = "Zogam History"
 DESC = {
- "index.html": ("Zomi & Zo History | Chin, Kuki, Lai and Mizo Peoples", "Zomi and Zo history in nine short, sourced chapters: origins, the Chin Hills, Pau Cin Hau, Panglong, the diaspora. For Zomi, Chin, Kuki, Lai and Mizo readers."),
+ "index.html": ("Zomi & Zo History | Chin, Kuki, Lai and Mizo Peoples", "Zomi and Zo history in nine sourced chapters: origins, the Chin Hills, Pau Cin Hau, Panglong, the diaspora. For Zomi, Chin, Kuki, Lai and Mizo readers."),
  "origins.html": ("Zomi Origins: Khul, Chhinlung and the Kabaw Valley", "Where did the Zo, Zomi and Chin peoples come from? Khul and Chhinlung origin traditions, Khampat, Ciimnuai, and what historians can and cannot prove."),
  "evidence.html": ("How We Know Zomi History: Sources and Evidence", "The evidence behind Zo and Zomi history: the Man Shu, Burmese inscriptions, Carey & Tuck (1896), clan genealogies, songs and memorial stones."),
  "stories.html": ("Zomi History Stories: Ciimnuai, Khai Kam, Mautam", "Stories from Zo history: the remembered city of Ciimnuai, the Khampat banyan, Khan Thuam, Khai Kam’s resistance, Pau Cin Hau, and the Mautam famine."),
  "names.html": ("Zomi, Zo, Chin, Kuki, Mizo, Lai: What the Names Mean", "Why the Zo peoples are called Zomi, Chin, Kuki, Lai, Mizo and Zou — the origin of each name and why naming is debated, presented fairly."),
- "colonial.html": ("Chin Hills History: British Rule, the Chin Rising and Falam (1888–1948)", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
+ "colonial.html": ("Chin Hills History: British Rule and the Chin Rising", "British annexation of the Chin Hills, the Chin Hills Regulation 1896, and the 1917–1919 Anglo-Kuki War (Zou Gal), with sources."),
  "faith.html": ("Zomi Faith: Tedim Bible and Pau Cin Hau Script", "Traditional Zo religion, the 1899 Baptist mission to Hakha, the Tedim Bible, and Pau Cin Hau’s Laipian movement and Unicode script."),
- "modern.html": ("Modern Zomi & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
+ "modern.html": ("Modern Zomi & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification efforts, displacement after Myanmar’s 2021 coup, and the Manipur conflict. Neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
- "timeline.html": ("Zomi History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
+ "timeline.html": ("Zomi History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origins, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
  "glossary.html": ("Zomi History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
  "contribute.html": ("Contribute to Zomi History: Stories, Photos and Licence", "Email tangthu@khual.net to share family photographs, elders’ oral histories, genealogies and corrections to help preserve Zo and Zomi history."),
@@ -142,9 +142,7 @@ def refs_block(title):
     chi = f'Zogam History. “{t}.” Khual Web Service. Last modified {us_date(upd)}. Accessed <span class="acc" data-f="us"></span>. {url}.'
     rows = "".join(f'<div class="cite-row"><span class="badge type">{k}</span> <span class="cite-text">{v}</span> <button type="button" class="copycite">Copy</button></div>' for k,v in (("APA 7",apa),("MLA 9",mla),("Chicago",chi)))
     cite_box=(f'<div class="citebox" id="cite"><strong>Cite this page</strong> <span class="small">Published {long_date(pub)} · last updated {long_date(upd)}. The access date is today\'s date.</span>{rows}</div>'
-      '<script>(function(){var M=["January","February","March","April","May","June","July","August","September","October","November","December"],d=new Date(),m=M[d.getMonth()];'
-      'document.querySelectorAll(".acc").forEach(function(e){e.textContent=e.dataset.f==="mla"?d.getDate()+" "+(m.length>4?m.slice(0,3)+".":m)+" "+d.getFullYear():m+" "+d.getDate()+", "+d.getFullYear();});'
-      'document.querySelectorAll(".copycite").forEach(function(b){b.addEventListener("click",function(){var t=b.previousElementSibling.textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1500)},function(){});});});})();</script>')
+      '<script defer src="/assets/cite.js"></script>')
     return f'<details class="refs" id="sources"><summary><h2 id="refs-h">Sources for this page <span class="count">({len(_used)})</span></h2><span class="small">Tap to see where every fact comes from</span></summary><p class="small">The small numbers in the text link here. Each source is labelled by type. Colonial, missionary and advocacy sources are included as evidence of a viewpoint, not as neutral authority.</p><ol>{"".join(items)}</ol>{cite_box}</details>'
 
 def ph(kind, text):
@@ -326,7 +324,7 @@ def csp():
     gtag = ["https://www.googletagmanager.com", "https://www.google-analytics.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://analytics.google.com"]
     parts = [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdnjs.cloudflare.com",  # inline: the gtag loader, the citation-copy script and the theme class
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdnjs.cloudflare.com",  # 'unsafe-inline' stays until Cloudflare's edge-injected scripts are gone; our own scripts are external
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",      # inline: Leaflet sets style attributes
         f"font-src 'self' https://fonts.gstatic.com {CDN_ORIGIN}",
         f"img-src 'self' data: {CDN_ORIGIN} https://*.tile.openstreetmap.org https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com",
@@ -428,7 +426,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
         graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]})
     ld = json.dumps({"@context":"https://schema.org","@graph":graph}, ensure_ascii=False)
     robots = {"404.html": '<meta name="robots" content="noindex">', "search.html": '<meta name="robots" content="noindex,follow">'}.get(fname, '<meta name="robots" content="index,follow,max-image-preview:large">')
-    return f'''<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><script>document.documentElement.className="js"</script>
+    return f'''<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><script src="/assets/boot.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(t)}</title>
 <meta name="description" content="{html.escape(d)}">
@@ -441,7 +439,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 {'' if home else f'<meta property="article:published_time" content="{pdates(fname)[0]}"><meta property="article:modified_time" content="{pdates(fname)[1]}"><meta property="article:publisher" content="https://khual.net">'}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(t)}"><meta name="twitter:description" content="{html.escape(d)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{html.escape(img_alt)}">
 {FAVICON_HEAD}
-<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H19PT9QY1L');window.addEventListener('load',function(){{var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L';document.head.appendChild(s);}});</script><script type="application/ld+json">{ld}</script>
+<script src="/assets/ga.js"></script><script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="{CDN_ORIGIN}">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..700&family=Noto+Sans+Pau+Cin+Hau&display=swap" rel="stylesheet">
 {HERO_PRELOAD if home else ''}
@@ -518,7 +516,7 @@ def sources_page():
     return "\n".join(out)
 
 SEARCH_BODY = """<h1>Search</h1>
-<form class="search-form" role="search" action="/search" method="get" onsubmit="return false">
+<form class="search-form" role="search" action="/search" method="get">
 <label for="q" class="search-label">Search the whole site</label>
 <div class="search-row"><input id="q" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="e.g. Khan Thuam, puan, Panglong, Ciimnuai" aria-describedby="search-help" aria-controls="search-results"><button type="button" id="q-clear" class="btn-ghost" hidden>Clear</button></div>
 <p id="search-help" class="small">Searches chapters, stories, proverbs, the glossary, the timeline and every source. Zolai spellings work with or without doubled letters and apostrophes. Press <kbd>/</kbd> on any page to jump here.</p>

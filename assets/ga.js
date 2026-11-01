@@ -1,0 +1,2 @@
+// Google Analytics (GA4). Defines gtag and loads gtag.js after the page's load event.
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H19PT9QY1L');window.addEventListener('load',function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-H19PT9QY1L';document.head.appendChild(s);});

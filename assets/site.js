@@ -57,7 +57,7 @@ window.addEventListener('DOMContentLoaded',function(){
 
   // map: Leaflet loads only when the map comes near the screen (not on the hero)
   var m=document.getElementById('map');
-  function fallback(){m.innerHTML='<p class="small" style="padding:1rem">The interactive map could not load. Places covered: '+(window.ZO_PLACES||[]).map(function(p){return p.n}).join(', ')+'.</p>';m.style.height='auto';}
+  function fallback(){m.innerHTML='<p class="small map-fallback">The interactive map could not load. Places covered: '+(window.ZO_PLACES||[]).map(function(p){return p.n}).join(', ')+'.</p>';m.style.height='auto';}
   function initMap(){
     var map=L.map(m,{scrollWheelZoom:false,tap:false,keyboard:true}).setView([23.0,93.1],7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,attribution:'© OpenStreetMap contributors'}).addTo(map);
