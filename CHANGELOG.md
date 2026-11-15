@@ -2,6 +2,18 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-11-15 (Chin State Today page and Reel)
+
+### Added
+- New page `/chin-state-now`, "Chin State Today: Life in the Chin Hills in 2026". It covers displacement, daily life (prices, health, connectivity), which towns changed hands in 2026, schools and clinics, and the Zomi and Chin abroad. Every figure is cited. Where outlets disagree (the town-control map, refugee counts), the page says so.
+- 29 sources in `sources.json`: UN in Myanmar, OCHA, WFP, UNDP, AP, Al Jazeera, DVB, Myanmar Now, BNI/Khonumthung, Chinland Guardian, Mirror Indy, Organiser, The Nation, the ASEAN Centre for Biodiversity and the Euro-Burma Office. Chin community and exile outlets carry a note on how they source their reports.
+- The one-minute 9:16 Reel and its cover image are in `assets/video/` and play on the page. Video is served from the site itself rather than from R2, because no R2 upload step exists for video yet.
+- `.reel` styles in `style.css`.
+- The page appears in the site map under "Today".
+
+### Changed
+- Modern History links to the new page under "The short version". Its updated date is now 15 November 2026.
+
 ## 2026-10-21 (Zomi in page titles)
 
 ### Changed

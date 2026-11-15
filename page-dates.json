@@ -37,7 +37,7 @@
  },
  "modern.html": {
   "published": "2026-10-19",
-  "updated": "2026-10-21"
+  "updated": "2026-11-15"
  },
  "names.html": {
   "published": "2026-10-19",
@@ -66,5 +66,9 @@
  "timeline.html": {
   "published": "2026-10-19",
   "updated": "2026-10-21"
+ },
+ "chin-state-now.html": {
+  "published": "2026-11-15",
+  "updated": "2026-11-15"
  }
 }
