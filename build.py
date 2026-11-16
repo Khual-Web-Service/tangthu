@@ -61,6 +61,7 @@ FAQ = [
 ]
 CHAPTERS = ["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html"]
 CH_LABEL = {"origins.html":"Origins & Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names & Identity","colonial.html":"Colonial Era","faith.html":"Faith & Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora"}
+CRUMB_LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","chin-state-now.html":"Chin State Today (2026)","timeline.html":"Timeline","glossary.html":"Glossary","search.html":"Search","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
 def chapter_head(f):
     if f not in CHAPTERS: return ""
     n=CHAPTERS.index(f)+1
@@ -356,6 +357,14 @@ def write_headers():
         "/llms-full.txt", "  Content-Type: text/plain; charset=utf-8",
     ]
     (DIST/"_headers").write_text("\n".join(lines) + "\n")
+def write_redirects(pages):
+    """Workers static assets _redirects. Old .html and trailing-slash URLs move permanently (301) to the clean URL;
+    the asset handler's own redirect is a 307, which Google treats as temporary and keeps re-crawling."""
+    lines = ["/index.html / 301"]
+    for p in pages:
+        if p == "index.html": continue
+        c = clean(p); lines += [f"/{p} {c} 301", f"{c}/ {c} 301"]
+    (DIST/"_redirects").write_text("\n".join(lines) + "\n")
 def security_txt():
     """RFC 9116. Expires one year from the build date."""
     expires = (datetime.date.fromisoformat(TODAY) + datetime.timedelta(days=365)).isoformat()
@@ -380,8 +389,12 @@ def hero_moments():
 def hero_stats():
     return f"9 chapters · {len(SRC)} sources · About 15 minutes"
 
+HTML_LINK = re.compile(r'href="([a-z0-9-]+)\.html(#[^"]*)?"')
+def fix_links(body):
+    """Relative foo.html links become the clean /foo URL, so crawlers never meet the .html redirect."""
+    return HTML_LINK.sub(lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
 def render(body):
-    body = re.sub(r'href="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'href="{clean(m.group(1)+".html")}{m.group(2) or ""}"', body)
+    body = fix_links(body)
     if "{{pch-chart}}" in body: body = body.replace("{{pch-chart}}", pch_chart())
     if "{{zogam-map}}" in body: body = body.replace("{{zogam-map}}", zogam_map())
     if "{{timeline-events}}" in body: body = body.replace("{{timeline-events}}", timeline_html())
@@ -408,8 +421,12 @@ def page(fname, title, body, wide=False, home=False, search=False):
     slug = fname[:-5]
     img = SITE_URL + "/assets/og/" + (slug if (ROOT/"assets"/"og"/(slug+".png")).exists() else "index") + ".png"
     img_alt = f"{title if not home else SITE_NAME}: share card from Zogam History, a sourced history of the Zomi and Zo peoples"
+    crumb_name = html.unescape(CRUMB_LABEL.get(fname, title))
     crumbs = [{"@type":"ListItem","position":1,"name":"Home","item":SITE_URL+"/"}]
-    if not home: crumbs.append({"@type":"ListItem","position":2,"name":title,"item":url})
+    if not home: crumbs.append({"@type":"ListItem","position":2,"name":crumb_name,"item":url})
+    # Visible trail matching the BreadcrumbList JSON-LD (Google wants markup to reflect what readers see).
+    crumb_nav = "" if home or fname=="404.html" else (f'<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li>'
+                 f'<li><span aria-current="page">{html.escape(crumb_name)}</span></li></ol></nav>')
     page_node = {"@type":PAGE_TYPE.get(fname, "WebPage" if home else "Article"),"@id":url+"#page","url":url,"name":t,"headline":title if not home else t,"description":d,"isPartOf":{"@id":SITE_URL+"/#site"},"inLanguage":"en","datePublished":pdates(fname)[0],"dateModified":pdates(fname)[1],"image":img,
        "about":[{"@type":"Thing","name":n,"sameAs":u} for n,u in ABOUT],"publisher":{"@id":"https://khual.net/#org"},"author":{"@id":"https://khual.net/#org"},"license":"https://creativecommons.org/licenses/by-sa/4.0/","isAccessibleForFree":True,"citation":[S[k]["cite"] for k in PAGE_CITES.get(fname,[])][:40]}
     graph = [
@@ -456,7 +473,7 @@ def page(fname, title, body, wide=False, home=False, search=False):
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="bar"><a class="brand" href="/">Zogam <em>History</em></a>
 <div class="baractions"><a class="searchicon" href="/search" aria-label="Search the site"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></a><button class="navtoggle" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button></div><nav class="main" id="mainnav" aria-label="Main">{nav}</nav></div></header>
-<main id="main"{' class="wide"' if wide else ""}>{body}</main>
+<main id="main"{' class="wide"' if wide else ""}>{crumb_nav}{fix_links(body)}</main>
 <footer class="site"><div class="foot-grid">
 <div><div class="foot-brand">Zogam <em>History</em></div><p>A free, source-cited history of the Zomi and Zo peoples. Oral tradition and documented history are labelled separately.</p></div>
 <div><div class="foot-h">Chapters</div><ul>{FOOT_CH}</ul></div>
@@ -545,7 +562,7 @@ def build_search_index():
         doc=f.read_text()
         m=re.search(r'<main[^>]*>(.*)</main>',doc,re.S); body=m.group(1) if m else ""
         body=re.sub(r'<details class="refs".*?</details>','',body,flags=re.S)
-        body=re.sub(r'<nav class="(onpage|chapter-nav)".*?</nav>','',body,flags=re.S)
+        body=re.sub(r'<nav class="(onpage|chapter-nav|crumbs)".*?</nav>','',body,flags=re.S)
         body=re.sub(r'<p class="(chapter-eyebrow|pagedates)[^"]*">.*?</p>','',body,flags=re.S)
         url=clean(f.name)
         if f.name=="glossary.html":
@@ -626,12 +643,13 @@ def main():
     write_llms()
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
     groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Today",["chin-state-now.html"]),("Explore",["timeline.html","glossary.html","search.html"]),("About this site",["sources.html","contribute.html"])]
-    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","chin-state-now.html":"Chin State Today (2026)","timeline.html":"Timeline","glossary.html":"Glossary","search.html":"Search","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    LABEL = CRUMB_LABEL
     sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'
     (DIST/"sitemap.html").write_text(page("sitemap.html","Site map",sm))
     write_headers()
+    write_redirects(order)
     (DIST/".well-known").mkdir(exist_ok=True)
     (DIST/".well-known"/"security.txt").write_text(security_txt())
     n_idx = build_search_index()
