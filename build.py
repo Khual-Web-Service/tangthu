@@ -538,7 +538,7 @@ def strip_html(t):
 
 def build_search_index():
     idx=[]
-    LABELS={"index.html":"Home","timeline.html":"Timeline","glossary.html":"Glossary","contribute.html":"Contribute","sitemap.html":None,"404.html":None,"sources.html":None,"search.html":None}
+    LABELS={"index.html":"Home","chin-state-now.html":"Chin State Today","timeline.html":"Timeline","glossary.html":"Glossary","contribute.html":"Contribute","sitemap.html":None,"404.html":None,"sources.html":None,"search.html":None}
     for f in sorted(DIST.glob("*.html")):
         page_label = CH_LABEL.get(f.name, LABELS.get(f.name, f.stem.title()))
         if page_label is None: continue
