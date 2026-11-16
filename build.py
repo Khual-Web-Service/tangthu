@@ -42,6 +42,7 @@ DESC = {
  "modern.html": ("Modern Zomi & Chin History: Panglong to Today", "Panglong 1947, Chin National Day, Zomi and Zo reunification movements, displacement after Myanmar’s 2021 coup, and the Manipur conflict — neutral and sourced."),
  "culture.html": ("Zomi & Chin Culture: Language, Clans, Khuado, Weaving", "Zo languages, clans and chieftainship, the Khuado harvest festival, traditional music and backstrap weaving (puan)."),
  "diaspora.html": ("Zomi & Chin Diaspora: Indianapolis, Malaysia, Australia", "Zo, Zomi and Chin communities abroad — Indianapolis, Malaysia, Australia, New Zealand and Europe — and why families left."),
+ "chin-state-now.html": ("Chin State Today: Life in the Chin Hills in 2026", "How Chin State is doing in 2026: displacement, prices, health, schools, which towns changed hands, and the Zomi and Chin abroad. Every figure sourced."),
  "timeline.html": ("Zomi History Timeline: From Khul to Today", "An interactive timeline of Zomi and Zo history: origin traditions, the Chin Hills under British rule, Pau Cin Hau, Panglong, Chin National Day and the diaspora."),
  "glossary.html": ("Zomi History Glossary: Puan, Khuado, Zogam & More", "Simple definitions of words in Zomi and Zo history: Zogam, puan, Khuado, Ciimnuai, Pau Cin Hau, Zou Gal, ZORO and more."),
  "sources.html": ("Sources & Bibliography — Zogam History", "Full bibliography and editorial standards for Zogam History: primary, scholarly, news and community sources, labelled by type."),
@@ -537,7 +538,7 @@ def strip_html(t):
 
 def build_search_index():
     idx=[]
-    LABELS={"index.html":"Home","timeline.html":"Timeline","glossary.html":"Glossary","contribute.html":"Contribute","sitemap.html":None,"404.html":None,"sources.html":None,"search.html":None}
+    LABELS={"index.html":"Home","chin-state-now.html":"Chin State Today","timeline.html":"Timeline","glossary.html":"Glossary","contribute.html":"Contribute","sitemap.html":None,"404.html":None,"sources.html":None,"search.html":None}
     for f in sorted(DIST.glob("*.html")):
         page_label = CH_LABEL.get(f.name, LABELS.get(f.name, f.stem.title()))
         if page_label is None: continue
@@ -611,7 +612,7 @@ def main():
     (DIST/"sources.html").write_text(page("sources.html","Sources & Bibliography — Zogam History",sources_page()))
     (DIST/"search.html").write_text(page("search.html","Search",SEARCH_BODY,search=True))
     (DIST/"404.html").write_text(page("404.html","Not found",'<h1>Page not found</h1><p>Try <a href="/search">searching the site</a>, or <a href="index.html">return home</a>.</p>'))
-    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]
+    order = ["index.html","origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html","culture.html","diaspora.html","chin-state-now.html","timeline.html","glossary.html","search.html","sources.html","contribute.html","sitemap.html"]
     pages = order
     # Indexable pages only: /search is noindex, /sitemap is the human map, and about.html waits for real editor names.
     sitemap_pages = [p for p in order if p not in ("search.html", "sitemap.html")]
@@ -624,8 +625,8 @@ def main():
     (DIST/"robots.txt").write_text(robots)
     write_llms()
     items = "".join(f'<li><a href="{clean(p)}">{html.escape(DESC[p][0])}</a><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in pages if p in DESC)
-    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Explore",["timeline.html","glossary.html","search.html"]),("About this site",["sources.html","contribute.html"])]
-    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","timeline.html":"Timeline","glossary.html":"Glossary","search.html":"Search","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
+    groups = [("Start here",["index.html"]),("History",["origins.html","evidence.html","stories.html","names.html","colonial.html","faith.html","modern.html"]),("Culture &amp; people",["culture.html","diaspora.html"]),("Today",["chin-state-now.html"]),("Explore",["timeline.html","glossary.html","search.html"]),("About this site",["sources.html","contribute.html"])]
+    LABEL = {"index.html":"Home","origins.html":"Origins &amp; Migration","evidence.html":"How We Know","stories.html":"Stories","names.html":"Names &amp; Identity","colonial.html":"Colonial Era","faith.html":"Faith &amp; Literacy","modern.html":"Modern History","culture.html":"Culture","diaspora.html":"Diaspora","chin-state-now.html":"Chin State Today (2026)","timeline.html":"Timeline","glossary.html":"Glossary","search.html":"Search","sources.html":"Sources &amp; Bibliography","contribute.html":"Contribute &amp; Licence"}
     sm = '<h1>Site map</h1><p class="lede">Every page on Zogam History. Search engines use the <a href="/sitemap.xml">XML sitemap</a>.</p>'
     for g,ps in groups:
         sm += f'<h2>{g}</h2><ul class="sitemap">' + "".join(f'<li><a href="{clean(p)}"><strong>{LABEL[p]}</strong></a> <span class="small">{SITE_URL.replace("https://","")}{clean(p)}</span><br><span class="small">{html.escape(DESC[p][1])}</span></li>' for p in ps) + '</ul>'

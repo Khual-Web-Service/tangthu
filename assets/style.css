@@ -547,3 +547,8 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
   .zogam-map .zm-country{font-size:11px}
 }
 
+
+/* Reel video (9:16) on the Chin State Today page */
+main figure.reel{margin:1.8rem auto 1.4rem;max-width:340px;text-align:center}
+.reel video{display:block;width:100%;height:auto;aspect-ratio:9/16;border-radius:var(--r);background:#0a120d;border-top:6px solid transparent;border-image:var(--weave) 6 0 0 0}
+.reel figcaption{font-size:var(--meta);color:var(--stone);margin-top:.6rem}

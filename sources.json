@@ -984,5 +984,228 @@
 "cite": "Mang Ngaih Cin. “Zo Khang Tangthu (Chin, Zomi leh Ciimnuai-mi).” Undated essay in Tedim, Academia.edu.",
 "url": "https://www.academia.edu/127097195/ZO_KHANG_TANGTHU",
 "note": "Draws on Tedim community magazines (1999–2008). Its China-era claims (Zhou as ‘Zo’, flight from the Qin) are shown on the site but marked as lacking evidence."
+},
+{
+"key": "un-mm-displacement-2026",
+"short": "UN in Myanmar 2026",
+"type": "Primary (UN)",
+"cite": "UN in Myanmar. “Myanmar displacement overview” (figures as of 10 August 2026). Via ecoi.net, 2026.",
+"url": "https://www.ecoi.net/en/file/local/2143718/260810%20Myanmar%20displacement%20overview.pdf"
+},
+{
+"key": "ocha-hu52",
+"short": "OCHA Humanitarian Update 52",
+"type": "Primary (UN)",
+"cite": "UN OCHA. “Myanmar Humanitarian Update No. 52.” 13 July 2026.",
+"url": "https://myanmar.un.org/sites/default/files/2026-07/OCHA%20Myanmar%20-%20Humanitarian%20Update%20No.%2052_final.pdf"
+},
+{
+"key": "wfp-2026",
+"short": "WFP 2026",
+"type": "Primary (UN)",
+"cite": "World Food Programme. “One Year After Myanmar Earthquake: New Global Shocks Threaten to Push Survivors Back into Hunger.” 27 March 2026.",
+"url": "https://www.wfp.org/news/one-year-after-myanmar-earthquake-new-global-shocks-threaten-push-survivors-back-hunger",
+"note": "Names Chin among the hardest-hit areas; no Chin-specific hunger figure."
+},
+{
+"key": "aljazeera2026",
+"short": "Al Jazeera 2026",
+"type": "Journalism",
+"cite": "Al Jazeera. “Air raids, conscripts and China: How Myanmar’s military is regaining ground.” 30 August 2026.",
+"url": "https://www.aljazeera.com/news/2026/8/30/air-raids-conscripts-and-china-how-myanmars-military-is-regaining-ground",
+"note": "Airstrike counts cited from the Myanmar Internet Project."
+},
+{
+"key": "ap-tonzang2026",
+"short": "AP 2026",
+"type": "Journalism",
+"cite": "Associated Press. “Myanmar military recaptures 2 strategic border towns from ethnic militias.” 21 May 2026 (syndicated by News4Jax).",
+"url": "https://www.news4jax.com/news/world/2026/05/21/myanmar-military-recaptures-2-strategic-border-towns-from-ethnic-militias/",
+"note": "AP notes independent confirmation was virtually impossible."
+},
+{
+"key": "mnow-election2026",
+"short": "Myanmar Now 2026",
+"type": "Journalism",
+"cite": "Myanmar Now. “Junta election stalls in Chin and Rakhine states as military control shrinks.” 6 January 2026.",
+"url": "https://myanmar-now.org/en/news/junta-election-stalls-in-chin-and-rakhine-states-as-military-control-shrinks/"
+},
+{
+"key": "organiser-mizoram2026",
+"short": "Organiser 2026",
+"type": "Journalism",
+"cite": "Organiser. “Myanmar refugee influx has become a burden on Mizoram: CM Lalduhoma.” 4 June 2026.",
+"url": "https://organiser.org/2026/06/04/356595/bharat/myanmar-refugee-influx-has-become-a-burden-on-mizoram-cm-lalduhoma-calls-it-a-burden/amp/",
+"note": "Quotes Mizoram government figures; also reports higher aid-agency estimates."
+},
+{
+"key": "cg-tedim-prices",
+"short": "Chinland Guardian, Apr 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Kalay checkpoint fees double commodity prices in Tedim.” 15 April 2026.",
+"url": "https://www.chinlandguardian.com/19096/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "cg-tedim-health",
+"short": "Chinland Guardian, May 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Tedim patients in crisis as health staff flee conflict.” 13 May 2026.",
+"url": "https://www.chinlandguardian.com/19446/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "bni-starlink2026",
+"short": "BNI, Mar 2026",
+"type": "Journalism",
+"cite": "BNI / Khonumthung. “Chin resistance confiscates Starlink equipment in Kanpetlet.” 4 March 2026.",
+"url": "https://www.bnionline.net/en/news/chin-resistance-confiscates-starlink-equipment-kanpetlet",
+"note": "BNI/Khonumthung is an exile ethnic news service; battlefield claims are mostly from parties to the conflict."
+},
+{
+"key": "dvb-falam2026",
+"short": "DVB, Apr 2026",
+"type": "Journalism",
+"cite": "DVB. “Military regains control of Chin State’s Falam town from resistance forces.” 26 April 2026.",
+"url": "https://english.dvb.no/military-regains-control-of-chin-states-falam-town-from-resistance-forces/"
+},
+{
+"key": "bni-control2026",
+"short": "BNI, Jul 2026",
+"type": "Journalism",
+"cite": "BNI / Khonumthung. “Junta Suffers Heavy Losses in Month-Long Southern Chin State Fighting.” 3 July 2026.",
+"url": "https://www.bnionline.net/en/news/junta-suffers-heavy-losses-month-long-southern-chin-state-fighting",
+"note": "BNI/Khonumthung is an exile ethnic news service; battlefield claims are mostly from parties to the conflict. Used here only for its summary of which towns each side holds."
+},
+{
+"key": "undp-poverty2019",
+"short": "UNDP 2019",
+"type": "Primary (UN)",
+"cite": "UNDP Myanmar. “Poverty in Myanmar has declined substantially, but one in four still poor, according to new report.” 26 June 2019.",
+"url": "https://www.undp.org/myanmar/news/poverty-myanmar-has-declined-substantially-one-four-still-poor-according-new-report",
+"note": "Based on the Myanmar Living Conditions Survey 2017 (World Bank and UNDP)."
+},
+{
+"key": "nation-census2015",
+"short": "The Nation 2015",
+"type": "Journalism",
+"cite": "The Nation (Thailand). “Chin, least-populated state.” 5 June 2015.",
+"url": "https://www.nationthailand.com/international/30261754",
+"note": "Reports the 2014 Myanmar census figure."
+},
+{
+"key": "acb-natmataung",
+"short": "ASEAN Centre for Biodiversity",
+"type": "Reference",
+"cite": "ASEAN Centre for Biodiversity. “Nat Ma Taung National Park” (ASEAN Heritage Park). Undated.",
+"url": "https://www.aseanbiodiversity.org/heritage_park/nat-ma-taung-national-park/"
+},
+{
+"key": "cg-falam-exams",
+"short": "Chinland Guardian, Jun 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Thousands of students resume education amidst conflict in Falam township.” 16 June 2026.",
+"url": "https://www.chinlandguardian.com/19862/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "cg-enrollment2026",
+"short": "Chinland Guardian, Jun 2026 (schools)",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Chin State schools see enrollment surge amid complex conflict landscape.” 3 June 2026.",
+"url": "https://www.chinlandguardian.com/19734/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "cg-mara-clinic",
+"short": "Chinland Guardian, Mar 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “New clinic opens in remote Mara area to boost healthcare access.” 27 March 2026.",
+"url": "https://www.chinlandguardian.com/18968/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "cg-landslide2026",
+"short": "Chinland Guardian, Jun 2026 (road)",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Landslide blocks key road linking Gangaw and Rezua.” 16 June 2026.",
+"url": "https://www.chinlandguardian.com/19865/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "dvb-cnc2025",
+"short": "DVB, Mar 2025",
+"type": "Journalism",
+"cite": "DVB. “Chin National Council to unite armed resistance factions.” 6 March 2025.",
+"url": "https://english.dvb.no/chin-national-council-to-unite-armed-resistance-factions-min-aung-hlaing-signs-nuclear-power-deal-with-russia/"
+},
+{
+"key": "cg-youth2026",
+"short": "Chinland Guardian, May 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Chin youths plan to form Chin Youth Congress.” 15 May 2026.",
+"url": "https://www.chinlandguardian.com/19493/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "mirrorindy-cnd2026",
+"short": "Mirror Indy 2026",
+"type": "Journalism",
+"cite": "Mirror Indy. “Chin National Day photos.” 23 February 2026.",
+"url": "https://mirrorindy.org/chin-national-day-photos/"
+},
+{
+"key": "aljazeera-diaspora2023",
+"short": "Al Jazeera 2023 (diaspora)",
+"type": "Journalism",
+"cite": "Al Jazeera. “‘Still my people’: Myanmar diaspora supports democracy struggle back home.” 25 September 2023.",
+"url": "https://www.aljazeera.com/news/2023/9/25/still-my-people-myanmar-diaspora-supports-democracy-struggle-back-home"
+},
+{
+"key": "cg-newyear2025",
+"short": "Chinland Guardian, Oct 2025",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Chin communities celebrate New Year.” 7 October 2025.",
+"url": "https://www.chinlandguardian.com/17853/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
+},
+{
+"key": "ebo-yam2025",
+"short": "Euro-Burma Office 2025",
+"type": "Research brief",
+"cite": "Hnin Eaindra Khine. “Elephant Foot Yam and Sustainability in Conflict-Torn Chinland.” The Sabai Times, reposted by Euro-Burma Office, 28 November 2025.",
+"url": "https://euro-burma.eu/elephant-foot-yam-and-sustainability-in-conflict-torn-chinland/"
+},
+{
+"key": "dvb-cnf-malaysia2025",
+"short": "DVB, Nov 2025",
+"type": "Journalism",
+"cite": "DVB. “Chin National Front requests diaspora support at global conference in Malaysia.” 21 November 2025.",
+"url": "https://english.dvb.no/chin-national-front-requests-diaspora-support-at-global-conference-in-malaysia/",
+"note": "Cites a UN estimate of about 20% of Chinland residents displaced."
+},
+{
+"key": "bni-falam2025",
+"short": "BNI, Nov 2025",
+"type": "Journalism",
+"cite": "BNI / Khonumthung. “20,000 Falam residents displaced by junta offensive as humanitarian needs surge.” 20 November 2025.",
+"url": "https://www.bnionline.net/en/news/20000-falam-residents-displaced-junta-offensive-humanitarian-needs-surge",
+"note": "The figure comes from a spokesperson for a Chin armed group."
+},
+{
+"key": "cg-mindat2026",
+"short": "Chinland Guardian, Jun 2026 (Mindat)",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Fighting intensifies near Mindat as thousands of displaced civilians require urgent aid.” 3 June 2026.",
+"url": "https://www.chinlandguardian.com/19737/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources. The Mindat figure was an estimate still being updated."
+},
+{
+"key": "cg-falam-return",
+"short": "Chinland Guardian, May 2026",
+"type": "Journalism",
+"cite": "Chinland Guardian. “Falam sees mass return of IDPs amid continued conflict.” 21 May 2026.",
+"url": "https://www.chinlandguardian.com/19562/",
+"note": "Chinland Guardian is a Chin community news outlet; its reports often rely on local or resistance-affiliated sources."
 }
 ]
