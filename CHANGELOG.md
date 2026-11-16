@@ -2,6 +2,16 @@
 
 All notable changes to Zogam History are recorded here.
 
+## 2026-11-15 (indexing fixes and visible breadcrumbs)
+
+### Added
+- A visible breadcrumb trail (Home › page) at the top of every page except the homepage and 404. It matches the BreadcrumbList JSON-LD, which now uses the same short page name (for example "Origins & Migration") instead of the full headline.
+- `dist/_redirects`: every old `/page.html` and `/page/` URL now redirects with a permanent 301 to the clean URL. The asset handler's own redirect was a 307, which Google treats as temporary, so it kept crawling the `.html` copies and listing them as "Crawled – currently not indexed".
+
+### Fixed
+- Internal links that still pointed at `contribute.html`, `origins.html`, `modern.html` and `index.html` (on the Sources, 404 and generated pages) now use clean URLs. Every relative `.html` link is rewritten at build time.
+- Search index skips the breadcrumb text.
+
 ## 2026-11-15 (Chin State Today page and Reel)
 
 ### Added
