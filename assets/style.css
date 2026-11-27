@@ -136,7 +136,7 @@ figure.photo figcaption .img-context{font-style:italic}
 /* Timeline */
 .filters{display:flex;flex-direction:column;gap:.6rem;margin:1.2rem 0 1.6rem}
 .fgroup{display:flex;flex-wrap:wrap;gap:.4rem}
-.filters button{min-height:40px;padding:0 1rem;font:500 .92rem var(--font);border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink);cursor:pointer}
+.filters button{min-height:44px;padding:0 1rem;font:500 .92rem var(--font);border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink);cursor:pointer}
 .filters button:hover{border-color:var(--green)}
 .filters button.on{background:var(--ink);border-color:var(--ink);color:var(--mist)}
 .tl-list{list-style:none;margin:0 0 0 .5rem;padding:0;border-left:3px solid var(--line)}
@@ -558,3 +558,20 @@ figure.hero-art{position:relative;height:330px;margin:0;overflow:hidden}  /* pho
 main figure.reel{margin:1.8rem auto 1.4rem;max-width:340px;text-align:center}
 .reel video{display:block;width:100%;height:auto;aspect-ratio:9/16;border-radius:var(--r);background:#0a120d;border-top:6px solid transparent;border-image:var(--weave) 6 0 0 0}
 .reel figcaption{font-size:var(--meta);color:var(--stone);margin-top:.6rem}
+
+/* UX polish (Nov 2026): press feedback, focus staging, scroller overscroll. Motion is transform/opacity/filter only. */
+.onpage ul{overscroll-behavior-x:contain}
+.zo-search-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+@media (max-width:640px){.zo-search-backdrop{-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.filters button,.navtoggle{transition:transform 90ms cubic-bezier(.22,1,.36,1)}
+  .btn:active,.filters button:active,.navtoggle:active{transform:scale(.97)}
+  .zo-search-backdrop:not([hidden]){animation:ux-fade-in .2s cubic-bezier(.22,1,.36,1) both}
+  .zo-search-backdrop:not([hidden]) .zo-search{animation:ux-rise-in .22s cubic-bezier(.22,1,.36,1) both}
+  .tl-item.open .tl-body{animation:ux-rise-in .2s cubic-bezier(.22,1,.36,1) both}
+}
+@media (prefers-reduced-motion:no-preference) and (max-width:1100px){
+  nav.main.open{animation:ux-fade-in .16s cubic-bezier(.22,1,.36,1) both}
+}
+@keyframes ux-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes ux-rise-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
